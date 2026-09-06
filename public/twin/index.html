@@ -1,0 +1,418 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NeuralThermal · BLDC 外转子马达数字样机</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<script type="importmap">
+{
+  "imports": {
+    "three": "https://unpkg.com/three@0.184.0/build/three.module.js",
+    "three/addons/controls/OrbitControls.js": "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js",
+    "three/addons/exporters/OBJExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js",
+    "three/addons/exporters/GLTFExporter.js": "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js"
+  },
+  "integrity": {
+    "https://unpkg.com/three@0.184.0/build/three.module.js": "sha384-8FCZ1eVO6it4+pbec2aDtnTrwjWXZLJRC+MAGCIPDgsYnUrl/E0A2YlF8ioMKI/J",
+    "https://unpkg.com/three@0.184.0/build/three.core.js": "sha384-dw2ooPewaEIrAgl6oFDBmmBWCE9oW9LxRGcfwZ0hLvEprzo202wXl7vCYHRlSnOT",
+    "https://unpkg.com/three@0.184.0/examples/jsm/controls/OrbitControls.js": "sha384-4rziNxOBZKQ69i+w+f89KJ55TCYquwchVbByQwmaOeIOXdOU2PLDn3kOfXHwIJC9",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/OBJExporter.js": "sha384-nbwtoZENJD3Vq+ACK0CuGQdPMuDWHkamC2KJD70EV5nfg6jQjfppKOea07YJN+N3",
+    "https://unpkg.com/three@0.184.0/examples/jsm/exporters/GLTFExporter.js": "sha384-VofkvpG6HERhFCYbsUOHeNXBCqID2nfqkQqnVzE1jc/oPcz+qJ13ADdXH08hE+cQ"
+  }
+}
+</script>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; }
+  body { background: #F2F4F5; font-family: 'IBM Plex Sans', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif;
+         color: #16181A; -webkit-font-smoothing: antialiased; overflow: hidden; }
+  #app { display: grid; grid-template-columns: 1fr 372px; height: 100vh; }
+  three-d-stage { display: block; width: 100%; height: 100%; }
+  three-d-stage:not(:defined) { visibility: hidden; }
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  .stagewrap { position: relative; overflow: hidden; background: #E9E6E0; }
+  .ov { position: absolute; z-index: 4; }
+  .seg { display: inline-flex; border: 1px solid rgba(20,24,26,.16); border-radius: 3px; overflow: hidden; background: rgba(255,255,255,.86);
+         backdrop-filter: blur(6px); }
+  .seg button { appearance: none; border: 0; background: transparent; cursor: pointer; padding: 6px 11px;
+         font: 500 11.5px/1 'IBM Plex Mono', monospace; letter-spacing: .4px; color: #4A5257; }
+  .seg button + button { border-left: 1px solid rgba(20,24,26,.12); }
+  .seg button[aria-pressed="true"] { background: #241A55; color: #F0ECFF; }
+  .pin { position: absolute; z-index: 5; transform: translate(-50%, -50%); pointer-events: none; display: flex; align-items: center; gap: 7px;
+         padding: 4px 9px 4px 7px; border-radius: 2px; background: rgba(22,17,42,.88); color: #fff; white-space: nowrap;
+         font: 500 11.5px/1.2 'IBM Plex Mono', monospace; box-shadow: 0 2px 10px rgba(16,24,32,.25); }
+  .pin i { width: 7px; height: 7px; border-radius: 50%; flex: none; }
+  .pin s { text-decoration: none; opacity: .62; font-size: 10px; letter-spacing: .8px; }
+  .rail { background: #FFFFFF; border-left: 1px solid #DFE3E6; overflow-y: auto; }
+  .sec { padding: 15px 18px; border-bottom: 1px solid #EEF0F2; }
+  .lbl { font: 500 10px/1 'IBM Plex Mono', monospace; letter-spacing: 1.4px; color: #6B4FC0; margin-bottom: 11px; }
+  .row { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 9px; }
+  .row:last-child { margin-bottom: 0; }
+  .rl { font-size: 12px; color: #5E676D; flex: none; }
+  .chips { display: flex; flex-wrap: wrap; gap: 5px; }
+  .chip { appearance: none; cursor: pointer; border: 1px solid #DFE3E6; background: #FFF; border-radius: 2px; padding: 5px 9px;
+          font: 400 11.5px/1.15 'IBM Plex Sans', 'PingFang SC', sans-serif; color: #4A5257; }
+  .chip:hover { border-color: #B9A9EC; }
+  .chip[aria-pressed="true"] { background: #241A55; border-color: #241A55; color: #F0ECFF; }
+  input[type=range] { -webkit-appearance: none; appearance: none; width: 148px; height: 3px; background: #E3E6E8; border-radius: 2px; outline: none; }
+  input[type=range]::-webkit-slider-thumb { -webkit-appearance: none; width: 13px; height: 13px; border-radius: 50%; background: #241A55; cursor: pointer; }
+  table.nodes { width: 100%; border-collapse: collapse; }
+  table.nodes td { padding: 5px 0; font: 400 12px/1.3 'IBM Plex Mono', monospace; color: #16181A; border-bottom: 1px solid #F2F4F5; }
+  table.nodes td.n { font-family: 'IBM Plex Sans', 'PingFang SC', sans-serif; color: #4A5257; font-size: 12px; }
+  table.nodes td.v { text-align: right; font-weight: 600; }
+  table.nodes td.m { text-align: right; color: #6B747A; font-size: 11px; width: 62px; }
+  table.nodes tr.hot td.m { color: #B3202A; }
+  .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 7px; vertical-align: 1px; }
+  .verdict { padding: 10px 12px; border-radius: 2px; font-size: 12.5px; line-height: 1.55; margin-bottom: 12px; }
+  .step { padding: 9px 0; border-bottom: 1px dashed #E8EBED; }
+  .step:last-child { border-bottom: 0; }
+  .tag { display: inline-block; padding: 2px 6px; border-radius: 2px; font: 500 9.5px/1.35 'IBM Plex Mono', monospace; letter-spacing: 1px; }
+  .out { display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }
+  .out span { font: 400 11px/1.35 'IBM Plex Mono', monospace; color: #3F6600; background: #F2F7EA; border: 1px solid #D8E6BE;
+              border-radius: 2px; padding: 2px 6px; }
+  .note { font-size: 11.5px; line-height: 1.6; color: #6B747A; margin-top: 6px; text-wrap: pretty; }
+  .ask { appearance: none; cursor: pointer; text-align: left; width: 100%; border: 1px solid #DFE3E6; background: #FFF; border-radius: 2px;
+         padding: 9px 11px; font: 400 12.5px/1.5 'IBM Plex Sans', 'PingFang SC', sans-serif; color: #16181A; margin-bottom: 6px; }
+  .ask:hover { border-color: #8A5BE0; background: #FBFAFF; }
+  .wip { border: 1px dashed #CBD1D6; border-radius: 2px; padding: 11px 12px; color: #6B747A; font-size: 11.5px; line-height: 1.6; }
+  .legend { max-width: calc(100% - 28px); display: flex; align-items: center; gap: 8px; padding: 7px 10px; border-radius: 3px; background: rgba(255,255,255,.9);
+            backdrop-filter: blur(6px); border: 1px solid rgba(20,24,26,.12); }
+  .bar { flex: 1; min-width: 90px; height: 8px; border-radius: 1px; }
+  .probe { padding: 8px 11px; border-radius: 3px; background: rgba(22,17,42,.9); color: #EFEAFF; font: 400 11.5px/1.5 'IBM Plex Mono', monospace;
+           max-width: 260px; }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+  .step { animation: fadeIn .28s ease both; }
+</style>
+</head>
+<body>
+<div id="app">
+  <div class="stagewrap" id="stagewrap">
+    <three-d-stage name="bldc-motor-thermal-twin" background="#E9E6E0"></three-d-stage>
+    <div class="ov" style="left:14px; top:14px; display:flex; gap:8px; flex-wrap:wrap;">
+      <div class="seg" id="segView"></div>
+    </div>
+    <div class="ov legend" id="legend" style="left:14px; bottom:64px;"></div>
+    <div class="ov" id="probe" style="left:14px; bottom:110px; display:none;"></div>
+    <div id="pins"></div>
+  </div>
+  <div class="rail" id="rail"></div>
+</div>
+
+<script src="./thermal.js"></script>
+<script src="./three-d-stage.js"></script>
+<script>
+const T = {
+  zh: {
+    cond: '工况', load: '载荷', amb: '环境温度', dur: '运行时长', duty: '占空比', sch: '散热方案',
+    loads: { idle: '空载', light: '巡航', cut: '悬停', heavy: '满油门爬升' },
+    duties: { cont: '连续', d60: '60s 开 / 30s 停', d30: '30s 开 / 60s 停' },
+    schs: { stock: '自然对流', duct: '强制风冷', pot: '定子灌封导热胶', dust: '进风口堵塞' },
+    result: '节点温度', chain: '计算来源', ask: '一句话提问', wip: '换散热方案',
+    nodes: { w: '定子绕组', s: '定子铁心', g: '轴与轴承' },
+    limit: '限值', margin: '裕量', run: '运行', housing: { on: '整机', ghost: '半透明', off: '拆外壳' },
+    view: { real: '真实外观', thermal: '温度场' },
+    okv: '最紧裕量 · ', badv: '已越限 · ',
+    probeHint: '点击任意零件读取该处温度',
+    steps: {
+      parse: '解析工况', loss: '算电气损耗', net: '解热网络', route: '需要空间分布', field: '重建表面温度场',
+      check: '判裕量', ret: '取绝缘等级与 Zth'
+    },
+    stepNotes: {
+      loss: '铜阻随绕组温度上升, 损耗与温度必须一起解, 先算哪个都不成立',
+      net: '集中参数热网络, 步长 0.05 s 显式推进, 每步重解一次铜损',
+      route: '节点温度只给出温位, 拿不到"热点在外壳哪一处", 转 L2',
+      field: '沿半径方向展开节点温位; 几何变则需重新采样验证',
+      ret: 'F 级绕组 155 ℃ 限值与 Zth 曲线来自检索层, 当前为固定值'
+    },
+    unitTags: { L0: 'L0 · 解析式', L1: 'L1 · 代理', L2: 'L2 · 场' },
+    askList: [
+      { q: '满油门连续爬升 5 分钟, 会不会触发热保护?', cfg: { load: 'heavy', scheme: 'stock', duty: 'cont', ambient: 25, seconds: 300 } },
+      { q: '40 ℃ 环境 + 进风口堵塞, 连续 15 分钟什么样?', cfg: { load: 'heavy', scheme: 'dust', duty: 'cont', ambient: 40, seconds: 900 } },
+      { q: '加装强制风冷, 绕组能降多少?', cfg: { load: 'heavy', scheme: 'duct', duty: 'cont', ambient: 25, seconds: 900 }, cmp: 'stock' },
+      { q: '改成 60 秒开 30 秒停, 最热的还是绕组吗?', cfg: { load: 'heavy', scheme: 'stock', duty: 'd60', ambient: 25, seconds: 900 } }
+    ],
+    wipText: '把新散热方案的图纸或照片拖进来, 由智能体提取几何再走 L2 推理 —— 这一段还在建设中。今天可用的是上面的"散热方案"档位: 每一档改的是真实的热阻与风量系数, 温度按同一套模型重算。',
+    cmpText: (d) => '相对自然对流: 绕组 ' + d.w.toFixed(1) + ' K, 铁心 ' + d.s.toFixed(1) + ' K',
+    src: '温位来自 L0 解析式与集中参数网络 · 空间分布由 L2 展开 · 裕量判定走 L1 · 检索层固定值'
+  },
+  en: {
+    cond: 'OPERATING POINT', load: 'Load', amb: 'Ambient', dur: 'Run time', duty: 'Duty', sch: 'Cooling',
+    loads: { idle: 'No load', light: 'Cruise', cut: 'Hover', heavy: 'Full-throttle climb' },
+    duties: { cont: 'Continuous', d60: '60s on / 30s off', d30: '30s on / 60s off' },
+    schs: { stock: 'Natural convection', duct: 'Forced air', pot: 'Potted stator', dust: 'Inlet blocked' },
+    result: 'NODE TEMPERATURES', chain: 'WHERE THE NUMBERS COME FROM', ask: 'ASK IN ONE SENTENCE', wip: 'SWAP THE COOLING',
+    nodes: { w: 'Winding', s: 'Stator iron', g: 'Shaft & bearings' },
+    limit: 'limit', margin: 'margin', run: 'run', housing: { on: 'Assembled', ghost: 'Ghost', off: 'Bell removed' },
+    view: { real: 'As built', thermal: 'Temperature' },
+    okv: 'Tightest margin · ', badv: 'Over limit · ',
+    probeHint: 'Click any part to read its temperature',
+    steps: {
+      parse: 'Parse the operating point', loss: 'Electrical losses', net: 'Solve the thermal network',
+      route: 'A field is needed', field: 'Reconstruct the surface field', check: 'Check margins', ret: 'Insulation class and Zth'
+    },
+    stepNotes: {
+      loss: 'Copper resistance rises with winding temperature, so loss and temperature have to be solved together',
+      net: 'Lumped thermal network, explicit 0.05 s steps, copper loss re-solved every step',
+      route: 'Node temperatures give levels, not where on the housing the hot spot sits — route to L2',
+      field: 'Node levels unfolded along the radius; a geometry change needs fresh sampling',
+      ret: 'The 155 °C class-F winding limit and Zth curves come from the retrieval layer, fixed values for now'
+    },
+    unitTags: { L0: 'L0 · closed form', L1: 'L1 · surrogate', L2: 'L2 · field' },
+    askList: [
+      { q: 'Five minutes at full-throttle climb — does it hit thermal cutout?', cfg: { load: 'heavy', scheme: 'stock', duty: 'cont', ambient: 25, seconds: 300 } },
+      { q: '40 °C ambient with a blocked inlet, 15 minutes continuous?', cfg: { load: 'heavy', scheme: 'dust', duty: 'cont', ambient: 40, seconds: 900 } },
+      { q: 'Add forced air — how much does the winding drop?', cfg: { load: 'heavy', scheme: 'duct', duty: 'cont', ambient: 25, seconds: 900 }, cmp: 'stock' },
+      { q: '60 on / 30 off — is the winding still the hottest?', cfg: { load: 'heavy', scheme: 'stock', duty: 'd60', ambient: 25, seconds: 900 } }
+    ],
+    wipText: 'Drop a drawing or photo of the new cooling arrangement and the agent extracts the geometry, then runs L2 — that part is still being built. What works today is the cooling selector above: each option changes a real thermal resistance and airflow factor, and the temperatures are recomputed by the same model.',
+    cmpText: (d) => 'Against natural convection: winding ' + d.w.toFixed(1) + ' K, iron ' + d.s.toFixed(1) + ' K',
+    src: 'Levels from L0 closed form + lumped network · spatial spread from L2 · margin check by L1 · retrieval values fixed'
+  }
+};
+
+const P = new URLSearchParams(location.search);
+let lang = (() => {
+  const q = P.get('lang'); if (q === 'zh' || q === 'en') return q;
+  try { const s = localStorage.getItem('neuralthermal.lang'); if (s === 'zh' || s === 'en') return s; } catch (e) {}
+  return (navigator.language || 'zh').toLowerCase().startsWith('zh') ? 'zh' : 'en';
+})();
+
+let cfg = { load: 'heavy', scheme: 'stock', duty: 'cont', ambient: 25, seconds: 300 };
+let res = null, housing = 'on', view = 'thermal', probeHit = null;
+let steps = [], revealed = 999, timer = null, cmpNote = '';
+const NODE_ORDER = ['w', 's', 'g'];
+const rgbCss = (u) => { const [r, g, b] = window.Twin.lut(u); return `rgb(${(r*255)|0},${(g*255)|0},${(b*255)|0})`; };
+
+/* 色标只覆盖当前可见的温度范围 —— 整机时是外表面, 拆壳后含绕组与电芯 */
+function range() {
+  if (!res) return [20, 100];
+  const keys = NODE_ORDER;
+  const hi = Math.max(...keys.map(k => res.T[k]));
+  return [Math.floor((cfg.ambient - 2) / 2) * 2, Math.ceil((hi + 4) / 2) * 2];
+}
+
+function solve() {
+  res = window.Thermal.solve(cfg);
+  if (window.Twin) window.Twin.setTemps(res.T, cfg.ambient, range());
+}
+
+/* ---------- 链路: 每一步的 OUT 都从本次求解里取, 不是写死的 ---------- */
+function buildSteps() {
+  const t = T[lang], e = res.elec, m = res.meta;
+  const f = (x, d = 0) => x.toFixed(d);
+  const worstName = t.nodes[res.worst];
+  steps = [
+    { k: 'reason', u: null, label: t.steps.parse, out: [
+      `P_out = ${f(window.Thermal.LOADS[cfg.load].pout)} W`, `T_amb = ${f(cfg.ambient)} °C`,
+      `${t.duties[cfg.duty]}`, `t = ${f(cfg.seconds)} s` ] },
+    { k: 'tool', u: 'L0', tool: 'device_loss', label: t.steps.loss, note: t.stepNotes.loss, out: [
+      `I = ${f(e.I, 1)} A`, `n = ${f(m.rpm)} rpm`, `P_cu = ${f(e.p_cu)} W`, `P_fe = ${f(e.p_fe)} W`,
+      `P_gear = ${f(e.p_gear)} W`, `P_fet = ${f(e.p_fet)} W`, `P_bat = ${f(e.p_bat)} W`,
+      `ΣP_loss = ${f(e.p_loss)} W`, `η = ${f(100 * e.p_out / Math.max(1, e.p_in))} %` ] },
+    { k: 'tool', u: 'L0', tool: 'thermal_network', label: t.steps.net, note: t.stepNotes.net, out: [
+      `R_ws = ${m.r_ws.toFixed(2)} K/W`, `R_ha = ${m.r_ha.toFixed(3)} K/W`, `fan = ${m.fan.toFixed(2)}`,
+      `T_w = ${f(res.T.w, 1)} °C`, `T_h = ${f(res.T.h, 1)} °C`, `T_b = ${f(res.T.b, 1)} °C` ] },
+    { k: 'route', u: null, label: t.steps.route, note: t.stepNotes.route, out: [
+      'matched: L2 · deeponet_field' ] },
+    { k: 'tool', u: 'L2', tool: 'deeponet_field', label: t.steps.field, note: t.stepNotes.field, out: [
+      `${NODE_ORDER.length} nodes → surface field`, `peak @ winding ${f(res.T.w, 1)} °C` ] },
+    { k: 'tool', u: 'L1', tool: 'margin_check', label: t.steps.check, out: [
+      `${worstName}: ${f(res.margin[res.worst], 1)} K`, `${res.margin[res.worst] > 0 ? 'within limits' : 'over limit'}` ] },
+    { k: 'retrieve', u: null, label: t.steps.ret, note: t.stepNotes.ret, wip: true, out: [
+      `class F winding = ${f(res.lim.w)} °C`, `bearing = ${f(res.lim.g)} °C` ] }
+  ];
+}
+
+function playSteps() {
+  clearTimeout(timer);
+  buildSteps();
+  revealed = 0;
+  const tick = () => {
+    revealed++;
+    render();
+    if (revealed < steps.length) timer = setTimeout(tick, 260 + Math.random() * 180);
+  };
+  timer = setTimeout(tick, 120);
+}
+
+function showAll() { clearTimeout(timer); buildSteps(); revealed = steps.length; }
+
+/* ---------- 渲染 ---------- */
+function seg(el, map, cur, cb) {
+  el.innerHTML = '';
+  for (const k in map) {
+    const b = document.createElement('button');
+    b.type = 'button'; b.textContent = map[k];
+    b.setAttribute('aria-pressed', String(k === cur));
+    b.onclick = () => cb(k);
+    el.appendChild(b);
+  }
+}
+
+function chips(map, cur, cb) {
+  return Object.keys(map).map(k =>
+    `<button class="chip" data-k="${k}" aria-pressed="${k === cur}">${map[k]}</button>`).join('');
+}
+
+const KIND = {
+  reason: ['#6B4FC0', 'rgba(107,79,192,.10)', 'REASON'],
+  route: ['#B06A00', 'rgba(200,130,0,.10)', 'ROUTE'],
+  tool: ['#3F6600', 'rgba(118,185,0,.12)', 'TOOL'],
+  retrieve: ['#1F6E8C', 'rgba(31,110,140,.10)', 'RETRIEVE']
+};
+
+function render() {
+  const t = T[lang];
+  const r = range();
+  if (!res) return;
+  const worstOver = res.margin[res.worst] < 0;
+
+  document.getElementById('rail').innerHTML = `
+    <div class="sec">
+      <div class="lbl">${t.cond}</div>
+      <div class="row"><span class="rl">${t.load}</span></div>
+      <div class="chips" id="cLoad" style="margin-bottom:12px">${chips(t.loads, cfg.load)}</div>
+      <div class="row"><span class="rl">${t.sch}</span></div>
+      <div class="chips" id="cSch" style="margin-bottom:12px">${chips(t.schs, cfg.scheme)}</div>
+      <div class="row"><span class="rl">${t.duty}</span></div>
+      <div class="chips" id="cDuty" style="margin-bottom:12px">${chips(t.duties, cfg.duty)}</div>
+      <div class="row"><span class="rl">${t.amb}</span>
+        <span style="display:flex;align-items:center;gap:9px">
+          <input type="range" id="rAmb" min="10" max="45" step="1" value="${cfg.ambient}">
+          <span class="mono" style="font-size:12px;width:44px;text-align:right">${cfg.ambient} °C</span></span></div>
+      <div class="row"><span class="rl">${t.dur}</span>
+        <span style="display:flex;align-items:center;gap:9px">
+          <input type="range" id="rSec" min="30" max="900" step="30" value="${cfg.seconds}">
+          <span class="mono" style="font-size:12px;width:44px;text-align:right">${Math.round(cfg.seconds/60*10)/10} min</span></span></div>
+    </div>
+
+    <div class="sec">
+      <div class="lbl">${t.result}</div>
+      <div class="verdict" style="background:${worstOver ? '#FCEFEF' : '#F2F7EA'};border:1px solid ${worstOver ? '#EBC9C9' : '#D8E6BE'};color:${worstOver ? '#8E1D22' : '#3F6600'}">
+        ${worstOver ? t.badv : t.okv}<strong>${t.nodes[res.worst]} ${Math.abs(res.margin[res.worst]).toFixed(1)} K</strong>
+        <span style="opacity:.7"> · ${res.elec.I.toFixed(0)} A / ${res.elec.p_in.toFixed(0)} W / ${res.meta.rpm.toFixed(0)} rpm</span>
+      </div>
+      <table class="nodes">${NODE_ORDER.map(k => {
+        const v = res.T[k], lim = res.lim[k];
+        const u = (v - r[0]) / (r[1] - r[0]);
+        const hot = lim != null && lim - v < 12;
+        return `<tr class="${hot ? 'hot' : ''}"><td class="n"><span class="dot" style="background:${rgbCss(u)}"></span>${t.nodes[k]}</td>
+          <td class="v">${v.toFixed(1)} °C</td>
+          <td class="m">${lim != null ? (lim - v).toFixed(0) + ' K' : '—'}</td></tr>`;
+      }).join('')}</table>
+      ${cmpNote ? `<div class="note" style="color:#4A5257;margin-top:10px">${cmpNote}</div>` : ''}
+    </div>
+
+    <div class="sec">
+      <div class="lbl">${t.ask}</div>
+      ${t.askList.map((a, i) => `<button class="ask" data-i="${i}">${a.q}</button>`).join('')}
+    </div>
+
+    <div class="sec">
+      <div class="lbl">${t.chain}</div>
+      ${steps.slice(0, revealed).map(s => {
+        const [c, bg, kl] = KIND[s.k];
+        return `<div class="step">
+          <div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap">
+            <span class="tag" style="color:${c};background:${bg}">${kl}</span>
+            <span style="font-size:13px;font-weight:600">${s.label}</span>
+            ${s.u ? `<span class="tag" style="color:#5E676D;background:#F2F4F5">${t.unitTags[s.u]}</span>` : ''}
+            ${s.tool ? `<span class="mono" style="font-size:10.5px;color:#8A929A">${s.tool}</span>` : ''}
+            ${s.wip ? `<span class="tag" style="color:#8A929A;background:#F2F4F5;border:1px dashed #CBD1D6">建设中 / WIP</span>` : ''}
+          </div>
+          <div class="out">${s.out.map(o => `<span>${o}</span>`).join('')}</div>
+          ${s.note ? `<div class="note">${s.note}</div>` : ''}
+        </div>`;
+      }).join('')}
+      <div class="note mono" style="font-size:10.5px;letter-spacing:.4px;margin-top:12px;padding-top:11px;border-top:1px solid #EEF0F2">${t.src}</div>
+    </div>
+
+    <div class="sec" style="border-bottom:0">
+      <div class="lbl">${t.wip}</div>
+      <div class="wip">${t.wipText}</div>
+    </div>`;
+
+  // 控件绑定
+  const bind = (id, key) => {
+    const host = document.getElementById(id);
+    if (!host) return;
+    host.querySelectorAll('.chip').forEach(b => b.onclick = () => {
+      cfg[key] = b.dataset.k; cmpNote = ''; solve(); showAll(); render();
+    });
+  };
+  bind('cLoad', 'load'); bind('cSch', 'scheme'); bind('cDuty', 'duty');
+  const amb = document.getElementById('rAmb'), sec = document.getElementById('rSec');
+  if (amb) amb.oninput = () => { cfg.ambient = +amb.value; cmpNote = ''; solve(); showAll(); render(); };
+  if (sec) sec.oninput = () => { cfg.seconds = +sec.value; cmpNote = ''; solve(); showAll(); render(); };
+  document.querySelectorAll('.ask').forEach(b => b.onclick = () => {
+    const a = T[lang].askList[+b.dataset.i];
+    cfg = Object.assign({}, a.cfg);
+    solve();
+    if (a.cmp) {
+      const base = window.Thermal.solve(Object.assign({}, a.cfg, { scheme: a.cmp }));
+      cmpNote = T[lang].cmpText({ w: res.T.w - base.T.w, s: res.T.s - base.T.s });
+    } else cmpNote = '';
+    playSteps(); render();
+  });
+
+  // 图例
+  const stops = [];
+  for (let i = 0; i <= 10; i++) stops.push(rgbCss(i / 10));
+  document.getElementById('legend').innerHTML =
+    `<span class="mono" style="font-size:10.5px;color:#4A5257">${r[0]} °C</span>
+     <span class="bar" style="background:linear-gradient(90deg,${stops.join(',')})"></span>
+     <span class="mono" style="font-size:10.5px;color:#4A5257">${r[1]} °C</span>`;
+
+  seg(document.getElementById('segView'), t.view, view, k => {
+    view = k; window.Twin.setView(k); render();
+  });
+
+  const pb = document.getElementById('probe');
+  if (probeHit) {
+    pb.style.display = 'block';
+    pb.innerHTML = `<div class="probe"><span style="color:#B9A9EC">${probeHit.name}</span><br>
+      ${probeHit.temp.toFixed(1)} °C &nbsp;·&nbsp; ${t.nodes[probeHit.node]}</div>`;
+  } else {
+    pb.style.display = 'block';
+    pb.innerHTML = `<div class="probe" style="background:rgba(22,17,42,.7)">${t.probeHint}</div>`;
+  }
+}
+
+/* ---------- 引线标签 ---------- */
+function pins() {
+  const wrap = document.getElementById('stagewrap');
+  const host = document.getElementById('pins');
+  if (!window.Twin || !res) return requestAnimationFrame(pins);
+  const w = wrap.clientWidth, h = wrap.clientHeight;
+  const r = range();
+  const show = ['w', 's', 'g'];
+  const t = T[lang];
+  const html = show.map(k => {
+    const p = window.Twin.project(k, w, h);
+    if (!p) return '';
+    const v = res.T[k];
+    const u = (v - r[0]) / (r[1] - r[0]);
+    return `<div class="pin" style="left:${p.x.toFixed(1)}px;top:${p.y.toFixed(1)}px">
+      <i style="background:${rgbCss(u)}"></i>${v.toFixed(0)} °C <s>${t.nodes[k]}</s></div>`;
+  }).join('');
+  if (host.dataset.h !== html) { host.innerHTML = html; host.dataset.h = html; }
+  requestAnimationFrame(pins);
+}
+
+window.addEventListener('twin-ready', () => {
+  solve(); showAll(); render();
+  window.Twin.setView(view);
+  pins();
+  document.getElementById('stagewrap').addEventListener('click', (e) => {
+    const hit = window.Twin.pick(e.clientX, e.clientY);
+    probeHit = hit; render();
+  });
+});
+solve();
+</script>
+<script type="module" src="./motor.js"></script>
+</body>
+</html>

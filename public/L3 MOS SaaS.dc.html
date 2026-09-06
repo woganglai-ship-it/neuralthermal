@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<title>NeuralThermal · NeuralThermal-Tj · 案例</title>
+<meta name="description" content="NeuralThermal-Tj 案例：MOS 管结温 / 壳温预测。案子描述、输入、输出形态、方法、收益与验证口径。">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #F2F4F5; font-family: 'IBM Plex Sans', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #16181A; text-decoration: none; }
+  a:hover { color: #4C7A00; text-decoration: none; }
+</style>
+</helmet>
+<template id="__bundler_thumbnail"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><rect width="100" height="100" fill="#1B4FA8"/><g stroke="#DCFF9A" stroke-width="3" stroke-linecap="round" fill="none"><path d="M30 62 L44 38"/><path d="M42 62 L56 38"/><path d="M54 62 L68 38"/></g><path d="M26 50 L74 50" stroke="#9FF2FF" stroke-width="3" stroke-linecap="round"/></svg></template>
+
+<div style="width: 100%; min-height: 100vh; background: #F2F4F5; color: #16181A;">
+
+  <div style="position: sticky; top: 0; z-index: 20; background: linear-gradient(90deg, #241A55 0%, #2B1D63 55%, #33206B 100%);">
+    <div style="max-width: 1080px; margin: 0 auto; padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 18px;">
+      <a href="NeuralThermal.dc.html#guard" style="display: flex; align-items: center; gap: 11px; text-decoration: none; flex: none;" style-hover="text-decoration: none;">
+        <svg viewBox="0 0 32 32" style="width: 26px; height: 26px; display: block; flex: none;" fill="none" stroke-linecap="round">
+          <g stroke="#2FD4E8" stroke-width="1.3">
+            <path d="M2 3 L24 29"></path><path d="M22 3 L6 29"></path><path d="M2 3 L28 29"></path><path d="M28 3 L4 29"></path><path d="M23 3 L13 29"></path><path d="M9 3 L29 29"></path>
+          </g>
+          <path d="M11 3 L23 29" stroke="#76B900" stroke-width="2"></path>
+        </svg>
+        <span style="font-family: 'Archivo', 'IBM Plex Sans', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 0.2px; color: #EDF2F5;">NeuralThermal</span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.4px; color: #9FF2FF; padding-left: 12px; border-left: 1px solid rgba(255,255,255,.25);">NEURALTHERMAL-Tj</span>
+      </a>
+      <div style="display: flex; align-items: center; gap: 18px; font-size: 13.5px; color: #E4EFF3; white-space: nowrap;">
+        <a href="NeuralThermal.dc.html#guard" style="color: #E4EFF3; text-decoration: none;" style-hover="color: #76B900; text-decoration: none;">{{ t.back }}</a>
+        <div style="display: flex; align-items: center; border: 1px solid #2A3B4A; border-radius: 3px; overflow: hidden; flex: none;">
+          <div onClick="{{ setZh }}" style="{{ zhBtn }}">中文</div>
+          <div onClick="{{ setEn }}" style="{{ enBtn }}">EN</div>
+        </div>
+      </div>
+    </div>
+    <div style="display: flex; height: 4px; width: 100%;">
+      <div style="flex: 1.1; background: #76B900;"></div>
+      <div style="flex: 0.9; background: #3FC66B;"></div>
+      <div style="flex: 1; background: #21C9C0;"></div>
+      <div style="flex: 1; background: #2FA6E8;"></div>
+      <div style="flex: 0.9; background: #4C6BE8;"></div>
+      <div style="flex: 1.1; background: #8A5BE0;"></div>
+      <div style="flex: 1; background: #C86BF0;"></div>
+    </div>
+  </div>
+
+  <div style="background: linear-gradient(112deg, #12796A 0%, #0F7C90 30%, #2352B4 68%, #6B3FB0 100%);">
+    <div style="max-width: 1080px; margin: 0 auto; padding: 60px 28px 62px;">
+      <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 2.4px; color: #DCFF9A; margin-bottom: 18px;">NEURALTHERMAL-Tj · CASE</div>
+      <h1 style="margin: 0 0 18px; font-family: 'Archivo', 'IBM Plex Sans', 'PingFang SC', sans-serif; font-size: 38px; line-height: 1.2; font-weight: 700; letter-spacing: -0.8px; color: #FFFFFF; text-wrap: pretty;">{{ t.h1 }}</h1>
+      <p style="margin: 0; max-width: 720px; font-size: 15.5px; line-height: 1.75; color: #E4EFF3; text-wrap: pretty;">{{ t.sub }}</p>
+    </div>
+  </div>
+
+  <div style="background: #FFFFFF; border-bottom: 1px solid #DFE3E6;">
+    <div style="max-width: 1080px; margin: 0 auto; padding: 26px 28px; display: flex; align-items: center; gap: 34px; flex-wrap: wrap;">
+      <div style="display: flex; align-items: center; gap: 16px; flex: none;">
+        <div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1.2px; color: #6B747A; margin-bottom: 5px;">{{ t.benBefore }}</div>
+          <div style="font-family: 'Archivo', 'IBM Plex Sans', 'PingFang SC', sans-serif; font-size: 21px; font-weight: 700; letter-spacing: -0.3px; color: #6B747A;">{{ t.benBeforeV }}</div>
+        </div>
+        <svg viewBox="0 0 24 24" style="width: 20px; height: 20px; flex: none;" fill="none" stroke="#76B900" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12 h14"></path><path d="M13 7 l5 5 -5 5"></path></svg>
+        <div>
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1.2px; color: #4C7A00; margin-bottom: 5px;">{{ t.benAfter }}</div>
+          <div style="font-family: 'Archivo', 'IBM Plex Sans', 'PingFang SC', sans-serif; font-size: 21px; font-weight: 700; letter-spacing: -0.3px; color: #16181A;">{{ t.benAfterV }}</div>
+        </div>
+      </div>
+      <div style="font-size: 13.5px; line-height: 1.75; color: #4A5257; flex: 1 1 340px; min-width: 0; text-wrap: pretty;">{{ t.benBody }}</div>
+    </div>
+  </div>
+
+  <div style="background: #F2F4F5; border-bottom: 1px solid #DFE3E6;">
+    <div style="max-width: 1080px; margin: 0 auto; padding: 56px 28px 62px; display: grid; gap: 18px;">
+
+      <div style="border: 1px solid #DFE3E6; border-radius: 3px; overflow: hidden; background: #FFFFFF; box-shadow: 0 1px 2px rgba(16,24,32,.06), 0 6px 14px rgba(16,24,32,.05);">
+        <div style="background: linear-gradient(150deg, #0E7A72 0%, #12688F 100%); padding: 15px 24px; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.6px; color: #DCFF9A;">01</div>
+          <div style="font-family: 'Archivo', 'IBM Plex Sans', 'PingFang SC', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: #FFFFFF;">{{ t.f1 }}</div>
+        </div>
+        <div style="padding: 24px; font-size: 14px; line-height: 1.8; color: #4A5257; text-wrap: pretty;">{{ t.f1d }}</div>
+      </div>
+
+      <div style="border: 1px solid #DFE3E6; border-radius: 3px; overflow: hidden; background: #FFFFFF; box-shadow: 0 1px 2px rgba(16,24,32,.06), 0 6px 14px rgba(16,24,32,.05);">
+        <div style="background: linear-gradient(150deg, #12688F 0%, #2352B4 100%); padding: 15px 24px; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.6px; color: #9FF2FF;">02</div>
+          <div style="font-family: 'Archivo', 'IBM Plex Sans', 'PingFang SC', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: #FFFFFF;">{{ t.f2 }}</div>
+        </div>
+        <div style="padding: 24px;">
+          <div style="font-size: 14px; line-height: 1.8; color: #4A5257; margin-bottom: 20px; text-wrap: pretty;">{{ t.f2d }}</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 1px; background: #E8EBED; border: 1px solid #E8EBED; border-radius: 2px; overflow: hidden;">
+            <sc-for list="{{ inputs }}" as="p" hint-placeholder-count="7">
+              <div style="background: #FFFFFF; padding: 13px 15px;">
+                <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10px; letter-spacing: 1px; color: #5E676D; margin-bottom: 6px;">{{ p.sym }}</div>
+                <div style="font-size: 12.5px; font-weight: 600; color: #16181A; line-height: 1.4;">{{ p.name }}</div>
+                <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #6B747A; margin-top: 4px;">{{ p.unit }}</div>
+              </div>
+            </sc-for>
+          </div>
+        </div>
+      </div>
+
+      <div style="border: 1px solid #DFE3E6; border-radius: 3px; overflow: hidden; background: #FFFFFF; box-shadow: 0 1px 2px rgba(16,24,32,.06), 0 6px 14px rgba(16,24,32,.05);">
+        <div style="background: linear-gradient(150deg, #2352B4 0%, #3E43A8 100%); padding: 15px 24px; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.6px; color: #9FF2FF;">03</div>
+          <div style="font-family: 'Archivo', 'IBM Plex Sans', 'PingFang SC', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: #FFFFFF;">{{ t.f3 }}</div>
+        </div>
+        <div style="padding: 24px;">
+          <div style="font-size: 14px; line-height: 1.8; color: #4A5257; margin-bottom: 20px; text-wrap: pretty;">{{ t.f3d }}</div>
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 14px;">
+            <div style="border: 1px solid #E8EBED; border-radius: 2px; background: #F7F9FA; padding: 16px 18px;">
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 1.2px; color: #5E676D; margin-bottom: 9px;">T_case</div>
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 500; color: #16181A;">53.1 <span style="font-size: 13px; color: #6B747A;">±1.4 °C</span></div>
+            </div>
+            <div style="border: 1px solid #E8EBED; border-radius: 2px; background: #F7F9FA; padding: 16px 18px;">
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 1.2px; color: #5E676D; margin-bottom: 9px;">T_sink</div>
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 20px; font-weight: 500; color: #16181A;">50.6 <span style="font-size: 13px; color: #6B747A;">±1.7 °C</span></div>
+            </div>
+            <div style="border: 1px solid #E8EBED; border-radius: 2px; background: #F7F9FA; padding: 16px 18px;">
+              <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 1.2px; color: #5E676D; margin-bottom: 9px;">{{ t.inRange }}</div>
+              <div style="display: flex; align-items: center; gap: 8px;">
+                <i style="width: 9px; height: 9px; border-radius: 50%; background: #76B900; display: inline-block; flex: none;"></i>
+                <span style="font-size: 13.5px; font-weight: 600; color: #16181A;">{{ t.inRangeV }}</span>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 16px; font-size: 12.5px; line-height: 1.75; color: #6B747A; text-wrap: pretty;">{{ t.f3note }}</div>
+        </div>
+      </div>
+
+      <div style="border: 1px solid #DFE3E6; border-radius: 3px; overflow: hidden; background: #FFFFFF; box-shadow: 0 1px 2px rgba(16,24,32,.06), 0 6px 14px rgba(16,24,32,.05);">
+        <div style="background: linear-gradient(150deg, #4A3FB0 0%, #7A3CA8 100%); padding: 15px 24px; display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap;">
+          <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.6px; color: #EBD3FF;">04</div>
+          <div style="font-family: 'Archivo', 'IBM Plex Sans', 'PingFang SC', sans-serif; font-size: 18px; font-weight: 700; letter-spacing: -0.3px; color: #FFFFFF;">{{ t.f4 }}</div>
+        </div>
+        <div style="padding: 24px;">
+          <div style="font-size: 14px; line-height: 1.8; color: #4A5257; margin-bottom: 22px; text-wrap: pretty;">{{ t.f4d }}</div>
+          <div style="border-radius: 3px; background: linear-gradient(125deg, #12796A 0%, #0F7C90 46%, #2352B4 100%); padding: 24px 26px;">
+            <svg viewBox="0 0 400 118" style="width: 100%; height: 150px; display: block;" fill="none">
+              <text x="6" y="14" fill="rgba(255,255,255,.72)" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="0.6">SCALARS</text>
+              <g fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.5)">
+                <rect x="6" y="24" width="62" height="16" rx="2"></rect><rect x="6" y="46" width="62" height="16" rx="2"></rect><rect x="6" y="68" width="62" height="16" rx="2"></rect><rect x="6" y="90" width="62" height="16" rx="2"></rect>
+              </g>
+              <g fill="#9FF2FF" font-family="IBM Plex Mono, monospace" font-size="9.5">
+                <text x="14" y="36">I = 20 A</text><text x="14" y="58">f = 16 k</text><text x="14" y="80">Tamb 45</text><text x="14" y="102">v = 1.2</text>
+              </g>
+              <g stroke="#C6F06A" stroke-width="0.9" opacity="0.72">
+                <path d="M120 40 L166 33 M120 40 L166 55 M120 40 L166 77 M120 62 L166 33 M120 62 L166 55 M120 62 L166 77 M120 84 L166 33 M120 84 L166 55 M120 84 L166 77 M166 33 L212 44 M166 55 L212 44 M166 77 L212 44 M166 33 L212 66 M166 55 L212 66 M166 77 L212 66"></path>
+              </g>
+              <g fill="#DCFF9A">
+                <circle cx="120" cy="40" r="3.6"></circle><circle cx="120" cy="62" r="3.6"></circle><circle cx="120" cy="84" r="3.6"></circle>
+                <circle cx="166" cy="33" r="3.6"></circle><circle cx="166" cy="55" r="3.6"></circle><circle cx="166" cy="77" r="3.6"></circle>
+                <circle cx="212" cy="44" r="3.6"></circle><circle cx="212" cy="66" r="3.6"></circle>
+              </g>
+              <text x="166" y="14" text-anchor="middle" fill="rgba(255,255,255,.72)" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="0.6">MLP</text>
+              <path d="M76 65 h34" stroke="rgba(255,255,255,.55)" stroke-width="1.3"></path>
+              <path d="M104 61 l6 4 -6 4" stroke="rgba(255,255,255,.55)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+              <path d="M224 55 h30" stroke="rgba(255,255,255,.55)" stroke-width="1.3"></path>
+              <path d="M248 51 l6 4 -6 4" stroke="rgba(255,255,255,.55)" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"></path>
+              <text x="264" y="30" fill="rgba(255,255,255,.72)" font-family="IBM Plex Mono, monospace" font-size="9" letter-spacing="0.6">WITH INTERVAL</text>
+              <g fill="rgba(255,255,255,.14)" stroke="rgba(255,255,255,.5)"><rect x="264" y="40" width="126" height="24" rx="2"></rect><rect x="264" y="72" width="126" height="24" rx="2"></rect></g>
+              <g fill="#FFFFFF" font-family="IBM Plex Mono, monospace" font-size="12.5"><text x="274" y="57">T_case 53.1</text><text x="274" y="89">T_sink 50.6</text></g>
+            </svg>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div style="background: linear-gradient(112deg, #12796A 0%, #0F7C90 30%, #2352B4 68%, #6B3FB0 100%);">
+    <div style="max-width: 1080px; margin: 0 auto; padding: 44px 28px 40px; display: flex; align-items: center; justify-content: space-between; gap: 24px; flex-wrap: wrap;">
+      <div style="font-size: 12.5px; line-height: 1.75; color: #D2E3EB; max-width: 620px; text-wrap: pretty;">{{ t.foot }}<a href="mailto:tech@neuralthermal.com" style="color: #C6F06A;" style-hover="color: #9EE83A; text-decoration: underline;">tech@neuralthermal.com</a></div>
+      <a href="NeuralThermal.dc.html#guard" style="display: inline-flex; align-items: center; gap: 9px; font-size: 14px; font-weight: 700; color: #FFFFFF; background: rgba(6,26,38,.5); border: 1px solid rgba(255,255,255,.34); border-radius: 2px; padding: 12px 20px; text-decoration: none; flex: none;" style-hover="background: rgba(6,26,38,.75); color: #FFFFFF; text-decoration: none;">{{ t.back }}</a>
+    </div>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1200},&quot;lang&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;auto&quot;,&quot;zh&quot;,&quot;en&quot;],&quot;default&quot;:&quot;auto&quot;,&quot;tsType&quot;:&quot;string&quot;,&quot;section&quot;:&quot;语言&quot;}}">
+const ZH = {
+  back: '返回产品页',
+  h1: 'NeuralThermal-Tj 案例 · MOS 管温度预测',
+  sub: 'NeuralThermal-Tj 的第一个案例：把 L1 那个单点代理模型，连同它的工况范围、输入表单和输出格式一起封成一件可交付的东西 —— 客户填参数、拿结果、看边界，不需要知道里面是什么网络。',
+  benBefore: '传统 CFD', benBeforeV: '数小时 – 数天',
+  benAfter: '代理模型推理', benAfterV: '秒级',
+  benBody: '同一个工况原先要排一轮 CFD，几小时到一天才有结果；模型推理是毫秒级。改一个参数立刻重算，可以在评审会上直接扫参数。这是把「秒级预测」卖给缺乏 AI 工程能力的中小制造企业的基础。',
+  f1: '案子描述',
+  f1d: '功率 MOSFET 贴在散热器上，中间是导热界面材料。给定电流、开关条件、散热器规格与环境条件，预测管壳温度和散热器温度。这是电气设计里最常问、也最容易被低估的一个问题 —— 稳态热阻硬套往往偏乐观，但完整跑一轮 CFD 又太慢，一个设计周期里问不了几次。',
+  f2: '输入',
+  f2d: '全部是标量，客户不需要提供几何模型或网格。这一点决定了它能做成表单，也决定了它能做成 API。',
+  f3: '输出形态',
+  f3d: '两个温度值，各自带置信区间，再加一条工况是否落在训练范围内的判定。网页表单和 API 两种交付方式，参数与量纲在接口上写死。',
+  inRange: '工况判定', inRangeV: '在训练范围内',
+  f3note: '置信区间和越界判定不是附加项。部署到实时系统或嵌入式端时，「模型知道自己在外推」比「平均误差再小 1 °C」重要得多 —— 只吐一个数、不说自己有多不确定的代理模型，在工程上不可用。',
+  f4: '方法',
+  f4d: 'MLP 回归。输入是标量工况、输出是标量温度，不需要预测整个场，所以这里用不上神经算子 —— 方法跟着问题选，不跟着热度选。这也是 L1 和 L2 分工而不是升级关系的一个具体例子：不需要整个场的时候，L1 更省、更准、也更容易验证。',
+  foot: 'NeuralThermal · NeuralThermal-Tj 案例 · 想按你的工况试一版：',
+  steps: [
+    ['01', '用自有算例重建 CFD 与实测的对照，覆盖电流、风速、环境温度三个方向的边界。'],
+    ['02', '训练集按参数块留出验证，不用随机 K-Fold —— 参数扫描的训练集用随机 K-Fold 会把相邻工况分到两侧，等同于数据泄露，报出的误差偏乐观。'],
+    ['03', '明确写出外推边界：哪几个方向、到哪个数值为止是验证过的，越过之后模型只给警告不给数。'],
+  ],
+  inputs: [
+    ['I', '电流', 'A'],
+    ['D', '导通占空比', '—'],
+    ['f_sw', '开关频率', 'kHz'],
+    ['P/N', '器件型号', '库内选择'],
+    ['geom', '散热器几何', 'mm'],
+    ['k', '散热器材料', 'W/m·K'],
+    ['T_amb', '环境温度', '°C'],
+    ['v', '风速', 'm/s'],
+  ],
+};
+const EN = {
+  back: 'Back to the product',
+  h1: 'NeuralThermal-Tj case \u00b7 MOSFET temperature prediction',
+  sub: 'The first NeuralThermal-Tj case: The L1 point surrogate, packaged together with its operating range, its input form and its output format, into something deliverable \u2014 the customer enters parameters, reads the result and respects the bounds, without needing to know what network is inside.',
+  benBefore: 'Conventional CFD', benBeforeV: 'Hours \u2013 days',
+  benAfter: 'Surrogate inference', benAfterV: 'Seconds',
+  benBody: 'The same operating point used to need a CFD run queued for hours or a day. Inference takes milliseconds. Change one parameter and it recomputes, so you can sweep parameters live in a design review. This is what makes second-scale prediction sellable to manufacturers with no AI engineering capacity.',
+  f1: 'The case',
+  f1d: 'A power MOSFET mounted on a heat sink with a thermal interface material between them. Given current, switching conditions, heat-sink specification and ambient conditions, predict case temperature and heat-sink temperature. It is the question electrical designers ask most often and underestimate most easily \u2014 a steady-state resistance is usually optimistic, while a full CFD run is too slow to ask more than a few times per design cycle.',
+  f2: 'Inputs',
+  f2d: 'All scalars: the customer supplies no geometry model and no mesh. That is what makes it a form, and equally what makes it an API.',
+  f3: 'Output',
+  f3d: 'Two temperatures, each with a confidence interval, plus a verdict on whether the operating point falls inside the training range. Delivered as a web form and as an API, with parameters and units fixed at the interface.',
+  inRange: 'Range check', inRangeV: 'Inside training range',
+  f3note: 'The interval and the bounds check are not extras. Deployed into a real-time or embedded context, a model that knows it is extrapolating matters far more than one degree of average error \u2014 a surrogate that emits a single number without saying how unsure it is cannot be used in engineering.',
+  f4: 'Method',
+  f4d: 'MLP regression. Scalar operating point in, scalar temperatures out. There is no field to predict, so no neural operator is needed here \u2014 the method follows the problem, not the hype. It is also a concrete instance of why L1 and L2 are a division of labour rather than a ladder: when you do not need the whole field, L1 is cheaper, more accurate and easier to verify.',
+  foot: 'NeuralThermal \u00b7 NeuralThermal-Tj case \u00b7 To try a version on your own operating range: ',
+  steps: [
+    ['01', 'Rebuild the CFD-versus-measurement comparison on cases we own, covering the bounds in current, air velocity and ambient temperature.'],
+    ['02', 'Hold out validation by parameter block, not random K-fold \u2014 on a parameter-sweep training set, random K-fold splits adjacent operating points across both sides, which is data leakage and reports optimistic error.'],
+    ['03', 'State the extrapolation bounds explicitly: in which directions and up to what value the model is verified, beyond which it returns a warning instead of a number.'],
+  ],
+  inputs: [
+    ['I', 'Current', 'A'],
+    ['D', 'Conduction duty', '\u2014'],
+    ['f_sw', 'Switching frequency', 'kHz'],
+    ['P/N', 'Device part number', 'from library'],
+    ['geom', 'Fin geometry', 'mm'],
+    ['k', 'Sink material', 'W/m\u00b7K'],
+    ['T_amb', 'Ambient temperature', '\u00b0C'],
+    ['v', 'Air velocity', 'm/s'],
+  ],
+};
+
+class Component extends DCLogic {
+  state = { lang: (() => {
+    try { const s = localStorage.getItem('neuralthermal.lang'); if (s === 'zh' || s === 'en') return s; } catch (e) {}
+    return (navigator.language || 'zh').toLowerCase().startsWith('zh') ? 'zh' : 'en';
+  })() };
+
+  setLang(l) {
+    try { localStorage.setItem('neuralthermal.lang', l); } catch (e) {}
+    this.setState({ lang: l });
+  }
+
+  componentDidMount() { this.syncTitle(); }
+  componentDidUpdate() { this.syncTitle(); }
+
+  syncTitle() {
+    const en = this.lang() === 'en';
+    try {
+      document.documentElement.lang = en ? 'en' : 'zh-CN';
+      document.title = en ? 'NeuralThermal · NeuralThermal-Tj · MOSFET case' : 'NeuralThermal · NeuralThermal-Tj · MOS 管案例';
+    } catch (e) {}
+  }
+
+  lang() {
+    const p = this.props.lang;
+    if (p === 'zh' || p === 'en') return p;
+    return this.state.lang;
+  }
+
+  renderVals() {
+    const en = this.lang() === 'en';
+    const t = en ? EN : ZH;
+    const btn = on => 'padding: 5px 11px; font-size: 11.5px; font-weight: 600; cursor: pointer; user-select: none; '
+      + (on ? 'background: #76B900; color: #0A0E13;' : 'background: transparent; color: #B8C7D1;');
+    return {
+      t,
+      inputs: t.inputs.map(([sym, name, unit]) => ({ sym, name, unit })),
+      vsteps: t.steps.map(([n, text]) => ({ n, text })),
+      setZh: () => this.setLang('zh'),
+      setEn: () => this.setLang('en'),
+      zhBtn: btn(!en),
+      enBtn: btn(en),
+    };
+  }
+}
+</script>
+</body>
+</html>

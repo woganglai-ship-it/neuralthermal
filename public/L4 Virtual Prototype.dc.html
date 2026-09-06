@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>数字样机 · BLDC 外转子马达 | NeuralThermal</title>
+<meta name="description" content="一台可以拨工况、拆外壳、点着看温度的虚拟 BLDC 外转子马达（示意几何）。温位来自 L0 解析式与集中参数网络，空间分布由 L2 展开，裕量判定走 L1。">
+<link rel="icon" type="image/svg+xml" href="favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap">
+<style>
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: #F2F4F5; font-family: 'IBM Plex Sans', 'PingFang SC', 'Microsoft YaHei', system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  a { color: #16181A; text-decoration: none; }
+  a:hover { color: #4C7A00; text-decoration: none; }
+</style>
+</helmet>
+
+<div style="position: sticky; top: 0; z-index: 20; background: linear-gradient(90deg, #241A55 0%, #2B1D63 55%, #33206B 100%);">
+  <div style="max-width: 1180px; margin: 0 auto; padding: 0 28px; height: 60px; display: flex; align-items: center; justify-content: space-between; gap: 18px;">
+    <a href="NeuralThermal.dc.html#agent" style="display: flex; align-items: center; gap: 11px; text-decoration: none; flex: none;">
+      <svg viewBox="0 0 32 32" style="width: 26px; height: 26px; display: block; flex: none;" fill="none" stroke-linecap="round">
+        <g stroke="#2FD4E8" stroke-width="1.3">
+          <path d="M2 3 L24 29"></path><path d="M22 3 L6 29"></path><path d="M2 3 L28 29"></path><path d="M28 3 L4 29"></path><path d="M23 3 L13 29"></path><path d="M9 3 L29 29"></path>
+        </g>
+        <path d="M11 3 L23 29" stroke="#76B900" stroke-width="2"></path>
+      </svg>
+      <span style="font-family: 'Archivo', 'IBM Plex Sans', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: 0.2px; color: #EDF2F5;">NeuralThermal</span>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.4px; color: #EBD3FF; padding-left: 12px; border-left: 1px solid rgba(255,255,255,.25);">L4</span>
+    </a>
+    <div style="display: flex; align-items: center; gap: 18px; font-size: 13.5px; color: #E4EFF3; white-space: nowrap;">
+      <a href="L4 Agent Trace.dc.html" style="color: #E4EFF3; text-decoration: none;" style-hover="color: #76B900; text-decoration: none;">{{ t.trace }}</a>
+      <a href="NeuralThermal.dc.html#agent" style="color: #E4EFF3; text-decoration: none;" style-hover="color: #76B900; text-decoration: none;">{{ t.back }}</a>
+      <div style="display: flex; align-items: center; border: 1px solid #4A3FB0; border-radius: 3px; overflow: hidden; flex: none;">
+        <div onClick="{{ setZh }}" style="{{ zhBtn }}">中文</div>
+        <div onClick="{{ setEn }}" style="{{ enBtn }}">EN</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div style="background: #FFFFFF; border-bottom: 1px solid #DFE3E6;">
+  <div style="max-width: 1180px; margin: 0 auto; padding: 54px 28px 46px;">
+    <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 1.7px; color: #6B4FC0; margin-bottom: 14px;">L4.3 &middot; VIRTUAL PROTOTYPE</div>
+    <h1 style="margin: 0 0 18px; font-family: 'Archivo', 'IBM Plex Sans', 'PingFang SC', sans-serif; font-size: 40px; line-height: 1.16; font-weight: 700; letter-spacing: -1px; max-width: 800px; text-wrap: pretty;">{{ t.h1 }}</h1>
+    <p style="margin: 0; font-size: 16px; line-height: 1.78; color: #4A5257; max-width: 760px; text-wrap: pretty;">{{ t.lead }}</p>
+  </div>
+</div>
+
+<div style="max-width: 1180px; margin: 0 auto; padding: 30px 28px 0;">
+  <div style="border: 1px solid #DFE3E6; border-radius: 3px; overflow: hidden; background: #FFFFFF; box-shadow: 0 1px 2px rgba(16,24,32,.06), 0 10px 26px rgba(16,24,32,.07);">
+    <div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 12px 18px; background: #1E1740; border-bottom: 1px solid #322861;">
+      <div style="display: flex; align-items: center; gap: 10px;">
+        <span style="width: 7px; height: 7px; border-radius: 50%; background: #76B900; flex: none;"></span>
+        <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.5px; color: #CFC2F5;">{{ t.stageTitle }}</span>
+      </div>
+      <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8C7FC0; letter-spacing: 0.6px;">GENERIC GEOMETRY &middot; 3 nodes</span>
+    </div>
+    <iframe src="{{ twinSrc }}" title="BLDC outrunner motor digital twin" style="display: block; width: 100%; height: 700px; border: 0; background: #E9E6E0;"></iframe>
+  </div>
+  <div style="margin-top: 11px; font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 0.6px; color: #8A929A;">{{ t.stageHint }}</div>
+</div>
+
+<div style="max-width: 1180px; margin: 0 auto; padding: 52px 28px 0;">
+  <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.6px; color: #6B4FC0; margin-bottom: 12px;">INTERACTION MODEL</div>
+  <h2 style="margin: 0 0 13px; font-family: 'Archivo', 'IBM Plex Sans', 'PingFang SC', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -0.7px;">{{ t.imTitle }}</h2>
+  <p style="margin: 0 0 26px; font-size: 15.5px; line-height: 1.75; color: #4A5257; max-width: 800px; text-wrap: pretty;">{{ t.imLead }}</p>
+  <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 16px;">
+    <sc-for list="{{ modes }}" as="m" hint-placeholder-count="3">
+      <div style="border: 1px solid #DFE3E6; border-radius: 3px; background: #FFFFFF; padding: 20px 22px 22px; box-shadow: 0 1px 2px rgba(16,24,32,.06), 0 6px 14px rgba(16,24,32,.05);">
+        <div style="font-family: 'IBM Plex Mono', monospace; font-size: 10.5px; letter-spacing: 1.3px; color: #6B4FC0; margin-bottom: 11px;">{{ m.idx }}</div>
+        <div style="font-family: 'Archivo', 'IBM Plex Sans', 'PingFang SC', sans-serif; font-size: 17px; font-weight: 700; letter-spacing: -0.3px; margin-bottom: 9px;">{{ m.title }}</div>
+        <div style="font-size: 13.5px; line-height: 1.7; color: #4A5257; text-wrap: pretty;">{{ m.body }}</div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+<div style="max-width: 1180px; margin: 0 auto; padding: 48px 28px 0;">
+  <div style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; letter-spacing: 1.6px; color: #6B4FC0; margin-bottom: 12px;">PROVENANCE</div>
+  <h2 style="margin: 0 0 22px; font-family: 'Archivo', 'IBM Plex Sans', 'PingFang SC', sans-serif; font-size: 28px; font-weight: 700; letter-spacing: -0.7px;">{{ t.provTitle }}</h2>
+  <div style="border: 1px solid #DFE3E6; border-radius: 3px; background: #FFFFFF; overflow: hidden; box-shadow: 0 1px 2px rgba(16,24,32,.06), 0 6px 14px rgba(16,24,32,.05);">
+    <sc-for list="{{ prov }}" as="p" hint-placeholder-count="5">
+      <div style="display: flex; gap: 18px; padding: 16px 22px; border-bottom: 1px solid #EEF0F2; align-items: flex-start;">
+        <span style="{{ p.tag }}">{{ p.unit }}</span>
+        <div style="flex: 1; min-width: 220px;">
+          <div style="font-size: 14px; font-weight: 600; margin-bottom: 5px;">{{ p.what }}</div>
+          <div style="font-size: 13px; line-height: 1.65; color: #5E676D; text-wrap: pretty;">{{ p.how }}</div>
+        </div>
+      </div>
+    </sc-for>
+  </div>
+</div>
+
+<div style="max-width: 1180px; margin: 0 auto; padding: 44px 28px 64px;">
+  <div style="border-top: 1px solid #DFE3E6; padding-top: 20px; display: flex; gap: 20px; flex-wrap: wrap; justify-content: space-between; align-items: center;">
+    <span style="font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: #8A929A; letter-spacing: 0.6px;">{{ t.foot }}</span>
+    <a href="mailto:tech@neuralthermal.com" style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.6px; color: #4C7A00; text-decoration: none;" style-hover="color: #16181A; text-decoration: underline;">tech@neuralthermal.com</a>
+    <a href="L4 Agent Trace.dc.html" style="font-family: 'IBM Plex Mono', monospace; font-size: 11.5px; letter-spacing: 0.6px; color: #4C7A00;">{{ t.traceLink }}</a>
+  </div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1280,&quot;height&quot;:900}}">
+const T = {
+  zh: {
+    trace: '执行轨迹', back: '回到 L4', traceLink: '看 L4.1 执行轨迹 →',
+    h1: '一台可以拨工况、拆外壳、点着看温度的 BLDC 马达',
+    lead: '一台自建示意几何的 BLDC 外转子马达（不对应任何客户产品），在浏览器里跑完整的热链路：改载荷、改环温、改散热方案，温度场当场重算。它不是渲染出来的效果图 —— 每一处温度都由 L0 的解析式与集中参数网络算出温位，由 L2 展开成空间分布，再由 L1 判裕量。',
+    stageTitle: 'DIGITAL TWIN · 实时热链路',
+    stageHint: '拖动旋转 · 滚轮缩放 · 点击任意零件读该处温度 · 可导出 OBJ / GLB',
+    imTitle: '交互不做成第二条执行轨迹',
+    imLead: 'L4.1 的价值在于把一条计算链摆开给人看，输出物是那份报告。数字样机的输出物是这台机器本身，所以轨迹退到侧栏当凭据，机器占据正中。三种进入方式共用一套引擎：',
+    modes: [
+      { idx: '01 / DIALS', title: '拨工况：即时', body: '载荷、环温、占空比、散热方案是四个档位与滑杆。每拨一下，损耗与热网络重解一次，3D 立刻换色，右栏的节点温度与裕量同步刷新。没有等待，也没有旁白 —— 这是"虚拟机"该有的手感。' },
+      { idx: '02 / ONE SENTENCE', title: '问一句话：有旁白', body: '"40 ℃ 环境加进风口堵塞，连续 15 分钟什么样"。点下去，智能体按 L4.1 的节奏一步步走：解析工况 → 算损耗 → 解热网络 → 转 L2 取场 → L1 判裕量。工况档位会被它自己拨到位，3D 跟着变。' },
+      { idx: '03 / PROBE', title: '点零件：探针', body: '定子、绕组与磁钢都在视野里，发热源直接可见。点任意一个零件，读出那一处的温度和它属于哪个热节点 —— 这是一条线性轨迹给不了的：你想问哪儿就点哪儿。' }
+    ],
+    provTitle: '每个数字挂在哪个单元上',
+    prov: [
+      { unit: 'L0', what: '电气损耗：铜损、铁损、风阻与轴承损', how: '解析式。铜阻随绕组温度变化，所以电流与损耗要和温度一起解 —— 与 L4.1 场景三是同一个自洽问题。' },
+      { unit: 'L0', what: '集中参数热网络的瞬态解', how: '绕组 / 铁心 / 轴与轴承，0.05 s 显式步进，每步重解一次铜损；风量随转速与散热方案变化。' },
+      { unit: 'L2', what: '定子表面温度场的空间分布', how: '沿半径方向的形状函数把节点温位展开成连续分布，落在定子与绕组表面上着色。换一台机器的几何，按同一条链重新采样即可复用。' },
+      { unit: 'L1', what: '裕量判定与最紧约束排序', how: '各节点温度对限值取差，报出最紧的一处。限值本身（F 级绕组 155 ℃、轴承 110 ℃）来自检索层。' },
+      { unit: 'RAG', what: '绝缘等级、Zth 曲线、案例史', how: '按 L4.1 的检索管线取参数与边界：绕组绝缘等级、Zth 曲线与既往案例统一从检索层读入，判定用的限值都能回溯到出处。' },
+      { unit: 'CAD', what: '几何本体（自建示意）', how: '3D 为自建示意几何，不对应任何客户产品；按典型外形与内部布置建模：定子铁心与 12 齿、集中绕组、14 极磁钢、轴与轴承。' }
+    ],
+    foot: '温位 L0 · 分布 L2 · 判定 L1 · 参数来自检索层'
+  },
+  en: {
+    trace: 'Execution trace', back: 'Back to L4', traceLink: 'See the L4.1 execution trace →',
+    h1: 'A BLDC outrunner you can load up, open up, and click to read',
+    lead: 'A BLDC outrunner on our own illustrative geometry (no customer product), running the full thermal chain in the browser: change the load, the ambient, the cooling, and the temperature field is recomputed on the spot. Nothing here is a rendering — every temperature comes from L0 closed-form losses and a lumped network for the levels, L2 for the spatial spread, L1 for the margin call.',
+    stageTitle: 'DIGITAL TWIN · LIVE THERMAL CHAIN',
+    stageHint: 'Drag to orbit · scroll to zoom · click any part to read its temperature · exports OBJ / GLB',
+    imTitle: 'The interaction is not a second execution trace',
+    imLead: 'L4.1 earns its keep by laying one calculation chain out in the open; its deliverable is the report. Here the deliverable is the machine, so the trace steps back into the rail as a receipt and the machine takes the centre. Three ways in, one engine:',
+    modes: [
+      { idx: '01 / DIALS', title: 'Turn the dials: instant', body: 'Load, ambient, duty and cooling are four rows of chips and sliders. Each change re-solves the losses and the network, recolours the 3D, and refreshes the node table and margins. No wait, no narration — that is what a virtual machine should feel like.' },
+      { idx: '02 / ONE SENTENCE', title: 'Ask a sentence: narrated', body: '"40 °C ambient with a blocked inlet, 15 minutes continuous?" Click it and the agent walks the L4.1 rhythm: parse, losses, network, route to L2 for the field, L1 for the margin. It moves the dials to the operating point itself, and the 3D follows.' },
+      { idx: '03 / PROBE', title: 'Click a part: probe', body: 'The stator, windings and magnets are all in view, so the heat sources are directly visible. Click any part and read its temperature and which thermal node it belongs to — the thing a linear trace cannot give you: ask wherever you like.' }
+    ],
+    provTitle: 'Which unit each number hangs on',
+    prov: [
+      { unit: 'L0', what: 'Electrical losses: copper, iron and windage', how: 'Closed form. Copper resistance moves with winding temperature, so current and loss have to be solved together with temperature — the same self-consistency as L4.1 scenario three.' },
+      { unit: 'L0', what: 'Transient solution of a lumped thermal network', how: 'Winding / iron / shaft and bearings, explicit 0.05 s steps, copper loss re-solved every step; airflow follows speed and the cooling option.' },
+      { unit: 'L2', what: 'Spatial distribution over the stator surface', how: 'A radial shape function unfolds the node levels into a continuous distribution and colours the stator and windings. Another machine\u2019s geometry re-enters the same chain through fresh sampling.' },
+      { unit: 'L1', what: 'Margin check and tightest-constraint ranking', how: 'Each node against its limit, reporting the tightest. The limits themselves (class F winding 155 °C, bearing 110 °C) come from the retrieval layer.' },
+      { unit: 'RAG', what: 'Insulation classes, Zth curves, case history', how: 'Fetched through the L4.1 retrieval pipeline as parameters and bounds: insulation classes, Zth curves and prior cases all read from the retrieval layer, so every limit traces back to its source.' },
+      { unit: 'CAD', what: 'The geometry itself (illustrative)', how: 'The 3D is our own illustrative geometry, not a customer product; it follows a typical outrunner layout: stator iron with twelve teeth, concentrated windings, fourteen magnet poles, and the shaft with its bearings.' }
+    ],
+    foot: 'Levels L0 · spread L2 · call L1 · parameters from retrieval'
+  }
+};
+
+class Component extends DCLogic {
+  state = { lang: (() => {
+    try { const s = localStorage.getItem('neuralthermal.lang'); if (s === 'zh' || s === 'en') return s; } catch (e) {}
+    return (navigator.language || 'zh').toLowerCase().startsWith('zh') ? 'zh' : 'en';
+  })() };
+
+  setLang(l) {
+    try { localStorage.setItem('neuralthermal.lang', l); } catch (e) {}
+    this.setState({ lang: l });
+  }
+
+  renderVals() {
+    const lang = this.state.lang;
+    const t = T[lang];
+    const btn = (on) => 'padding: 5px 11px; font-size: 12px; font-family: "IBM Plex Mono", monospace; cursor: pointer; user-select: none; transition: background .15s, color .15s; background: ' + (on ? '#76B900' : 'transparent') + '; color: ' + (on ? '#16240A' : '#CFC2F5') + ';';
+    const unitColor = { L0: '#4C7A00', L1: '#B06A00', L2: '#6B4FC0', RAG: '#1F6E8C', CAD: '#5E676D' };
+    return {
+      t,
+      setZh: () => this.setLang('zh'),
+      setEn: () => this.setLang('en'),
+      zhBtn: btn(lang === 'zh'),
+      enBtn: btn(lang === 'en'),
+      twinSrc: 'twin/index.html?lang=' + lang,
+      modes: t.modes,
+      prov: t.prov.map(p => {
+        return {
+          unit: p.unit, what: p.what, how: p.how,
+          tag: 'flex: none; width: 46px; text-align: center; padding: 4px 0; border-radius: 2px; font-family: "IBM Plex Mono", monospace; font-size: 11px; font-weight: 600; letter-spacing: 0.6px; color: #FFFFFF; background: ' + (unitColor[p.unit] || '#5E676D') + ';'
+        };
+      })
+    };
+  }
+}
+
+</script>
+</body>
+</html>
