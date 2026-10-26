@@ -10,6 +10,7 @@ var NT = (window.NT = window.NT || {});
 
 NT.evidence = {
   paper: { zh: '论文报告', en: 'Published paper' },
+  demo: { zh: '技术演示', en: 'Technical demonstration' },
   public: { zh: '公开数据复现', en: 'Public-data reproduction' },
   model: { zh: '自建模型', en: 'Self-built model' }
 };
@@ -352,24 +353,796 @@ NT.cases = [
   }
 ];
 
-/* Library-only entries (in the 48-case inventory; copy not reviewed yet). */
-NT.listOnly = [
-  { id: '002', ind: ['motors'], t: { zh: '电机热仿真早期短片', en: 'Early motor thermal film' } },
-  { id: '039', ind: ['cooling'], t: { zh: '芯片微流道：怎么造（公开资料综述）', en: 'Chip microchannels: how they are made (public-source review)' }, ev: 'paper' },
-  { id: '013', ind: ['cooling'], t: { zh: '散热器 PINN 与算子短片', en: 'Heat-sink PINN and operator films' } },
-  { id: '032', ind: ['packaging'], t: { zh: '热布局代理模型', en: 'Thermal layout surrogate' } },
-  { id: '037', ind: ['packaging'], t: { zh: 'GPU 上堆叠 DRAM（MOSAIC）', en: 'DRAM stacked on a GPU (MOSAIC)' } },
-  { id: '059', ind: ['packaging'], t: { zh: '先进封装实验室（原型）', en: 'Advanced packaging lab (prototype)' } },
-  { id: '044', ind: ['extended'], t: { zh: '卫星热网络', en: 'Satellite thermal network' } },
-  { id: '046', ind: ['extended'], t: { zh: '稀疏传感器温度场重建', en: 'Field reconstruction from sparse sensors' } },
-  { id: '047', ind: ['extended'], t: { zh: '月球车网格与热', en: 'Lunar rover mesh and heat' } },
-  { id: '052', ind: ['extended'], t: { zh: 'GPU 计数器估温', en: 'GPU temperature from counters' } },
-  { id: '053', ind: ['extended'], t: { zh: '电池挤压预警', en: 'Battery crush warning' } },
-  { id: '054', ind: ['extended'], t: { zh: '激光熔池', en: 'Laser melt pool' } },
-  { id: '055', ind: ['extended'], t: { zh: '快充电芯内部温度', en: 'Cell core temperature in fast charge' } },
-  { id: '056', ind: ['extended'], t: { zh: '火箭燃烧室冷却', en: 'Rocket chamber cooling' } },
-  { id: '065', ind: ['extended'], t: { zh: '在轨算力散热器', en: 'Orbital compute radiator' } }
-];
+/* Published case expansions, reviewed against local films and project records. */
+NT.cases = NT.cases.concat([
+  {
+    "id": "002",
+    "ind": [
+      "motors"
+    ],
+    "prod": [
+      "design",
+      "sensor"
+    ],
+    "ev": "demo",
+    "img": "case-002",
+    "title": {
+      "zh": "从电机热仿真到温度估计",
+      "en": "From motor simulation to temperature estimation"
+    },
+    "tag": {
+      "zh": "电机 · 方法演示",
+      "en": "Motors · Method demonstration"
+    },
+    "problem": {
+      "zh": "电机内部的温度难以直接测量，复杂工况也难以逐一求解。",
+      "en": "Internal motor temperatures are hard to measure, and operating conditions are costly to solve one by one."
+    },
+    "did": {
+      "zh": "用三维动画串联电机结构、热仿真、神经算子与嵌入式温度估计。",
+      "en": "A 3D film connects motor geometry, thermal simulation, neural operators and embedded temperature estimation."
+    },
+    "value": {
+      "zh": "帮助团队明确从仿真数据到在线温度估计的开发路径。",
+      "en": "Map the development path from simulation data to online temperature estimation."
+    },
+    "m": [
+      {
+        "v": "3D",
+        "l": {
+          "zh": "电机热建模流程",
+          "en": "motor thermal modelling workflow"
+        },
+        "c": {
+          "zh": "结构 → 仿真 → AI → 部署",
+          "en": "Geometry → simulation → AI → deployment"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "早期方法演示；本页不以片中示意时延或精度作为交付承诺。",
+      "en": "An early method demonstration; illustrative timing and accuracy are not delivery specifications."
+    },
+    "src": {
+      "zh": "NeuralThermal 自制电机热仿真短片。",
+      "en": "NeuralThermal motor thermal simulation film."
+    }
+  },
+  {
+    "id": "013",
+    "ind": [
+      "extended"
+    ],
+    "prod": [
+      "design"
+    ],
+    "ev": "demo",
+    "img": "case-013",
+    "title": {
+      "zh": "PINN 怎样连接流动与散热",
+      "en": "How PINNs connect airflow and heat transfer"
+    },
+    "tag": {
+      "zh": "散热器 · 物理信息网络",
+      "en": "Heat sinks · Physics-informed networks"
+    },
+    "problem": {
+      "zh": "风冷散热器的温度取决于固体导热与周围气流，需要联合评估。",
+      "en": "Heat-sink temperatures depend on both solid conduction and surrounding airflow."
+    },
+    "did": {
+      "zh": "以翅片散热器为例，用动画解释流体、固体及界面条件如何进入 PINN，并介绍算子模型。",
+      "en": "Animated finned heat sinks illustrate fluid and solid fields, interface conditions in PINNs, and operator models."
+    },
+    "value": {
+      "zh": "让工程团队理解 AI 热仿真的输入、约束与输出，判断适合接入的环节。",
+      "en": "Help engineers understand the inputs, constraints and outputs of AI thermal simulation."
+    },
+    "m": [
+      {
+        "v": "PINN",
+        "l": {
+          "zh": "流固传热方法讲解",
+          "en": "conjugate heat-transfer explainer"
+        },
+        "c": {
+          "zh": "风冷散热器 · 技术演示",
+          "en": "Air-cooled heat sink · Technical demonstration"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "本页展示方法与自制动画，不引用尚未重新核实的精度或加速倍数。",
+      "en": "A method and animation demonstration; no unaudited accuracy or speed-up claims are used here."
+    },
+    "src": {
+      "zh": "NeuralThermal 散热器 PINN 与神经算子讲解短片。",
+      "en": "NeuralThermal heat-sink PINN and neural-operator explainer films."
+    }
+  },
+  {
+    "id": "032",
+    "ind": [
+      "packaging"
+    ],
+    "prod": [
+      "design",
+      "workflow"
+    ],
+    "ev": "model",
+    "img": "case-032",
+    "title": {
+      "zh": "AI 设计热布局，谁来检查结果？",
+      "en": "Who checks an AI-designed thermal layout?"
+    },
+    "tag": {
+      "zh": "材料布局 · 代理模型复核",
+      "en": "Material layout · Surrogate verification"
+    },
+    "problem": {
+      "zh": "优化器会找到代理模型误判为低温的布局，预测越好，真实结果未必越好。",
+      "en": "An optimiser can exploit layouts that a surrogate incorrectly predicts to be cool."
+    },
+    "did": {
+      "zh": "比较 FNO、U-Net、DeepONet 与伴随优化，并用物理求解器复核布局。",
+      "en": "Compare FNO, U-Net, DeepONet and adjoint optimisation, then check layouts with the physics solver."
+    },
+    "value": {
+      "zh": "在设计流程中加入物理复核，避免按失真的预测选方案。",
+      "en": "Add physics checks before selecting a design from surrogate predictions."
+    },
+    "m": [
+      {
+        "v": "±3%",
+        "l": {
+          "zh": "细化后 FNO 峰值预测误差",
+          "en": "FNO peak prediction error after refinement"
+        },
+        "c": {
+          "zh": "一轮求解器复核与微调；设计仍未达到伴随法水平",
+          "en": "One solver-check and fine-tuning round; designs still trail the adjoint baseline"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "二维无量纲导热问题；预测更准不等于设计更优。",
+      "en": "A two-dimensional, dimensionless conduction problem; better predictions do not guarantee a better design."
+    },
+    "src": {
+      "zh": "自建复现；方法参考 MIT 许可的 fno-thermal-design 仓库。",
+      "en": "Our reproduction, following the MIT-licensed fno-thermal-design repository."
+    }
+  },
+  {
+    "id": "037",
+    "ind": [
+      "packaging"
+    ],
+    "prod": [
+      "design"
+    ],
+    "ev": "paper",
+    "img": "case-037",
+    "title": {
+      "zh": "DRAM 竖起来，热量怎样离开 GPU？",
+      "en": "What changes when DRAM stands upright above a GPU?"
+    },
+    "tag": {
+      "zh": "MOSAIC · 封装架构解读",
+      "en": "MOSAIC · Packaging architecture"
+    },
+    "problem": {
+      "zh": "内存靠近 GPU 能缩短数据路径，但堆叠结构也改变散热路径。",
+      "en": "Bringing memory closer to a GPU shortens data paths but also changes heat flow."
+    },
+    "did": {
+      "zh": "重绘结构与热路径，区分 MOSAIC 的通信原型实测和系统热仿真。",
+      "en": "Redrawn structures and heat paths distinguish the communication prototype from system thermal simulations."
+    },
+    "value": {
+      "zh": "将封装结构、互连与热管理放到同一张设计图里比较。",
+      "en": "Compare packaging, interconnect and cooling decisions together."
+    },
+    "m": [
+      {
+        "v": "MOSAIC",
+        "l": {
+          "zh": "竖直 DRAM 与侧壁互连",
+          "en": "vertical DRAM and sidewall interconnect"
+        },
+        "c": {
+          "zh": "研究解读 · 结构示意",
+          "en": "Research explainer · Illustrative geometry"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "热性能为研究中的仿真结果；通信原型不代表完整系统已验证。",
+      "en": "Thermal performance is simulated in the research; a communication prototype does not validate the complete system."
+    },
+    "src": {
+      "zh": "依据 Yuki Mitarai 等、VLSI Symposium 2026 及本项目公开资料整理。",
+      "en": "Based on Yuki Mitarai et al., VLSI Symposium 2026, and the project’s public-source review."
+    }
+  },
+  {
+    "id": "039",
+    "ind": [
+      "cooling"
+    ],
+    "prod": [
+      "design"
+    ],
+    "ev": "paper",
+    "img": "case-039",
+    "title": {
+      "zh": "芯片微流道：从水路到制造工艺",
+      "en": "Chip microchannels: from coolant paths to fabrication"
+    },
+    "tag": {
+      "zh": "微流道 · 工艺综述",
+      "en": "Microchannels · Process review"
+    },
+    "problem": {
+      "zh": "流道画得出来，还要考虑刻蚀、键合、密封与封装连接。",
+      "en": "A channel design also has to accommodate etching, bonding, sealing and package interfaces."
+    },
+    "did": {
+      "zh": "用自绘剖面和工艺流程解释微流道、层间水冷与 MEMS 制造环节。",
+      "en": "Original cross-sections and process diagrams explain microchannels, interlayer cooling and MEMS fabrication."
+    },
+    "value": {
+      "zh": "在概念阶段把热设计与制造约束一起考虑，明确打样需要验证什么。",
+      "en": "Bring manufacturing constraints into thermal concepts and define what a prototype must validate."
+    },
+    "m": [
+      {
+        "v": "MEMS",
+        "l": {
+          "zh": "刻蚀、键合与水路集成",
+          "en": "etching, bonding and coolant integration"
+        },
+        "c": {
+          "zh": "公开资料综述 · 自绘示意",
+          "en": "Public-source review · Original diagrams"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "工艺示意，不对应厂商图纸；不把公式估算当作样机实测。",
+      "en": "Process illustrations, not vendor drawings; formula-based estimates are not prototype measurements."
+    },
+    "src": {
+      "zh": "项目公开资料综述：微流道经典研究、IBM/弗劳恩霍夫层间水冷及公开制造资料。",
+      "en": "Project review of classic microchannel research, IBM/Fraunhofer interlayer cooling and public fabrication references."
+    }
+  },
+  {
+    "id": "044",
+    "ind": [
+      "extended"
+    ],
+    "prod": [
+      "sensor",
+      "workflow"
+    ],
+    "ev": "model",
+    "img": "case-044",
+    "title": {
+      "zh": "让遥测数据标定卫星热网络",
+      "en": "Calibrating a spacecraft thermal network from telemetry"
+    },
+    "tag": {
+      "zh": "航天热控 · 参数辨识",
+      "en": "Spacecraft thermal control · Identification"
+    },
+    "problem": {
+      "zh": "热模型与遥测不一致时，逐项手调热参数费时且容易互相补偿。",
+      "en": "Manual thermal-parameter tuning is slow and can hide compensating errors."
+    },
+    "did": {
+      "zh": "自建立方星热模型生成遥测，再以物理约束辨识热网络并评估故障工况。",
+      "en": "Generate telemetry with a self-built CubeSat model, identify a constrained thermal network and evaluate fault cases."
+    },
+    "value": {
+      "zh": "减少手工标定，并检查模型在新工况下是否仍能可信预测。",
+      "en": "Reduce manual calibration and test whether predictions remain credible in new conditions."
+    },
+    "m": [
+      {
+        "v": "0.73–3.85 °C",
+        "l": {
+          "zh": "保留工况的温度 RMSE",
+          "en": "temperature RMSE in the reserved scenario"
+        },
+        "c": {
+          "zh": "电台常开工况 · 5 次运行",
+          "en": "Radio stuck on · Five runs"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "合成遥测，非在轨验证；此前四个场景参与模型选择，只有电台常开场景为最终保留测试。",
+      "en": "Synthetic telemetry, not flight validation. Earlier scenarios informed model selection; only the radio-on case was reserved for final testing."
+    },
+    "src": {
+      "zh": "自建复现；方法参考 Sosta 等关于物理约束热网络辨识的研究。",
+      "en": "Our simulation, informed by Sosta et al. on physics-constrained thermal-network identification."
+    }
+  },
+  {
+    "id": "046",
+    "ind": [
+      "cooling",
+      "packaging"
+    ],
+    "prod": [
+      "sensor"
+    ],
+    "ev": "model",
+    "img": "case-046",
+    "title": {
+      "zh": "几个测温点，还原整片芯片温度",
+      "en": "Reconstructing die temperature from sparse sensors"
+    },
+    "tag": {
+      "zh": "液冷冷板 · 温度场重建",
+      "en": "Liquid-cooled plate · Field reconstruction"
+    },
+    "problem": {
+      "zh": "测点之间的热点容易被遗漏，冷板内部读数也不等于芯片表面温度。",
+      "en": "Sensors can miss hotspots between them; temperatures inside a cold plate differ from those on the die."
+    },
+    "did": {
+      "zh": "以铜底板内 16 个测点训练温度重建模型，并比较插值、线性回归和 U-Net。",
+      "en": "Use 16 simulated sensors inside a copper plate and compare interpolation, linear regression and U-Net reconstruction."
+    },
+    "value": {
+      "zh": "在安装传感器前，评估测点数量、位置和重建方法的收益。",
+      "en": "Evaluate sensor count, placement and reconstruction methods before instrumentation."
+    },
+    "m": [
+      {
+        "v": "1.22 K",
+        "l": {
+          "zh": "U-Net 全场平均绝对误差",
+          "en": "U-Net field mean absolute error"
+        },
+        "c": {
+          "zh": "960 个测试样本；峰值温度平均误差 4.13 K",
+          "en": "960 test samples; mean peak-temperature error 4.13 K"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "自建稳态仿真；冷板埋点为假设场景，线性回归已达到相近的全场精度。",
+      "en": "Self-built steady-state simulation with assumed embedded sensors; linear regression achieves similar field accuracy."
+    },
+    "src": {
+      "zh": "自建冷板与芯片模型；思路参考 Stipsitz 等稀疏测点重建研究。",
+      "en": "Self-built cold-plate and die model, informed by Stipsitz et al. on sparse-sensor reconstruction."
+    }
+  },
+  {
+    "id": "047",
+    "ind": [
+      "extended"
+    ],
+    "prod": [
+      "workflow"
+    ],
+    "ev": "model",
+    "img": "case-047",
+    "title": {
+      "zh": "AI 帮物理求解器把网格摆对",
+      "en": "AI helps a physics solver place its mesh"
+    },
+    "tag": {
+      "zh": "月球车 · 自适应网格",
+      "en": "Lunar rover · Adaptive mesh"
+    },
+    "problem": {
+      "zh": "粗网格求解快，却容易漏掉局部热点；直接预测温度也可能抹平热点。",
+      "en": "Coarse meshes are fast but miss local hotspots; direct temperature prediction can smooth them away."
+    },
+    "did": {
+      "zh": "在自建月球车导热模型上比较固定网格、人工加密规则和 AI 选网格。",
+      "en": "Compare fixed meshes, a manual refinement rule and AI-selected meshes on a self-built rover conduction model."
+    },
+    "value": {
+      "zh": "把算力集中在影响结果的位置，同时保留物理求解过程。",
+      "en": "Focus computation where it matters while retaining the physics solver."
+    },
+    "m": [
+      {
+        "v": "9.34 → 3.75 K",
+        "l": {
+          "zh": "直接预测 vs AI 选网格的热点误差",
+          "en": "hotspot error: direct prediction vs AI-selected mesh"
+        },
+        "c": {
+          "zh": "200 个测试工况；人工规则约 3.88 K",
+          "en": "200 test conditions; manual rule about 3.88 K"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "简化稳态导热模型；AI 与人工局部加密规则表现接近。",
+      "en": "Simplified steady-state conduction; AI performs similarly to manual local refinement."
+    },
+    "src": {
+      "zh": "自建复现；思路参考 University at Buffalo 与 Zij Sciences 的可微网格研究。",
+      "en": "Our reproduction, informed by differentiable-mesh research from University at Buffalo and Zij Sciences."
+    }
+  },
+  {
+    "id": "052",
+    "ind": [
+      "packaging"
+    ],
+    "prod": [
+      "sensor"
+    ],
+    "ev": "model",
+    "img": "case-052",
+    "title": {
+      "zh": "从 GPU 运行信号估计芯片温度场",
+      "en": "Estimating GPU temperature fields from operating signals"
+    },
+    "tag": {
+      "zh": "GPU · 虚拟温度传感",
+      "en": "GPU · Virtual temperature sensing"
+    },
+    "problem": {
+      "zh": "工作负载改变时，热点会移动，少量固定测点难以覆盖整个芯片。",
+      "en": "Hotspots move with workload, while a few fixed sensors cannot cover the entire die."
+    },
+    "did": {
+      "zh": "用自建裸片模型和合成性能计数器，比较时序网络与物理模型估温。",
+      "en": "Use a self-built die model and synthetic performance counters to compare a temporal network with physics-based estimation."
+    },
+    "value": {
+      "zh": "探索利用现有运行信号定位热风险，并识别仍需补充的温度测量。",
+      "en": "Explore thermal-risk estimation from existing signals and identify where temperature measurements are still needed."
+    },
+    "m": [
+      {
+        "v": "1.76 °C",
+        "l": {
+          "zh": "测试温度场 RMSE",
+          "en": "test temperature-field RMSE"
+        },
+        "c": {
+          "zh": "自建裸片与合成计数器",
+          "en": "Self-built die and synthetic counters"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "不是实测显卡数据；环境温度变化会造成偏差，网络未胜过使用真实分块功率的物理基线。",
+      "en": "Not measured GPU data. Ambient changes cause bias; the network does not beat a physics baseline given true block powers."
+    },
+    "src": {
+      "zh": "自建模型；思路参考 TherMapNet 温度场重建研究。",
+      "en": "Self-built model, informed by the TherMapNet temperature-field study."
+    }
+  },
+  {
+    "id": "053",
+    "ind": [
+      "extended"
+    ],
+    "prod": [
+      "sensor"
+    ],
+    "ev": "model",
+    "img": "case-053",
+    "title": {
+      "zh": "电池挤压预警：提前量与误报的取舍",
+      "en": "Battery crush warning: balancing lead time and false alarms"
+    },
+    "tag": {
+      "zh": "电池 · 风险识别研究",
+      "en": "Batteries · Risk-detection study"
+    },
+    "problem": {
+      "zh": "电芯被压破并不一定发生热失控，只看单个信号容易过早或过晚报警。",
+      "en": "Cell rupture does not always lead to thermal runaway; a single signal can trigger too early or too late."
+    },
+    "did": {
+      "zh": "建立挤压、内短路与放热模型，比较力、电压、温度规则和时序学习方法。",
+      "en": "Model crushing, internal shorts and heat release, comparing signal rules with temporal learning."
+    },
+    "value": {
+      "zh": "用统一口径比较漏报、误报与提前量，为后续试验设计提供依据。",
+      "en": "Compare missed events, false alarms and lead time consistently to guide later experiments."
+    },
+    "m": [
+      {
+        "v": "225",
+        "l": {
+          "zh": "自建挤压仿真场景",
+          "en": "self-built crush simulations"
+        },
+        "c": {
+          "zh": "161 次破损，其中 67 次未热失控",
+          "en": "161 ruptures; 67 did not lead to runaway"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "全部为仿真研究，不构成实车、电池包或量产安全系统的验证。",
+      "en": "Simulation research only, not validation of a vehicle, battery pack or production safety system."
+    },
+    "src": {
+      "zh": "自建 40 Ah 软包电芯模型；参考公开时序预警研究。",
+      "en": "Self-built 40 Ah pouch-cell model, informed by public temporal-warning research."
+    }
+  },
+  {
+    "id": "054",
+    "ind": [
+      "extended"
+    ],
+    "prod": [
+      "design",
+      "workflow"
+    ],
+    "ev": "model",
+    "img": "case-054",
+    "title": {
+      "zh": "金属打印遇到尖角，怎样避免热量累积？",
+      "en": "Controlling heat accumulation at sharp corners in metal printing"
+    },
+    "tag": {
+      "zh": "增材制造 · 熔池预测控制",
+      "en": "Additive manufacturing · Melt-pool control"
+    },
+    "problem": {
+      "zh": "扫描到尖角时热量累积，恒功率策略容易使熔深偏离目标。",
+      "en": "Heat accumulates at sharp corners, pushing melt depth away from its target under constant power."
+    },
+    "did": {
+      "zh": "用自建导热熔化模型比较几何规则、PI 反馈与学习模型预测控制。",
+      "en": "Compare a geometric rule, PI feedback and learned predictive control on a self-built thermal melting model."
+    },
+    "value": {
+      "zh": "识别预测控制真正有收益的延迟工况，避免为简单问题增加不必要复杂度。",
+      "en": "Identify delayed-feedback conditions where predictive control adds value."
+    },
+    "m": [
+      {
+        "v": "2.40 → 0.89 µm",
+        "l": {
+          "zh": "PI vs 预测控制的熔深 RMS 偏差",
+          "en": "melt-depth RMS deviation: PI vs predictive control"
+        },
+        "c": {
+          "zh": "测量延迟 100 µs 的仿真对比",
+          "en": "Simulation comparison with 100 µs measurement delay"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "未计算熔体流动与匙孔；低延迟时普通反馈与 AI 接近。",
+      "en": "Melt flow and keyholing are excluded; ordinary feedback performs similarly at low delay."
+    },
+    "src": {
+      "zh": "自建 316L 导热熔化模型；思路参考 Yan、Bambach、Afrasiabi 的世界模型研究。",
+      "en": "Self-built 316L thermal melting model, informed by world-model research by Yan, Bambach and Afrasiabi."
+    }
+  },
+  {
+    "id": "055",
+    "ind": [
+      "extended"
+    ],
+    "prod": [
+      "sensor"
+    ],
+    "ev": "model",
+    "img": "case-055",
+    "title": {
+      "zh": "快充时，怎样估计电芯内部温度？",
+      "en": "Estimating core temperature during fast charging"
+    },
+    "tag": {
+      "zh": "电池 · 核心温度估计",
+      "en": "Batteries · Core-temperature estimation"
+    },
+    "problem": {
+      "zh": "外壳温度可能掩盖卷芯过热，单靠表面阈值难以判断内部余量。",
+      "en": "Surface temperature can conceal core overheating and misrepresent internal thermal margin."
+    },
+    "did": {
+      "zh": "用自建电热模型模拟测量噪声与滞后，比较 KAN、MLP 和表面测温。",
+      "en": "A self-built electrothermal model includes measurement noise and lag to compare KAN, MLP and surface sensing."
+    },
+    "value": {
+      "zh": "为充电策略提供内部温度估计，并检查冷却变化时的热余量。",
+      "en": "Provide core-temperature estimates for charging strategies and assess margin as cooling changes."
+    },
+    "m": [
+      {
+        "v": "0.58 K",
+        "l": {
+          "zh": "KAN 核心温度测试 RMSE",
+          "en": "KAN core-temperature test RMSE"
+        },
+        "c": {
+          "zh": "自建电热数据；MLP 约 0.57 K",
+          "en": "Self-built electrothermal data; MLP about 0.57 K"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "没有实测快充验证；研究中的 6C 工况超过参考电芯的 3C 数据表上限，仅作仿真。",
+      "en": "No measured fast-charge validation. The study’s 6C condition exceeds the reference cell’s 3C datasheet limit and is simulation-only."
+    },
+    "src": {
+      "zh": "自建 21700 电芯模型，公开参数参考 Molicel P45B；方法思路来自 Ahamed 与 Roy。",
+      "en": "Self-built 21700 model using public Molicel P45B parameters; method inspired by Ahamed and Roy."
+    }
+  },
+  {
+    "id": "056",
+    "ind": [
+      "extended"
+    ],
+    "prod": [
+      "design",
+      "workflow"
+    ],
+    "ev": "model",
+    "img": "case-056",
+    "title": {
+      "zh": "再生冷却通道：AI 提方案，物理模型复核",
+      "en": "Regenerative cooling channels: AI proposes, physics checks"
+    },
+    "tag": {
+      "zh": "高热流密度 · 冷却通道优化",
+      "en": "High heat flux · Cooling-channel optimisation"
+    },
+    "problem": {
+      "zh": "降低壁温与降低压降相互牵制，均匀通道未必同时满足要求。",
+      "en": "Wall temperature and pressure drop compete; uniform channels may not satisfy both constraints."
+    },
+    "did": {
+      "zh": "在公开量级的自建冷却模型上，以代理模型搜索通道并用物理模型逐项校核。",
+      "en": "Search channel designs with a surrogate and verify them using a self-built cooling model at public-reference scales."
+    },
+    "value": {
+      "zh": "用较少的物理计算寻找可行方案，把精确复核留给关键设计。",
+      "en": "Find feasible candidates with fewer physics evaluations and reserve detailed checks for critical designs."
+    },
+    "m": [
+      {
+        "v": "561",
+        "l": {
+          "zh": "AI 设计循环调用物理模型的次数",
+          "en": "physics evaluations in the AI design loop"
+        },
+        "c": {
+          "zh": "可行方案压降 7.85 MPa；直接优化约 7.51 MPa",
+          "en": "Feasible design: 7.85 MPa pressure drop; direct optimisation about 7.51 MPa"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "一维模型加局部二维复核；不是实际发动机验证，直接优化仍得到更低压降。",
+      "en": "A 1D model with local 2D checks, not engine validation; direct optimisation still achieves lower pressure drop."
+    },
+    "src": {
+      "zh": "自建再生冷却设计研究，借鉴 RocketAgent 的冷却设计思路；未复现其大模型智能体。",
+      "en": "Self-built regenerative-cooling study inspired by RocketAgent’s cooling-design task, not a reproduction of its LLM agent."
+    }
+  },
+  {
+    "id": "059",
+    "ind": [
+      "packaging"
+    ],
+    "prod": [
+      "design"
+    ],
+    "ev": "demo",
+    "img": "case-059",
+    "title": {
+      "zh": "先进封装：从三维拆解看懂热耦合",
+      "en": "Understanding advanced packaging through 3D thermal exploration"
+    },
+    "tag": {
+      "zh": "先进封装 · 学习实验室",
+      "en": "Advanced packaging · Learning lab"
+    },
+    "problem": {
+      "zh": "封装层叠、互连与热路径相互关联，平面图很难表达清楚。",
+      "en": "Package stacks, interconnects and heat paths interact in ways flat diagrams cannot easily show."
+    },
+    "did": {
+      "zh": "自建三维封装学习原型，结合结构拆解、HBM 层叠与简化热网络解释耦合。",
+      "en": "A self-built learning prototype combines 3D package disassembly, HBM stacks and a simplified thermal network."
+    },
+    "value": {
+      "zh": "帮助跨专业团队对齐结构与热设计概念，明确后续工程分析的问题。",
+      "en": "Help multidisciplinary teams align on packaging and thermal concepts before detailed engineering."
+    },
+    "m": [
+      {
+        "v": "3D",
+        "l": {
+          "zh": "结构拆解与热耦合演示",
+          "en": "structural and thermal-coupling demonstration"
+        },
+        "c": {
+          "zh": "教学原型 · 示意布局",
+          "en": "Learning prototype · Illustrative layout"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "配图为 HBM 结构示意。实验室几何与热网络为教学假设，不代表厂商真实版图或实测结温。",
+      "en": "The image illustrates an HBM structure. Lab geometry and thermal networks are teaching assumptions, not vendor floorplans or measured junction temperatures."
+    },
+    "src": {
+      "zh": "NeuralThermal 先进封装学习实验室；依据项目公开封装资料进行教学重绘。",
+      "en": "NeuralThermal Advanced Packaging Learning Lab, with educational redraws based on the project’s public packaging references."
+    }
+  },
+  {
+    "id": "065",
+    "ind": [
+      "extended"
+    ],
+    "prod": [
+      "design"
+    ],
+    "ev": "model",
+    "img": "case-065",
+    "title": {
+      "zh": "太空算力的热，辐射器要多大？",
+      "en": "How large must an orbital compute radiator be?"
+    },
+    "tag": {
+      "zh": "在轨算力 · 辐射散热",
+      "en": "Orbital computing · Radiative cooling"
+    },
+    "problem": {
+      "zh": "真空中没有空气对流，散热面积与材料退化会影响长期温度。",
+      "en": "Without air convection, radiator area and surface degradation shape long-term temperatures."
+    },
+    "did": {
+      "zh": "自建轨道、回路与辐射器模型，用代理模型筛选面积与流量并复核关键方案。",
+      "en": "A self-built orbit, loop and radiator model trains a surrogate to screen area and flow before physics checks."
+    },
+    "value": {
+      "zh": "把寿命末期散热能力纳入早期面积与重量权衡。",
+      "en": "Include end-of-life cooling capability in early area and mass trade-offs."
+    },
+    "m": [
+      {
+        "v": "0.18 K",
+        "l": {
+          "zh": "轨道温度预测测试 MAE",
+          "en": "orbital-temperature prediction test MAE"
+        },
+        "c": {
+          "zh": "400 个测试设计；峰值温度 MAE 约 0.31 K",
+          "en": "400 test designs; peak-temperature MAE about 0.31 K"
+        }
+      }
+    ],
+    "bounds": {
+      "zh": "120 kW 为自建场景设定；面积、热阻和退化是假设，不评价任何真实卫星设计。",
+      "en": "120 kW is a study scenario; area, resistance and ageing are assumptions, not an assessment of a real satellite."
+    },
+    "src": {
+      "zh": "NeuralThermal 自建轨道辐射器与代理模型研究。",
+      "en": "NeuralThermal self-built orbital-radiator and surrogate-model study."
+    }
+  }
+]);
+NT.listOnly = [];
 
 NT.resources = [
   { id: '003', t: { zh: '卷积网络可视化', en: 'Convolutional networks, visualised' } },
@@ -571,7 +1344,7 @@ NT.tiers = [
   };
   var link = function (path) { return '#/' + path; };
   var caseById = function (id) { return NT.cases.filter(function (c) { return c.id === id; })[0]; };
-  var indById = function (id) { return NT.industries.filter(function (i) { return i.id === id; })[0]; };
+  var indById = function (id) { return id === 'extended' ? { id: 'extended', name: { zh: '拓展案例', en: 'Other fields' }, color: 'blue' } : NT.industries.filter(function (i) { return i.id === id; })[0]; };
   var prodById = function (id) { return NT.products.filter(function (p) { return p.id === id; })[0]; };
   var evBadge = function (ev) { return ev ? '<span class="badge ev-' + ev + '">' + t(NT.evidence[ev]) + '</span>' : ''; };
   var researchBadge = function (c) { return c.research ? '<span class="badge warn">' + u('research') + '</span>' : ''; };
@@ -751,7 +1524,7 @@ NT.tiers = [
     var rows = NT.cases.filter(function (c) {
       return (filt.ind === 'all' || c.ind.indexOf(filt.ind) >= 0) && (filt.prod === 'all' || c.prod.indexOf(filt.prod) >= 0) &&
         (filt.ev === 'all' || c.ev === filt.ev) && hit(c.id, [c.title.zh, c.title.en, c.tag.zh, c.tag.en].join(' '));
-    }).map(caseRow);
+    }).map(function (c) { return caseRow(c, false); });
     var extra = NT.listOnly.filter(function (c) {
       return (filt.ind === 'all' || c.ind.indexOf(filt.ind) >= 0) && filt.prod === 'all' && (filt.ev === 'all' || c.ev === filt.ev) && hit(c.id, c.t.zh + ' ' + c.t.en);
     }).map(function (c) {
@@ -763,7 +1536,7 @@ NT.tiers = [
   }
 
   function caseDetail(c) {
-    var inds = c.ind.map(function (i) { var x = indById(i); return '<a class="badge" href="' + link('industries/' + x.id) + '">' + t(x.name) + '</a>'; }).join('');
+    var inds = c.ind.map(function (i) { var x = indById(i); return '<a class="badge" href="' + link(i === 'extended' ? 'cases?ind=extended' : 'industries/' + x.id) + '">' + t(x.name) + '</a>'; }).join('');
     var prods = c.prod.map(function (id) { var p = prodById(id); return '<a class="badge prod c-' + p.color + '" href="' + link('products/' + p.id) + '">' + p.code + '</a>'; }).join('');
     var pic = casePic(c, true);
     return '<header class="page-head case-head"><div class="wrap' + (pic ? ' case-head-in' : '') + '"><div>' +
@@ -774,6 +1547,7 @@ NT.tiers = [
       '<section class="band"><div class="wrap case-body">' +
       '<p class="big-p">' + t(c.problem) + '</p>' +
       '<div class="cb">' + label('', u('results')) + '<div class="metrics">' + c.m.map(function (m) { return metric(m); }).join('') + '</div></div>' +
+      (c.value ? '<div class="cb">' + label('', { zh: '客户价值', en: 'Customer value' }[lang]) + '<p>' + t(c.value) + '</p></div>' : '') +
       '<div class="cb bounds-box">' + label('', u('bounds')) + '<p>' + t(c.bounds) + '</p></div>' +
       '<details class="cb more-info"><summary>' + u('method') + '</summary><p>' + t(c.did) + '</p><p class="src">' + t(c.src) + '</p></details>' +
       (c.tool ? '<p><a class="btn primary" href="' + toolHref(c.tool) + '">' + u('heroTool') + ' →</a></p>' : '') +
