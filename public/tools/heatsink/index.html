@@ -11,13 +11,11 @@
 .nt-strip a{color:#fff;text-decoration:none}
 .nt-strip .nt-back{font-weight:600;min-height:36px;display:inline-flex;align-items:center}
 .nt-strip .nt-back:hover{color:#DCFF9A}
-.nt-strip .nt-scope{flex:1 1 360px;color:#C9D3DA;font-size:15px}
-.nt-strip .nt-scope b{color:#fff;font-weight:600}
 .nt-strip .nt-lang{display:inline-flex;border:1px solid rgba(255,255,255,.35);border-radius:4px;overflow:hidden}
 .nt-strip .nt-lang a{padding:6px 12px;min-height:32px;display:inline-flex;align-items:center}
 .nt-strip .nt-lang a[aria-current]{background:#fff;color:#33206B;font-weight:600}
-.nt-strip .nt-mail{font-weight:600;color:#DCFF9A}
-@media (max-width:640px){.nt-strip-in{padding:8px 14px}.nt-strip .nt-scope{flex-basis:100%;order:3}}
+.nt-strip .nt-mail{margin-left:auto;font-weight:600;color:#DCFF9A}
+@media (max-width:640px){.nt-strip-in{padding:8px 14px}}
 </style>
 <script>/* Site strip for an embedded tool (heatsink is filled in by build_tools.py).
    Language rule matches the site: ?lang= > saved manual choice > browser language/region > English. */
@@ -40,14 +38,10 @@
   var T = {
     zh: {
       back: '← 返回 NeuralThermal',
-      h100: '<b>公开范围：</b>自建的简化 H100 级模型（回路边界来自 MIT 许可的 ThermaLoop），稳态结果；不含客户数据、训练代码或训练数据。',
-      heatsink: '<b>公开范围：</b>风冷设计，基于公开工程关联式；器件参数来自页面所列资料，用于方案初筛。',
       mail: '咨询定制'
     },
     en: {
       back: '← Back to NeuralThermal',
-      h100: '<b>Public scope:</b> a self-built, simplified H100-class model (loop boundaries from the MIT-licensed ThermaLoop), steady state; no customer data, training code or training data.',
-      heatsink: '<b>Public scope:</b> air cooling on published engineering correlations; device data from the sources linked in the tool; for early screening.',
       mail: 'Ask about your product'
     }
   }[lang];
@@ -62,7 +56,6 @@
     bar.className = 'nt-strip';
     bar.innerHTML = '<div class="nt-strip-in">' +
       '<a class="nt-back" href="../../index.html?lang=' + lang + '#/tools">' + T.back + '</a>' +
-      '<span class="nt-scope">' + T[tool] + '</span>' +
       '<a class="nt-mail" href="../../index.html?lang=' + lang + '#/contact">' + T.mail + '</a>' +
       '<span class="nt-lang" role="group" aria-label="Language">' +
       '<a href="' + link('zh') + '" data-l="zh" lang="zh-CN"' + (lang === 'zh' ? ' aria-current="true"' : '') + '>中文</a>' +

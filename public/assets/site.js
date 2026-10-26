@@ -562,7 +562,6 @@ NT.tiers = [
     back: { zh: '回到首页', en: 'Back to home' },
     footNote: { zh: '', en: '' },
     footBuild: { zh: '版本日期', en: 'Build date' },
-    footLang: { zh: '语言与地区', en: 'Language & region' },
     skip: { zh: '跳到正文', en: 'Skip to content' }
   };
   function u(k) { return t(U[k]); }
@@ -800,13 +799,61 @@ NT.tiers = [
 
   function about() {
     var x = {
-      zh: { lead: 'NeuralThermal 做“热 × AI”：把仿真与测试数据变成可反复使用的工具。', h1: '工作方式', items: ['数字有出处，写明比较对象与条件。', '论文、公开数据、自建模型分开标注。', '模型只在验证范围内使用。', '数据生成、标定与训练实现只在项目中交付。'], h2: '项目库', p2: '本站案例是复现、自建示意模型和工具原型，不是客户交付业绩。', h3: '语言与地区', p3: ['手动选择优先，并保存在本浏览器。', '分享链接可带 ?lang=zh 或 ?lang=en。', '默认按浏览器语言与区域偏好：中文或中国大陆、港澳台区域为中文，其余为英文。不做 IP 定位，不申请位置权限。', '在线部署可选读取 CDN 的可信国家字段，仅用于默认语言。'], now: '当前语言来源：', why: { manual: '手动选择', url: '链接参数', region: '在线地区字段', browser: '浏览器偏好' } },
-      en: { lead: 'NeuralThermal works on thermal × AI: turning simulation and test data into reusable tools.', h1: 'How we work', items: ['Numbers have sources, baselines and conditions.', 'Paper, public-data and self-built evidence are labelled apart.', 'Models are used only inside their validated range.', 'Data generation, calibration and training code are delivered only in projects.'], h2: 'The project library', p2: 'Cases here are reproductions, self-built illustrative models and tool prototypes, not customer deliveries.', h3: 'Language and region', p3: ['Your manual choice comes first and is remembered in this browser.', 'Shared links can carry ?lang=zh or ?lang=en.', 'By default the browser’s language and region decide: Chinese, or a mainland China / Hong Kong / Macao / Taiwan region, opens in Chinese; everything else in English. No IP lookup, no location permission.', 'An online deployment may read a trusted CDN country field for the default only.'], now: 'Language source now: ', why: { manual: 'manual choice', url: 'link parameter', region: 'online region field', browser: 'browser preference' } }
+      zh: {
+        lead: 'NeuralThermal 将热仿真与 AI 融合，为研发团队构建更快的设计工具和更清晰的温度洞察。',
+        scope: '业务范围',
+        industries: [
+          ['先进封装', 'Chiplet、HBM 与 CPO 的热点分析、布局评估和热耦合建模。', 'packaging'],
+          ['液冷', 'GPU 冷却、冷板与微流道的温度、流量和压降权衡。', 'cooling'],
+          ['电驱', '逆变器、控制器及功率模块的结温估计与冷却评估。', 'drives'],
+          ['电机', '电机与机器人关节的温度估计、热负载分析和持续性能评估。', 'motors']
+        ],
+        ability: '核心能力',
+        capabilities: [
+          ['AI 辅助设计', '结合物理仿真与代理模型，快速筛选方案，复核关键设计。'],
+          ['虚拟温度传感', '利用已有测点与运行信号，估计难以直接测量的内部温度。'],
+          ['工程工具交付', '将模型、交互界面与自动化流程整合，支持私有部署和持续迭代。']
+        ],
+        value: '为客户创造的价值',
+        values: [
+          ['更快做出设计决策', '减少重复求解，在同样的研发时间内比较更多方案。'],
+          ['更早发现热风险', '识别热点与冷却瓶颈，为设计取舍和测试安排提供依据。'],
+          ['让数据持续产生价值', '把仿真和试验积累变成团队可反复使用的工程工具。']
+        ]
+      },
+      en: {
+        lead: 'NeuralThermal combines thermal simulation and AI to give engineering teams faster design tools and clearer insight into temperature.',
+        scope: 'Where we work',
+        industries: [
+          ['Advanced packaging', 'Hotspot analysis, layout assessment and thermal coupling for Chiplets, HBM and CPO.', 'packaging'],
+          ['Liquid cooling', 'Temperature, flow and pressure-drop trade-offs for GPUs, cold plates and microchannels.', 'cooling'],
+          ['Electric drives', 'Junction-temperature estimation and cooling assessment for inverters, controllers and power modules.', 'drives'],
+          ['Motors', 'Temperature estimation, thermal-load analysis and sustained-performance assessment for motors and robotic joints.', 'motors']
+        ],
+        ability: 'What we build',
+        capabilities: [
+          ['AI-assisted design', 'Combine physics simulation and surrogate models to screen options quickly and verify critical designs.'],
+          ['Virtual temperature sensing', 'Use existing measurements and operating signals to estimate internal temperatures that are hard to measure directly.'],
+          ['Engineering tools', 'Bring models, interactive interfaces and automated workflows together, with private deployment and ongoing refinement.']
+        ],
+        value: 'Value for your team',
+        values: [
+          ['Faster design decisions', 'Reduce repeated solves and compare more options within the same development time.'],
+          ['Earlier insight into thermal risk', 'Identify hotspots and cooling bottlenecks to guide design trade-offs and test planning.'],
+          ['Lasting value from your data', 'Turn simulation and test results into engineering tools your team can use repeatedly.']
+        ]
+      }
     }[lang];
     return pageHead(t(U.nav.about), x.lead) +
-      '<section class="band"><div class="wrap two"><div>' + label('', x.h1) + list(x.items) + '</div>' +
-      '<div>' + label('', x.h2) + '<p>' + x.p2 + '</p><p class="related"><a href="' + link('cases') + '">' + u('libTitle') + ' →</a><a href="' + link('resources') + '">' + u('resTitle') + ' →</a></p></div></div></section>' +
-      '<section class="band alt" id="language"><div class="wrap">' + label('', x.h3) + list(x.p3) + '<p class="note">' + x.now + '<b>' + x.why[L.why] + '</b></p></div></section>' + cta();
+      '<section class="band"><div class="wrap">' + label('', x.scope) + '<div class="two">' + x.industries.map(function (i) {
+        return '<div><h3><a href="' + link('industries/' + i[2]) + '">' + i[0] + ' →</a></h3><p>' + i[1] + '</p></div>';
+      }).join('') + '</div></div></section>' +
+      '<section class="band alt"><div class="wrap">' + label('', x.ability) + '<div class="tiers">' + x.capabilities.map(function (i) {
+        return '<div class="tier"><h3>' + i[0] + '</h3><p>' + i[1] + '</p></div>';
+      }).join('') + '</div></div></section>' +
+      '<section class="band"><div class="wrap">' + label('', x.value) + '<div class="tiers">' + x.values.map(function (i) {
+        return '<div class="tier"><h3>' + i[0] + '</h3><p>' + i[1] + '</p></div>';
+      }).join('') + '</div></div></section>' + cta();
   }
 
   function resources() {
@@ -893,7 +940,7 @@ NT.tiers = [
       '<nav>' + NT.industries.map(function (i) { return '<a href="' + link('industries/' + i.id) + '">' + t(i.name) + '</a>'; }).join('') + '</nav>' +
       '<nav>' + NT.products.map(function (p) { return '<a href="' + link('products/' + p.id) + '">' + p.code + '</a>'; }).join('') + '<a href="' + link('tools') + '">' + u('toolsTitle') + '</a><a href="' + link('resources') + '">' + u('resTitle') + '</a></nav>' +
       '<div><p><a href="mailto:' + EMAIL + '">' + EMAIL + '</a></p><p>' + u('footNote') + '</p><p>' + u('footBuild') + ': ' + fmtDate(BUILD) + '</p>' +
-      '<p><a href="' + link('about') + '" data-anchor="language">' + u('footLang') + '</a></p></div></div></footer>';
+      '</div></div></footer>';
   }
 
   function render() {
