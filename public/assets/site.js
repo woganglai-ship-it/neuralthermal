@@ -786,15 +786,15 @@ NT.tiers = [
 
   function engage() {
     var x = {
-      zh: { lead: '先付费做一个范围清楚的小试点，验收通过再做完整工具。价格与授权按范围商议。', can: ['热仿真建模、批量数据与代理模型', '虚拟温度传感的离线验证与嵌入式评估', '交互工具、私有部署与重训'], cannot: ['硬件制造与供货', '可靠性测试与认证', '量产安全系统的责任承担'], need: ['问题描述与想回答的问题', '参数范围（不需要图纸）', '已有数据的类型和数量', '验收口径'] },
-      en: { lead: 'Start with a small, paid, clearly scoped pilot; build the full tool once it passes. Pricing and licensing are agreed per scope.', can: ['Thermal models, batch data and surrogates', 'Offline validation and embedded assessment of virtual sensing', 'Interactive tools, private deployment, retraining'], cannot: ['Hardware manufacturing or supply', 'Reliability testing or certification', 'Responsibility for production safety systems'], need: ['The problem and the question', 'Parameter ranges (no drawings needed)', 'What data exists and how much', 'Acceptance criteria'] }
+      zh: { lead: '先付费做一个范围清楚的小试点，验收通过再做完整工具。价格与授权按范围商议。', can: ['热仿真建模、批量数据与代理模型', '虚拟温度传感的离线验证与嵌入式评估', '交互工具、私有部署与重训'], need: ['问题描述与想回答的问题', '参数范围（不需要图纸）', '已有数据的类型和数量', '验收口径'] },
+      en: { lead: 'Start with a small, paid, clearly scoped pilot; build the full tool once it passes. Pricing and licensing are agreed per scope.', can: ['Thermal models, batch data and surrogates', 'Offline validation and embedded assessment of virtual sensing', 'Interactive tools, private deployment, retraining'], need: ['The problem and the question', 'Parameter ranges (no drawings needed)', 'What data exists and how much', 'Acceptance criteria'] }
     }[lang];
     return pageHead(t(U.nav.engage), x.lead) +
       '<section class="band"><div class="wrap">' + flow() + '</div></section>' +
       '<section class="band alt"><div class="wrap">' + label('', u('deliver')) + '<div class="tiers">' + NT.tiers.map(function (y) {
         return '<div class="tier"><b>' + t(y.t) + '</b><p>' + t(y.d) + '</p></div>'; }).join('') + '</div></div></section>' +
       '<section class="band"><div class="wrap two"><div>' + label('', { zh: '试点需要', en: 'For a pilot' }[lang]) + list(x.need) + '</div>' +
-      '<div>' + label('', { zh: '我们做 / 不做', en: 'We do / do not' }[lang]) + list(x.can) + '<ul class="crosses">' + x.cannot.map(function (s) { return '<li>' + s + '</li>'; }).join('') + '</ul></div></div></section>' + cta();
+      '<div>' + label('', { zh: '我们提供', en: 'What we offer' }[lang]) + list(x.can) + '</div></div></section>' + cta();
   }
 
   function about() {
