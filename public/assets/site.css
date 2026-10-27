@@ -238,7 +238,8 @@ a.badge:hover { border-color: var(--blue); text-decoration: none; }
 /* contact */
 .contact form { display: grid; gap: 22px; }
 .contact label { display: grid; gap: 8px; font-weight: 600; font-size: 18px; }
-.contact select, .contact textarea { font-weight: 400; min-height: 52px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); font-size: 18px; }
+.contact form, .contact label { min-width: 0; }
+.contact select, .contact textarea { width: 100%; max-width: 100%; min-width: 0; font-weight: 400; min-height: 52px; padding: 10px 14px; border: 1px solid var(--line); border-radius: var(--r); background: var(--surface); font-size: 18px; }
 .contact textarea { resize: vertical; }
 .contact .btn { justify-self: start; }
 .status { min-height: 1.6em; color: var(--green-ink); font-size: 18px; }
