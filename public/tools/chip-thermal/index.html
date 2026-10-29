@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>芯片热实验室 · NeuralThermal</title>
+<link rel="stylesheet" href="lab.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-in">
+    <span class="brand" id="brand"></span>
+    <nav class="nav-links" id="tabs">
+      <button data-tab="sim" data-t="tSim">功率与温度</button>
+    </nav>
+    <button class="lang" id="lang" type="button">EN</button>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="page-head">
+    <p class="label" data-t="label">芯片热实验室</p>
+    <h1 data-t="h1">CPU / GPU 的功率与温度分布</h1>
+    <p class="lead" data-t="lead">选一颗芯片，探索负载、功耗与冷却条件对温度分布的影响。</p>
+  </section>
+
+  <!-- 1 · chip / power / temperature (simulated) -->
+  <section class="pane" id="p-sim">
+    <div class="card simbar">
+      <div class="ctl ctl4">
+        <label><span data-t="chip">芯片</span> <select id="mChip"></select></label>
+        <label><span data-t="load">负载</span> <select id="mLoad"></select></label>
+        <label><span data-t="power">功耗</span> <input type="range" id="mP" min="5" max="1200" step="1"> <b id="mPv" class="num"></b></label>
+        <label><span data-t="rth">散热热阻</span> <input type="range" id="mR" min="0.02" max="2" step="0.01"> <b id="mRv" class="num"></b></label>
+        <label><span data-t="tamb">冷却温度</span> <input type="range" id="mT" min="15" max="60" step="1" value="35"> <b id="mTv" class="num"></b></label>
+        <label class="chk"><input type="checkbox" id="mIhs" checked> <span data-t="ihs">铜均热盖（IHS）</span></label>
+      </div>
+      <p class="spec" id="mSpec"></p>
+    </div>
+    <div class="tri3">
+      <div class="card"><h3><span class="stepn">1</span><span data-t="p3Fp">芯片模块</span></h3>
+        <div class="mapwrap"><canvas id="mfp" class="map fp"></canvas></div>
+        <div class="legend" id="mLeg"></div></div>
+      <div class="card"><h3><span class="stepn">2</span><span data-t="p3Pw">功率密度</span></h3>
+        <div class="mapwrap"><canvas id="mpw" class="map"></canvas></div>
+        <div class="cbar"><canvas id="mpb" height="12"></canvas><div class="cbl"><span id="mpbLo"></span><span id="mpbHi"></span></div></div></div>
+      <div class="card"><h3><span class="stepn">3</span><span data-t="p3T">温度</span></h3>
+        <div class="mapwrap"><canvas id="mcv" class="map"></canvas></div>
+        <div class="cbar"><canvas id="mcb" height="12"></canvas><div class="cbl"><span id="mcbLo"></span><span id="mcbHi"></span></div></div></div>
+    </div>
+    <p class="hover num" id="mHover" data-t="mHoverHint">鼠标移到任一张图上，三张图同步读数。</p>
+    <div class="kpis" id="mKpis"></div>
+    <div class="card scroll mt"><h3 data-t="modTitle">各模块功耗与温度</h3><table class="tbl" id="mTbl"></table></div>
+    <p class="note" id="mNote"></p>
+  </section>
+
+</main>
+<footer class="foot"><div class="wrap foot-in"><span class="brand dark" id="brand2"></span><p id="foot"></p></div></footer>
+
+<script src="lab_core.js"></script>
+
+<script src="catalog.js"></script>
+<script src="lab.js"></script>
+</body>
+</html>
