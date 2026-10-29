@@ -1979,7 +1979,7 @@ NT.tiers = [
     switchTo: { zh: 'EN', en: '中文' },
     switchLabel: { zh: 'Switch to English', en: '切换到中文' },
     home: { zh: '首页', en: 'Home' },
-    heroTitle: { zh: '把仿真和测试数据，<br>变成可反复使用的<br>热设计工具。', en: 'Turn simulation and test data<br>into thermal tools you can reuse.' },
+    heroTitle: { zh: '致力于成为先进计算与物理 AI 领域的热设计专家。', en: 'Aspiring to be thermal design experts for advanced computing and physical AI.' },
     heroSub: { zh: 'AI 热设计 · 虚拟温度传感 · 工程自动化', en: 'AI thermal design · virtual temperature sensing · engineering automation' },
     heroCta: { zh: '选择行业', en: 'Choose your industry' },
     heroTool: { zh: '试用 H100 实验室', en: 'Try the H100 lab' },
