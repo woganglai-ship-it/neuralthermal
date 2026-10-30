@@ -132,3 +132,4 @@ canvas.chart.short { height: 130px; }
   .foot-in { grid-template-columns: 1fr; gap: 12px; }
 }
 #mTbl td { white-space: nowrap; }
+.lang { margin-left: auto; }

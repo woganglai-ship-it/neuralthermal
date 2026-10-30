@@ -2110,7 +2110,11 @@ NT.tiers = [
     { id: 'heatsink', img: 'tool-heatsink',
       name: { zh: '散热器设计工具', en: 'Heat-sink design lab' },
       d: { zh: '选器件，改散热器与风扇，看结温、热阻、压降和重量。', en: 'Pick a device, change heat sink and fan, read junction temperature, resistance, pressure drop and mass.' },
-      scope: { zh: '风冷，基于公开工程关联式；跨行业工具。', en: 'Air cooling on published correlations; cross-industry.' } }
+      scope: { zh: '风冷，基于公开工程关联式；跨行业工具。', en: 'Air cooling on published correlations; cross-industry.' } },
+    { id: 'chip-thermal', img: 'tool-chip-thermal',
+      name: { zh: '芯片温度实验室', en: 'Chip thermal lab' },
+      d: { zh: '选择 CPU 或 GPU，调整负载、功耗与冷却条件，查看模块功率和温度分布。', en: 'Choose a CPU or GPU, adjust load, power and cooling, and explore module power and temperature maps.' },
+      scope: { zh: '43 款芯片 · 交互式热模拟', en: '43 chips · Interactive thermal simulation' } }
   ];
   function toolPanels(only) {
     return TOOLS.filter(function (x) { return !only || only.indexOf(x.id) >= 0; }).map(function (x, i) {

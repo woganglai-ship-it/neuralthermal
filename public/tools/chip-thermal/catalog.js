@@ -1,8 +1,7 @@
-/* Chip data, layout generators and media list for the chip thermal lab.
+/* Chip data, layout generators for the chip thermal lab.
    Specs researched 2026-10-28; every row carries its sources. "(2°)" = secondary source (retailer / press summary),
    dieEst = die area not from a primary source. Values not found are left empty — never filled by guess.
    Simulation templates are GENERIC schematic layouts (block fractions chosen for illustration, not vendor floorplans). */
-var UCR = 'https://sheldonucr.github.io/commercial_thermal_map_dataset/';
 var W30 = 'https://en.wikipedia.org/wiki/GeForce_RTX_30_series', W40 = 'https://en.wikipedia.org/wiki/GeForce_RTX_40_series', W50 = 'https://en.wikipedia.org/wiki/GeForce_RTX_50_series',
   WADA = 'https://en.wikipedia.org/wiki/Ada_Lovelace_(microarchitecture)', WBW = 'https://en.wikipedia.org/wiki/Blackwell_(microarchitecture)',
   HWC = 'https://hwcooling.net/en/ampere-gpu-deep-dive-whats-new-in-geforce-rtx-3000-architecture/2',
@@ -14,15 +13,9 @@ var W30 = 'https://en.wikipedia.org/wiki/GeForce_RTX_30_series', W40 = 'https://
   GD = { zh: '桌面 GPU', en: 'Desktop GPU' }, GL = { zh: '笔记本 GPU', en: 'Laptop GPU' }, DC = { zh: '数据中心加速器', en: 'Data-centre accelerator' };
 window.TML_CATALOG = {
   chips: [
-    /* --- the 8 processors of the UCR dataset (specs as listed on the project page) --- */
-    { id: 'i5-3337u', ucr: true, name: 'Intel Core i5-3337U', type: { zh: '笔记本 CPU', en: 'Laptop CPU' }, arch: 'Ivy Bridge · 22 nm', cores: '2C / 4T · 3 MB L3 · HD 4000', clock: '1.8 / 2.7 GHz', tdp: '17 W', tdpW: 17, tj: 'Tj 105 °C', tjC: 105, die: { zh: '双核 GT2 硅片 118.1 mm²（对应关系为推断）', en: 'dual-core GT2 die 118.1 mm² (mapping inferred)' }, dieMm2: 118.1, dieEst: true, cpu: { p: 2, e: 0, gpuW: 0.3, aspect: 1.6, gpuName: 'HD 4000' }, R: 1.5, Ta: 40, src: [UCR, IS + '72055/specifications.html', 'https://www.anandtech.com/show/5876'] },
-    { id: 'i7-8650u', ucr: true, name: 'Intel Core i7-8650U', type: { zh: '笔记本 CPU', en: 'Laptop CPU' }, arch: 'Kaby Lake-R · 14 nm', cores: '4C / 8T', clock: '1.9 / 4.2 GHz', tdp: '15 W', tdpW: 15, tj: '', die: '', src: [UCR] },
-    { id: 'r7-4800u', ucr: true, name: 'AMD Ryzen 7 4800U', type: { zh: '笔记本 APU', en: 'Laptop APU' }, arch: 'Zen 2 · 7 nm', cores: '8C / 16T', clock: '1.8 / 4.2 GHz', tdp: '15 W', tdpW: 15, tj: '', die: '', src: [UCR] },
-    { id: 'r7-7730u', ucr: true, name: 'AMD Ryzen 7 7730U', type: { zh: '笔记本 APU', en: 'Laptop APU' }, arch: 'Zen 3 · 7 nm', cores: '8C / 16T', clock: '2.0 / 4.5 GHz', tdp: '15 W', tdpW: 15, tj: '', die: { zh: '仅视频，数据未公开', en: 'video only, data not public' }, src: [UCR] },
-    { id: 'rai5-340', ucr: true, name: 'AMD Ryzen AI 5 340', type: { zh: '笔记本 APU', en: 'Laptop APU' }, arch: 'Zen 5 · 4 nm', cores: { zh: '4C / 8T + iGPU + NPU ≈50 TOPS', en: '4C / 8T + iGPU + NPU ~50 TOPS' }, clock: { zh: '≈3.0 / 4.0 GHz（估）', en: '~3.0 / 4.0 GHz (est.)' }, tdp: '28–45 W', tdpW: 28, tj: '', die: { zh: '仅视频，数据未公开', en: 'video only, data not public' }, src: [UCR] },
-    { id: 'rtx4060', ucr: true, name: 'NVIDIA GeForce RTX 4060', type: { zh: '桌面 GPU', en: 'Desktop GPU' }, arch: 'Ada AD107 · TSMC 4N', cores: '24 SM / 3,072 CUDA', clock: '1.83 / 2.46 GHz', tdp: 'TBP 115 W', tdpW: 115, tj: 'GPU 90 °C', die: { zh: '146 mm²（另说 159）· 18.9 B · 128-bit', en: '146 mm² (159 elsewhere) · 18.9 B · 128-bit' }, dieMm2: 146, gpu: { gpc: 2, mc: 4 }, tjC: 90, src: [UCR, W40, WADA, NV40 + 'rtx-4060-4060ti/'] },
-    { id: 'coral', ucr: true, name: 'Google Coral M.2 Edge TPU', type: { zh: 'AI 加速器', en: 'AI accelerator' }, arch: 'Edge TPU', cores: { zh: '每颗 4 TOPS', en: '4 TOPS per Edge TPU' }, clock: '', tdp: { zh: '≈2 W / 颗', en: '~2 W each' }, tdpW: 2, tj: '', die: '', src: [UCR] },
-    { id: 'sd680', ucr: true, name: 'Qualcomm Snapdragon 680 (SM6225)', type: { zh: '手机 SoC', en: 'Phone SoC' }, arch: '6 nm (TSMC)', cores: '4× A73 + 4× A53', clock: '2.4 / 1.9 GHz', tdp: '≈6–8 W', tdpW: 7, tj: '', die: { zh: '仅视频，数据未公开', en: 'video only, data not public' }, src: [UCR] },
+    /* --- older / reference chips (specs from vendor pages and press) --- */
+    { id: 'i5-3337u', name: 'Intel Core i5-3337U', type: { zh: '笔记本 CPU', en: 'Laptop CPU' }, arch: 'Ivy Bridge · 22 nm', cores: '2C / 4T · 3 MB L3 · HD 4000', clock: '1.8 / 2.7 GHz', tdp: '17 W', tdpW: 17, tj: 'Tj 105 °C', tjC: 105, die: { zh: '双核 GT2 硅片 118.1 mm²（对应关系为推断）', en: 'dual-core GT2 die 118.1 mm² (mapping inferred)' }, dieMm2: 118.1, dieEst: true, cpu: { p: 2, e: 0, gpuW: 0.3, aspect: 1.6, gpuName: 'HD 4000' }, R: 1.5, Ta: 40, src: [IS + '72055/specifications.html', 'https://www.anandtech.com/show/5876'] },
+    { id: 'rtx4060', name: 'NVIDIA GeForce RTX 4060', type: { zh: '桌面 GPU', en: 'Desktop GPU' }, arch: 'Ada AD107 · TSMC 4N', cores: '24 SM / 3,072 CUDA', clock: '1.83 / 2.46 GHz', tdp: 'TBP 115 W', tdpW: 115, tj: 'GPU 90 °C', die: { zh: '146 mm²（另说 159）· 18.9 B · 128-bit', en: '146 mm² (159 elsewhere) · 18.9 B · 128-bit' }, dieMm2: 146, gpu: { gpc: 2, mc: 4 }, tjC: 90, src: [W40, WADA, NV40 + 'rtx-4060-4060ti/'] },
 
     /* --- Intel (specs from intel.com product pages, researched 2026-10-29; cpu = {p, pOn, e: E-clusters of 4, eOn, gpuW} drives the generic ring-bus layout,
            tiles = {...} the generic Foveros tile layout. Die of SKUs cut from a larger die is inferred where marked dieEst) --- */
@@ -229,4 +222,3 @@ window.TML_GPU = function (g) {
     note: { zh: (hbm ? 'HBM 堆叠在硅片外，未建模；默认功耗为整个模块额定值（含 HBM）' : '默认功耗为整卡功耗（含显存、供电损耗）') + '，芯片本身略低，结果偏保守。' + (g.gpcEst ? 'GA106 的 GPC 数未在一手资料中核实。' : ''),
       en: (hbm ? 'HBM stacks sit beside the die and are not modelled; default power is the whole module rating (incl. HBM)' : 'Default power is total board power (incl. memory and VRM losses)') + ', so results are conservative.' + (g.gpcEst ? ' GA106 GPC count not verified from a primary source.' : '') } };
 };
-

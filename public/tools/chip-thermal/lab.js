@@ -1,4 +1,4 @@
-/* Chip Thermal Map Lab · UI. Classic script (file:// safe). Depends on lab_core.js, data/summary.js, catalog.js. */
+/* Chip Thermal Map Lab · UI. Classic script (file:// safe). Commercial build: simulation only, no third-party measured data or media. Depends on lab_core.js, catalog.js. */
 (function () {
   var $ = function (id) { return document.getElementById(id); };
   var LANG = 'zh';
@@ -6,68 +6,73 @@
   var qLang = new URLSearchParams(location.search).get('lang'); if (qLang === 'zh' || qLang === 'en') LANG = qLang;
   var CAT = window.TML_CATALOG || { chips: [] };
 
+
   var STR = {
     zh: {
-      tSim: '功率与温度', tView: '实测热图', tPredict: '预测实验',
-      label: '芯片热实验室', h1: 'CPU / GPU 的功率与温度分布', lead: '选一颗芯片，探索负载、功耗与冷却条件对温度分布的影响。',
-      chip: '芯片', load: '负载', power: '功耗', rth: '散热热阻', tamb: '冷却温度', ihs: '铜均热盖（IHS）',
-      p3Fp: '芯片模块', p3Pw: '功率密度', p3T: '温度', mHoverHint: '鼠标移到任一张图上，三张图同步读数。',
-      modTitle: '各模块功耗与温度', modKind: '模块', modN: '数量', modW: '功耗', modTavg: '平均 °C', modTmax: '最高 °C',
-      simMax: '最高温度', simMean: '平均温度', spreadT: '片上温差', simRise: '温升', pdPeak: '峰值功率密度', pdAvg: '平均功率密度',
-      tjLim: '最高结温', simOver: '已超过', simOk: '未超过', simCheck: '均匀发热校验',
+      label: '芯片热实验室',
+      chip: '芯片',
+      load: '负载',
+      power: '功耗',
+      rth: '散热热阻',
+      tamb: '冷却温度',
+      ihs: '铜均热盖（IHS）',
+      p3Fp: '芯片模块',
+      p3Pw: '功率密度',
+      p3T: '温度',
+      mHoverHint: '鼠标移到任一张图上，三张图同步读数。',
+      modTitle: '各模块功耗与温度',
+      modKind: '模块',
+      modN: '数量',
+      modW: '功耗',
+      modTavg: '平均 °C',
+      modTmax: '最高 °C',
+      simMax: '最高温度',
+      simMean: '平均温度',
+      spreadT: '片上温差',
+      simRise: '温升',
+      pdPeak: '峰值功率密度',
+      pdAvg: '平均功率密度',
+      tjLim: '最高结温',
+      simOver: '已超过',
+      simOk: '未超过',
+      simCheck: '均匀发热校验',
       simWarn: '简化模型：二维稳态导热，散热器按一个总热阻计算。芯片模块图按公开参数（核心数、GPC 数、显存位宽、硅片面积）生成，是示意，不是厂商版图；各模块功耗占比和热阻为假设值。',
-      dataset: '数据组', viewMode: '显示', mT: '温度', mD: '动态分量', scale: '色标', sSet: '整组固定', sFrame: '逐帧自动', hotMark: '标出热点',
-      hoverHint: '鼠标移到图上读温度。', tsTitle: '每帧最高 / 平均 / 最低温度', histTitle: '当前帧温度分布',
-      irTitle: '读图要点',
-      ir1: '红外读的是表观温度：刻字、走线发射率不同，会形成静态图案（如 RTX 4060 上的“NVIDIA”字样），不是真实热点。',
-      ir2: '切到“动态分量”可去掉静态图案，只看随负载变化的升降温。',
-      ir3: '实验从板子背面冷却，温度绝对值不能直接套用到产品上。',
-      vidThis: '这颗芯片的视频与原图', vidOther: '更多芯片（只有视频，数据未公开）',
-      frame: '帧', sample: '样本', maxT: '最高温', meanT: '平均温', minT: '最低温', hot: '热点', hoverAt: '像素', dyn: '相对时间平均',
-      loading: '读取数据…',
-      tpuNote: 'TPU 的 100 个样本是不同神经网络模型的稳态热图，不是时间序列。',
-      r7Note: '公开样本只覆盖 44–55 °C（论文全集 44–90 °C）。',
-      rtxNote: '输入 53 个 nvidia-smi 指标，其中 43 个在这 100 帧里不变。',
-      i5Note: '每帧输入 80 个 Intel PCM 指标。', i7Note: '每帧输入 170 个 Intel PCM 指标；20 种负载各 100 帧。',
-      quant: '8 位存储，量化步长 ', exact: '；读数用原始数据计算。',
-      modes: 'POD 模态数', split: '切分', sTime: '按时间：前 80% 训练', sEvery: '每 5 帧取 1 帧测试', ridge: '正则 λ', run: '训练并测试',
-      pExplain: '用性能计数器预测整张热图：POD 压缩 + 岭回归，在浏览器里现场训练。测试帧不参与任何拟合；基线是训练帧的平均热图。',
-      actual: '实测', pred: '预测', err: '|误差|', testFrame: '测试帧', pChart: '每个测试帧的 RMSE（°C）', podE: 'POD 能量（训练帧）',
-      model: '模型 RMSE', base: '基线 RMSE', maxRmse: '最差测试帧', energy: 'k 个模态能量', running: '计算中…',
-      beats: '✔ 优于基线。', loses: '✘ 未胜过基线（100 帧太少、测试段工况不同时常见）。', usedIn: '使用输入列：',
-      every5Note: '测试帧的前后帧都在训练集里，结果偏乐观。', ridgeNote: '只有 100 帧公开样本，仅作演示。', paperRef: '论文完整数据集平均 RMSE：',
-      foot: '简化热模拟 · NeuralThermal'
+      h1: 'CPU / GPU 的功率与温度分布',
+      lead: '选一颗芯片，看它的模块、功率密度和温度分布。全部为模拟结果。',
+      foot: '“功率与温度”为简化模拟，不是实测。芯片模块图按公开参数生成，是示意，不是厂商版图。芯片规格来自厂商产品页等公开资料，见各型号的来源链接。本页离线运行。'
     },
     en: {
-      tSim: 'Power & heat', tView: 'Measured maps', tPredict: 'Prediction',
-      label: 'Chip thermal lab', h1: 'Power and temperature across CPUs and GPUs', lead: 'Explore how load, power and cooling affect chip temperature distributions.',
-      chip: 'Chip', load: 'Load', power: 'Power', rth: 'Cooling resistance', tamb: 'Coolant', ihs: 'Copper lid (IHS)',
-      p3Fp: 'Modules', p3Pw: 'Power density', p3T: 'Temperature', mHoverHint: 'Hover over any map to read all three at the same spot.',
-      modTitle: 'Power and temperature by module', modKind: 'Module', modN: 'Count', modW: 'Power', modTavg: 'Mean °C', modTmax: 'Max °C',
-      simMax: 'Peak temperature', simMean: 'Mean temperature', spreadT: 'On-die spread', simRise: 'Rise', pdPeak: 'Peak power density', pdAvg: 'Average power density',
-      tjLim: 'Max junction', simOver: 'exceeded', simOk: 'not exceeded', simCheck: 'Uniform-power check',
+      label: 'Chip thermal lab',
+      chip: 'Chip',
+      load: 'Load',
+      power: 'Power',
+      rth: 'Cooling resistance',
+      tamb: 'Coolant',
+      ihs: 'Copper lid (IHS)',
+      p3Fp: 'Modules',
+      p3Pw: 'Power density',
+      p3T: 'Temperature',
+      mHoverHint: 'Hover over any map to read all three at the same spot.',
+      modTitle: 'Power and temperature by module',
+      modKind: 'Module',
+      modN: 'Count',
+      modW: 'Power',
+      modTavg: 'Mean °C',
+      modTmax: 'Max °C',
+      simMax: 'Peak temperature',
+      simMean: 'Mean temperature',
+      spreadT: 'On-die spread',
+      simRise: 'Rise',
+      pdPeak: 'Peak power density',
+      pdAvg: 'Average power density',
+      tjLim: 'Max junction',
+      simOver: 'exceeded',
+      simOk: 'not exceeded',
+      simCheck: 'Uniform-power check',
       simWarn: 'Simplified model: 2-D steady conduction with one lumped cooler resistance. Module layouts are generated from public figures (core / GPC counts, memory width, die area) — schematic, not vendor floorplans; module power shares and resistances are assumed.',
-      dataset: 'Data set', viewMode: 'Show', mT: 'Temperature', mD: 'Dynamic part', scale: 'Scale', sSet: 'Fixed per set', sFrame: 'Per frame', hotMark: 'Mark hot spot',
-      hoverHint: 'Hover over the map to read temperature.', tsTitle: 'Max / mean / min per frame', histTitle: 'Temperature distribution, this frame',
-      irTitle: 'Reading the maps',
-      ir1: 'Infrared reads apparent temperature: lettering and wiring emit differently and leave static patterns (e.g. "NVIDIA" on the RTX 4060) that are not hot spots.',
-      ir2: 'Switch to "Dynamic part" to remove static patterns and see only load-driven changes.',
-      ir3: 'The rig cools the board from the back, so absolute temperatures do not transfer to products.',
-      vidThis: 'Videos and figures for this chip', vidOther: 'More chips (video only, data not public)',
-      frame: 'frame', sample: 'sample', maxT: 'Max', meanT: 'Mean', minT: 'Min', hot: 'Hot spot', hoverAt: 'pixel', dyn: 'vs time mean',
-      loading: 'Loading…',
-      tpuNote: 'The 100 TPU samples are steady maps of different neural networks, not a time series.',
-      r7Note: 'The public sample spans 44–55 °C only (full set 44–90 °C).',
-      rtxNote: '53 nvidia-smi inputs; 43 of them stay constant in these 100 frames.',
-      i5Note: '80 Intel PCM inputs per frame.', i7Note: '170 Intel PCM inputs per frame; 20 workloads × 100 frames.',
-      quant: 'Stored as 8-bit, step ', exact: '; readings use the original data.',
-      modes: 'POD modes', split: 'Split', sTime: 'By time: first 80 % train', sEvery: 'Every 5th frame for test', ridge: 'Ridge λ', run: 'Train and test',
-      pExplain: 'Predict the full thermal map from performance counters: POD compression + ridge regression, trained live in the browser. Test frames take no part in fitting; the baseline is the mean training map.',
-      actual: 'Measured', pred: 'Predicted', err: '|Error|', testFrame: 'Test frame', pChart: 'RMSE per test frame (°C)', podE: 'POD energy (training frames)',
-      model: 'Model RMSE', base: 'Baseline RMSE', maxRmse: 'Worst test frame', energy: 'Energy in k modes', running: 'Computing…',
-      beats: '✔ Beats the baseline.', loses: '✘ Does not beat the baseline (common with 100 frames when the test segment runs a different load).', usedIn: 'Inputs used:',
-      every5Note: 'Neighbouring frames are in training, so results are optimistic.', ridgeNote: 'Only 100 public frames: a demonstration.', paperRef: 'Paper, full dataset, mean RMSE: ',
-      foot: 'Simplified thermal simulation · NeuralThermal'
+      h1: 'Power and temperature across CPUs and GPUs',
+      lead: 'Pick a chip to see its modules, power density and temperature. Everything here is simulated.',
+      foot: '"Power & heat" is a simplified simulation, not a measurement. Module layouts are generated from public figures — schematic, not vendor floorplans. Chip specs come from vendor product pages and other public sources, linked for each chip. Runs offline.'
     }
   };
   function t(k) { return (STR[LANG] && STR[LANG][k]) || STR.zh[k] || k; }
@@ -239,13 +244,14 @@
     $('mHover').textContent = (bk ? L2(bk.n || bk.k) + ' (' + kindName(bk.k) + ') · ' : '') + SIM.pd[i].toFixed(0) + ' W/cm² · ' + SIM.T[i].toFixed(1) + ' °C';
   }
 
+  /* ---------- events ---------- */
+  $('lang').onclick = function () { LANG = LANG === 'zh' ? 'en' : 'zh'; try { localStorage.setItem('tml-lang', LANG); } catch (e) {} applyLang(); SIM.ready = false; simInit(); };
+  $('mChip').onchange = simChip; ['mP', 'mR', 'mT'].forEach(function (x) { $(x).oninput = simRun; }); $('mLoad').onchange = simLoad; $('mIhs').onchange = simRun;
+  ['mfp', 'mpw', 'mcv'].forEach(function (x) { $(x).onmousemove = simHover; });
+  var rz; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { simInit(); }, 150); });
 
-  $('lang').onclick = function () { LANG = LANG === 'zh' ? 'en' : 'zh'; localStorage.setItem('tml-lang', LANG); applyLang(); SIM.ready = false; simInit(); };
-  $('mChip').onchange = simChip;
-  ['mP','mR','mT'].forEach(function(x){$(x).oninput=simRun;});
-  $('mLoad').onchange=simLoad; $('mIhs').onchange=simRun;
-  ['mfp','mpw','mcv'].forEach(function(x){$(x).onmousemove=simHover;});
-  window.addEventListener('resize',simRun);
-  $('p-sim').classList.add('active'); $('p-sim').style.display='block';
-  applyLang();simInit(new URLSearchParams(location.search).get('chip'));
+  /* ---------- start ---------- */
+  applyLang();
+  simInit(new URLSearchParams(location.search).get('chip'));
+  window.TML_UI = { simChip: function (id) { simInit(id); }, state: function () { return { sim: $('mChip').value }; } };
 })();

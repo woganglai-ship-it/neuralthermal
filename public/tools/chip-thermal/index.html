@@ -10,9 +10,6 @@
 <header class="nav">
   <div class="wrap nav-in">
     <span class="brand" id="brand"></span>
-    <nav class="nav-links" id="tabs">
-      <button data-tab="sim" data-t="tSim">功率与温度</button>
-    </nav>
     <button class="lang" id="lang" type="button">EN</button>
   </div>
 </header>
@@ -21,11 +18,11 @@
   <section class="page-head">
     <p class="label" data-t="label">芯片热实验室</p>
     <h1 data-t="h1">CPU / GPU 的功率与温度分布</h1>
-    <p class="lead" data-t="lead">选一颗芯片，探索负载、功耗与冷却条件对温度分布的影响。</p>
+    <p class="lead" data-t="lead">选一颗芯片，看它的模块、功率密度和温度分布。全部为模拟结果。</p>
   </section>
 
-  <!-- 1 · chip / power / temperature (simulated) -->
-  <section class="pane" id="p-sim">
+  <!-- chip / power / temperature (simulated) -->
+  <section class="pane on" id="p-sim">
     <div class="card simbar">
       <div class="ctl ctl4">
         <label><span data-t="chip">芯片</span> <select id="mChip"></select></label>
@@ -53,12 +50,10 @@
     <div class="card scroll mt"><h3 data-t="modTitle">各模块功耗与温度</h3><table class="tbl" id="mTbl"></table></div>
     <p class="note" id="mNote"></p>
   </section>
-
 </main>
 <footer class="foot"><div class="wrap foot-in"><span class="brand dark" id="brand2"></span><p id="foot"></p></div></footer>
 
 <script src="lab_core.js"></script>
-
 <script src="catalog.js"></script>
 <script src="lab.js"></script>
 </body>
