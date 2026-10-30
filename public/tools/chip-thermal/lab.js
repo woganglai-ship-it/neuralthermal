@@ -9,6 +9,10 @@
 
   var STR = {
     zh: {
+      refTitle: '结构与资料', gallery: '裸片图库', annotations: '结构标注',
+      refIntro: '规格见型号旁的来源链接；下列图库可用于对照结构，第三方标注含推断。',
+      refThermal: '温度对应上方工况，由本页模型计算；尚未经过对应型号的实测校准。',
+      scenario: '当前模拟工况', structure: '当前结构示意',
       label: '芯片热实验室',
       chip: '芯片',
       load: '负载',
@@ -16,9 +20,9 @@
       rth: '散热热阻',
       tamb: '冷却温度',
       ihs: '铜均热盖（IHS）',
-      p3Fp: '芯片模块',
+      p3Fp: '结构示意',
       p3Pw: '功率密度',
-      p3T: '温度',
+      p3T: '模拟温度',
       mHoverHint: '鼠标移到任一张图上，三张图同步读数。',
       modTitle: '各模块功耗与温度',
       modKind: '模块',
@@ -42,6 +46,10 @@
       foot: '“功率与温度”为简化模拟，不是实测。芯片模块图按公开参数生成，是示意，不是厂商版图。芯片规格来自厂商产品页等公开资料，见各型号的来源链接。本页离线运行。'
     },
     en: {
+      refTitle: 'Structure & references', gallery: 'Die gallery', annotations: 'Annotated dies',
+      refIntro: 'Specifications are linked beside each model. Use these galleries for structural reference; third-party annotations include inferences.',
+      refThermal: 'Temperatures are computed for the conditions above, without chip-specific measurement calibration.',
+      scenario: 'Current simulation', structure: 'Current schematic',
       label: 'Chip thermal lab',
       chip: 'Chip',
       load: 'Load',
@@ -49,9 +57,9 @@
       rth: 'Cooling resistance',
       tamb: 'Coolant',
       ihs: 'Copper lid (IHS)',
-      p3Fp: 'Modules',
+      p3Fp: 'Structure schematic',
       p3Pw: 'Power density',
-      p3T: 'Temperature',
+      p3T: 'Simulated temperature',
       mHoverHint: 'Hover over any map to read all three at the same spot.',
       modTitle: 'Power and temperature by module',
       modKind: 'Module',
@@ -124,6 +132,7 @@
     $('mT').value = c.Ta || tp.Ta || 35; $('mIhs').checked = !!tp.ihs; $('mIhs').parentNode.style.display = tp.ihs ? '' : 'none';
     $('mLoad').innerHTML = Object.keys(tp.loads).map(function (k) { return '<option value="' + k + '">' + esc(L2(tp.loads[k].name)) + '</option>'; }).join('');
     $('mSpec').innerHTML = '<b>' + esc(c.name) + '</b> · ' + [c.arch, c.cores, c.tdp, c.tj, c.die].map(L2).filter(Boolean).map(esc).join(' · ') + ' ' + srcLinks(c);
+    $('mStructure').textContent = t('structure') + ' · ' + c.arch + ' · ' + L2(tp.note || (LANG === 'zh' ? '按公开模块数量绘制，位置和面积分配为示意。' : 'Generated from public module counts; positions and area allocation are schematic.'));
     simRun();
   }
   function simLoad() { /* light loads (single core, video encode) start from a lower total power */
@@ -166,6 +175,7 @@
     var tp = tplFor(c), load = tp.loads[$('mLoad').value] || tp.loads[Object.keys(tp.loads)[0]];
     var P = +$('mP').value, R = Math.pow(10, +$('mR').value), Ta = +$('mT').value, ihs = tp.ihs ? $('mIhs').checked : false;
     $('mPv').textContent = P + ' W'; $('mRv').textContent = R.toFixed(R < 0.1 ? 3 : 2) + ' K/W'; $('mTv').textContent = Ta + ' °C';
+    $('mScenario').textContent = t('scenario') + ' · ' + L2(load.name) + ' · ' + P + ' W · ' + t('rth') + ' ' + R.toFixed(3) + ' K/W · ' + t('tamb') + ' ' + Ta + ' °C' + (tp.ihs ? ' · IHS ' + (ihs ? 'ON' : 'OFF') : '');
     /* domain: template aspect, area scaled so that the silicon covers c.dieMm2 (monolithic dies: the whole rectangle is silicon) */
     var nx = 80, ny = Math.round(80 / (tp.aspect || 1)), blocks = tp.blocks;
     var dieFrac = tp.mono ? 1 : blocks.reduce(function (s, b) { return s + b.r[2] * b.r[3]; }, 0), Adom = c.dieMm2 / dieFrac * 1e-6, dx = Math.sqrt(Adom / (nx * ny));
@@ -212,6 +222,7 @@
     for (i = 0; i < f.length; i++) if (!onDie[i]) f[i] = lo;
     var S = 8, W = nx * S, H = ny * S;
     drawFloor(blocks, nx, ny, S, tp.mono);
+    if (tp.regions) outline($('mfp').getContext('2d'), tp.regions, W, H, '#32216b');
     var pctx = big($('mpw'), pd, nx, ny, 0, pmax || 1, TML.LUT.heat, S, false);
     outline(pctx, blocks, W, H, 'rgba(22,24,26,.18)');
     var ctx = big($('mcv'), f, nx, ny, lo, hi, TML.LUT.turbo, S, true);
