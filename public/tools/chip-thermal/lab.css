@@ -135,3 +135,5 @@ canvas.chart.short { height: 130px; }
 .lang { margin-left: auto; }
 
 .scenario{font-size:16px;line-height:1.7;padding:14px 18px;background:#eef3f8;border-radius:12px;overflow-wrap:anywhere}.references{margin:24px 0}.references summary{font-size:20px;font-weight:600;cursor:pointer}.references p{font-size:16px;line-height:1.7}.reference-links{display:flex;gap:24px;flex-wrap:wrap}.reference-links a{font-size:17px}
+
+.die-photo{margin:24px 0}.die-photo h2{font-size:24px;margin:0 0 18px}.photo-choices{display:flex;gap:12px;flex-wrap:wrap}.photo-choices button{font:inherit;padding:10px 16px;border:1px solid #ccd3dd;border-radius:24px;background:white;cursor:pointer}.photo-choices button[aria-pressed="true"]{background:#32216b;color:white}.die-photo figure{margin:20px 0}.die-photo img{display:block;width:100%;height:360px;object-fit:contain;background:#111;border-radius:12px}.die-photo figcaption,.photo-status{font-size:15px;line-height:1.7;margin-top:12px}.die-photo [hidden]{display:none}@media(max-width:600px){.die-photo img{height:240px}}

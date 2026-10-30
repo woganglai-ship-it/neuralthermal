@@ -9,6 +9,8 @@
 
   var STR = {
     zh: {
+      photoTitle: '真实裸片照片', photoEmpty: '当前型号暂无已确认授权的照片，可选择上方两个型号查看。',
+      photoStatus: '照片用于结构对照；下方为独立的示意热模型，未与照片逐像素配准，未做实测校准。',
       refTitle: '结构与资料', gallery: '裸片图库', annotations: '结构标注',
       refIntro: '规格见型号旁的来源链接；下列图库可用于对照结构，第三方标注含推断。',
       refThermal: '温度对应上方工况，由本页模型计算；尚未经过对应型号的实测校准。',
@@ -46,6 +48,8 @@
       foot: '“功率与温度”为简化模拟，不是实测。芯片模块图按公开参数生成，是示意，不是厂商版图。芯片规格来自厂商产品页等公开资料，见各型号的来源链接。本页离线运行。'
     },
     en: {
+      photoTitle: 'Real die photographs', photoEmpty: 'No cleared photograph for this model yet. Choose either model above to see its die.',
+      photoStatus: 'Photos provide structural reference. The schematic thermal model below is not pixel-registered to the photo or calibrated against measurements.',
       refTitle: 'Structure & references', gallery: 'Die gallery', annotations: 'Annotated dies',
       refIntro: 'Specifications are linked beside each model. Use these galleries for structural reference; third-party annotations include inferences.',
       refThermal: 'Temperatures are computed for the conditions above, without chip-specific measurement calibration.',
@@ -100,6 +104,16 @@
   var LOGO = '<svg class="mark" viewBox="0 0 32 32" fill="none" stroke-linecap="round" aria-hidden="true"><g stroke="#0b6bcb" stroke-width="1.4"><path d="M2 3 L24 29"/><path d="M22 3 L6 29"/><path d="M2 3 L28 29"/><path d="M28 3 L4 29"/><path d="M23 3 L13 29"/><path d="M9 3 L29 29"/></g><path d="M11 3 L23 29" stroke="#e2580a" stroke-width="1.9"/></svg><span>Neural<svg class="t" viewBox="0 0 62 72" aria-hidden="true"><rect width="20" height="15" fill="#2FD4E8"/><rect x="21" width="20" height="15" fill="currentColor"/><rect x="42" width="20" height="15" fill="#76B900"/><rect x="21" y="15" width="20" height="57" fill="currentColor"/></svg>hermal</span>';
   $('brand').innerHTML = LOGO; $('brand2').innerHTML = LOGO;
 
+  var DIE_PHOTOS = {"i9-13900k": {"src": "photos/i9-13900k.jpg", "source": "https://commons.wikimedia.org/wiki/File:Intel@intel7(10nmESF)@RaptorLake@RPL(8P%2B16E)@i9-13900K@ES_DSCx06_poly@5xDIC_Lambda.jpg", "label": {"zh": "Intel Core i9-13900K 工程样片 · 裸片显微照片", "en": "Intel Core i9-13900K engineering sample · die micrograph"}}, "rtx3090": {"src": "photos/rtx3090.jpg", "source": "https://www.flickr.com/photos/130561288@N04/50715462966/", "label": {"zh": "RTX 3090 · GA102 · 近红外结构照片（非温度热图）", "en": "RTX 3090 · GA102 · near-infrared structure photograph (not a temperature map)"}}};
+  function showDiePhoto(c) {
+    var p = DIE_PHOTOS[c.id];
+    $('dieFigure').hidden = !p; $('dieEmpty').hidden = !!p;
+    if (p) {
+      $('dieImage').src = p.src; $('dieImage').alt = L2(p.label); $('dieZoom').href = p.src;
+      $('dieCaption').innerHTML = esc(L2(p.label)) + ' · <a target="_blank" rel="noopener" href="' + esc(p.source) + '">Fritzchens Fritz · CC0</a>';
+    } else { $('dieImage').removeAttribute('src'); }
+    document.querySelectorAll('[data-photo-chip]').forEach(function (el) {el.setAttribute('aria-pressed', String(el.dataset.photoChip === c.id));});
+  }
   function srcLinks(c) { return (c.src || []).map(function (u, i) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener">[' + (i + 1) + ']</a>'; }).join(' '); }
 
   /* ---------- chip · power · temperature (simplified steady conduction) ---------- */
@@ -121,11 +135,12 @@
       sel.innerHTML = Object.keys(groups).filter(function (g) { return groups[g].length; }).map(function (g) {
         return '<optgroup label="' + g + '">' + groups[g].map(function (c) { return '<option value="' + c.id + '">' + esc(c.name.replace(/^(NVIDIA GeForce |NVIDIA |Intel Core |Intel |AMD )/, '')) + '</option>'; }).join('') + '</optgroup>';
       }).join('');
-      SIM.ready = true; sel.value = keep && chipById(keep) ? keep : 'rtx5090'; if (!sel.value) sel.selectedIndex = 0; simChip();
+      SIM.ready = true; sel.value = keep && chipById(keep) ? keep : 'i9-13900k'; if (!sel.value) sel.selectedIndex = 0; simChip();
     } else if (id) { sel.value = id; simChip(); } else simRun();
   }
   function simChip() {
     var c = chipById($('mChip').value); if (!c) return;
+    showDiePhoto(c);
     var tp = tplFor(c), R0 = c.R || tp.R || Math.min(0.4, Math.max(0.06, 35 / c.tdpW)); /* GPU cooler sized for ~35 K rise at rated power (assumed) */
     $('mP').max = Math.round(Math.max(20, c.tdpW * 1.5)); $('mP').min = 1; $('mP').step = 1; $('mP').value = c.tdpW;
     $('mR').min = -1.7; $('mR').max = 0.4; $('mR').step = 0.01; $('mR').value = Math.log10(R0);
@@ -260,6 +275,8 @@
   $('mChip').onchange = simChip; ['mP', 'mR', 'mT'].forEach(function (x) { $(x).oninput = simRun; }); $('mLoad').onchange = simLoad; $('mIhs').onchange = simRun;
   ['mfp', 'mpw', 'mcv'].forEach(function (x) { $(x).onmousemove = simHover; });
   var rz; window.addEventListener('resize', function () { clearTimeout(rz); rz = setTimeout(function () { simInit(); }, 150); });
+
+  document.querySelectorAll('[data-photo-chip]').forEach(function (el) {el.onclick = function () {simInit(el.dataset.photoChip);};});
 
   /* ---------- start ---------- */
   applyLang();
