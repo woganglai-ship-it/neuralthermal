@@ -304,3 +304,6 @@ a.badge:hover { border-color: var(--blue); text-decoration: none; }
 
 /* Make room for the dedicated Labs entry without shrinking navigation text. */
 @media(min-width:1161px){.nav>.wrap{max-width:1460px;padding-inline:28px}.nav-links{gap:4px 20px}.nav-links>a{white-space:nowrap}.nav-in{gap:24px}}
+
+/* Keep both coolant connections visible in the industry thumbnail. */
+.ind-tile.c-cool .ind-pic img { object-fit: contain; }

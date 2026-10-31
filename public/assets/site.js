@@ -241,7 +241,7 @@ NT.products = [
 NT.cases = [
   {
     "id": "015",
-    "img": "case-h100",
+    "img": "hero-h100",
     "ind": [
       "cooling"
     ],
@@ -1684,7 +1684,7 @@ NT.industries = [
   {
     "id": "cooling",
     "color": "cool",
-    "img": "case-h100",
+    "img": "hero-h100",
     "clip": "h100",
     "name": {
       "zh": "液冷",
