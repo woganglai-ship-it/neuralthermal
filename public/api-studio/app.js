@@ -22,7 +22,7 @@
   }
   function setConn() {
     $('conn').className = 'conn' + (ONLINE ? ' on' : '');
-    $('conn').innerHTML = '<i></i>' + (ONLINE ? '已连接云端演示 API · ' + location.host : '云端暂不可用，请稍后重试');
+    $('conn').innerHTML = '<i></i>' + (ONLINE ? '云端已连接' : '云端暂不可用，请稍后重试');
     $('conn').title = ONLINE ? '模型在云端运行，不向浏览器发送权重' : '本页面不包含离线模型';
   }
 
@@ -150,10 +150,10 @@
     var bench = await api('/v1/design/predict', {inputs:{channel_width_mm:0.3,fin_thickness_mm:0.2,fin_height_mm:3,flow_lpm:2,inlet_c:40,power_kw:2.28,tim2_w_mk:5,hotspot_share:0.15},return_field:false});
     if (bench.status !== 200) {$('vKpis').innerHTML=errBox(bench);return;}
     var ms = bench.body.timing_ms;
-    $('vKpis').innerHTML = kpi('次求解器计算用于训练（2,400 训练 / 300 验证 / 300 测试）', SM.n_samples.toLocaleString(), 'bl') +
+    $('vKpis').innerHTML = kpi('组求解器样本', SM.n_samples.toLocaleString(), 'bl') +
       kpi('最热芯片平均误差（最大 ' + f(SM.die_max_k, 2) + ' K）', f(SM.die_mae_k, 2) + ' K', 'ai') + kpi('最热 HBM 平均误差', f(SM.hbm_mae_k, 2) + ' K', 'ai') +
-      kpi('温度场均方根误差（100 个测试场）', f(FM.rmse_k, 2) + ' K', 'ai') +
-      kpi('求解器单次（离线测试中位数）', f(SM.solver_s_median, 2) + ' s') + kpi('代理模型单次（云端计算）', ms * 1000 < 1 ? '< 1 µs' : ms < 0.1 ? f(ms * 1000, 0) + ' µs' : f(ms, 2) + ' ms', 'ai');
+      kpi('温度场 RMSE · 100 测试场', f(FM.rmse_k, 2) + ' K', 'ai') +
+      kpi('求解器单次（离线测试中位数）', f(SM.solver_s_median, 2) + ' s') + kpi('代理模型单次（云端计算）', ms < 1 ? '< 1 ms' : f(ms, 2) + ' ms', 'ai');
     var p = M.parity, lo = Math.floor(Math.min.apply(null, p.true) / 5) * 5, hi = Math.ceil(Math.max.apply(null, p.true) / 5) * 5;
     plot($('parity'), { series: [{ x: [lo, hi], y: [lo, hi], color: css('--muted'), dash: [5, 4], width: 1.2, label: '完全一致' },
       { x: p.true, y: p.pred, color: css('--ai-deep'), dots: true, r: 2.6, alpha: .7, label: '测试设计' }],
@@ -164,7 +164,7 @@
       ['温度场均方根误差 ≤ 0.5 K', FM.rmse_k <= 0.5, f(FM.rmse_k, 2) + ' K'], ['压降与求解器公式一致', SM.dp_max_abs_kpa < 0.01, '最大差 ' + SM.dp_max_abs_kpa.toExponential(1) + ' kPa'],
       ['超出范围的输入被拒绝', probe.status === 422, '流量 5 L/min → HTTP ' + probe.status]];
     $('accept').innerHTML = rows.map(function (r) { return '<li><span class="badge ' + (r[1] ? 'ok' : 'bad') + '">' + (r[1] ? '通过' : '未通过') + '</span> ' + r[0] + ' <small class="num">（' + r[2] + '）</small></li>'; }).join('');
-    $('vNote').textContent = '训练数据来自 066 项目：3,000 个随机设计，每个都用三维稳态导热求解器算过；温度场模型另用 900 个求解器结果训练（700 / 100 / 100）。压降用解析公式，不是机器学习。验收标准是演示用的示例，正式项目和客户约定。';
+    $('vNote').textContent = '求解器样本：标量模型 2,400 / 300 / 300；温度场 700 / 100 / 100（训练 / 验证 / 测试）。压降采用解析式。';
   }
 
   /* ---------- NT Design ---------- */
@@ -183,7 +183,7 @@
       if (res.status !== 200) { $('dKpis').innerHTML = errBox(res); $('dMap').getContext('2d').clearRect(0, 0, 1e4, 1e4); $('dLo').textContent = $('dHi').textContent = ''; return; }
       var r = res.body.results, over = r.die_max_c > LIMIT;
       $('dKpis').innerHTML = kpi('最热芯片', f(r.die_max_c) + ' °C', over ? 'th' : 'bl') + kpi('最热 HBM', f(r.hbm_max_c) + ' °C') + kpi('压降', f(r.dp_kpa, r.dp_kpa < 10 ? 2 : 1) + ' kPa') +
-        kpi('出水温度', f(r.outlet_c) + ' °C') + kpi('距 ' + LIMIT + ' °C 上限', (r.margin_k >= 0 ? '' : '超 ') + f(Math.abs(r.margin_k)) + ' K', over ? 'th' : '') + kpi(ONLINE ? '服务端耗时' : '浏览器内耗时', f(res.body.timing_ms, 2) + ' ms', 'ai');
+        kpi('出水温度', f(r.outlet_c) + ' °C') + kpi('距 ' + LIMIT + ' °C 上限', (r.margin_k >= 0 ? '' : '超 ') + f(Math.abs(r.margin_k)) + ' K', over ? 'th' : '') + kpi(ONLINE ? '服务端耗时' : '浏览器内耗时', (res.body.timing_ms < 1 ? '< 1 ms' : f(res.body.timing_ms, 2) + ' ms'), 'ai');
       drawField($('dMap'), res.body.field, res.body.field.lo, res.body.field.hi); colorbar($('dCb'));
       $('dLo').textContent = f(res.body.field.lo) + ' °C'; $('dHi').textContent = f(res.body.field.hi) + ' °C';
     });
@@ -254,7 +254,7 @@
   }
   function wCount() {
     var b = flowBody(), n = Object.keys(b.ranges).reduce(function (p, k) { return p * Math.max(1, Math.round(b.ranges[k][2])); }, 1);
-    $('wCount').innerHTML = '公开演示单次上限 256 个组合。当前共 <b>' + n.toLocaleString() + '</b> 个组合。用求解器逐个算约 <b>' + f(n * SM.solver_s_median / 3600, 1) + ' 小时</b>' + '；完整规模计算可通过专属服务接入';
+    $('wCount').innerHTML = '本次 <b>' + n.toLocaleString() + '</b> 个组合 · 演示上限 256';
     $('wReq').innerHTML = reqText('/v1/workflow/sweep', b);
   }
   $('wForm').addEventListener('input', function () { markRange($('wForm')); wCount(); });
@@ -331,6 +331,18 @@
   function showTab(name) {
     if (!$('p-' + name)) name = 'home';
     tab = name;
+    document.body.dataset.page = name;
+    var headings = {
+      home: ['让热模型，<br>成为你的研发能力。', '连接设计工具与智能体，实时预测温度、感知热点、筛选方案。'],
+      design: ['调整参数，即刻看见温度。', 'NT Design · 预测热点、温度场与压降。'],
+      sensor: ['从运行数据，感知芯片热点。', 'NT Sensor · 估算温度，识别超限。'],
+      flow: ['比较更多设计，找到更优方案。', 'NT Workflow · 设置约束，筛选候选。'],
+      model: ['每一次预测，都有验证依据。', '对照求解器，查看误差与适用范围。'],
+      access: ['让热模型接入你的工作流。', '支持设计软件、优化程序与智能体。']
+    };
+    $('page-title').innerHTML = headings[name][0];
+    $('page-lead').textContent = headings[name][1];
+    document.querySelectorAll('#tabs button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.tab === name)); });
     document.querySelectorAll('#tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === name); });
     document.querySelectorAll('.pane').forEach(function (p) { p.classList.toggle('on', p.id === 'p-' + name); });
     try { history.replaceState(null, '', '#' + name); } catch (e) {}

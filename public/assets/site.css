@@ -256,7 +256,7 @@ a.badge:hover { border-color: var(--blue); text-decoration: none; }
 @media print { .nav, .cta { position: static; } }
 
 /* ---------------------------------------------------------------- responsive */
-@media (max-width: 1060px) {
+@media (max-width: 1160px) {
   .burger { display: inline-flex; }
   .nav-in { flex-wrap: wrap; }
   .nav-links { display: none; flex-basis: 100%; flex-direction: column; align-items: stretch; gap: 0; padding-bottom: 14px; }
@@ -301,3 +301,6 @@ a.badge:hover { border-color: var(--blue); text-decoration: none; }
   .metrics { grid-template-columns: 1fr; gap: 28px; }
   .clip .play { left: 12px; bottom: 56px; }
 }
+
+/* Make room for the dedicated Labs entry without shrinking navigation text. */
+@media(min-width:1161px){.nav>.wrap{max-width:1460px;padding-inline:28px}.nav-links{gap:4px 20px}.nav-links>a{white-space:nowrap}.nav-in{gap:24px}}

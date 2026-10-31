@@ -1973,7 +1973,7 @@ NT.tiers = [
 
   // ------------------------------------------------------------------ UI strings
   var U = {
-    nav: { apiStudio: {zh:'API 开发者中心',en:'API Studio'}, products: { zh: '产品', en: 'Products' }, industries: { zh: '行业', en: 'Industries' }, cases: { zh: '案例与演示', en: 'Cases & demos' }, engage: { zh: '合作方式', en: 'How we work' }, about: { zh: '关于', en: 'About' } },
+    nav: { labs: {zh:'实验室',en:'Labs'}, apiStudio: {zh:'API 开发者中心',en:'API Studio'}, products: { zh: '产品', en: 'Products' }, industries: { zh: '行业', en: 'Industries' }, cases: { zh: '案例与演示', en: 'Cases & demos' }, engage: { zh: '合作方式', en: 'How we work' }, about: { zh: '关于', en: 'About' } },
     contact: { zh: '联系', en: 'Contact' },
     menu: { zh: '菜单', en: 'Menu' },
     switchTo: { zh: 'EN', en: '中文' },
@@ -1987,7 +1987,7 @@ NT.tiers = [
     s1: { zh: '四个行业', en: 'Four industries' },
     s2: { zh: '三条产品线', en: 'Three product lines' },
     s3: { zh: '证据', en: 'Evidence' },
-    s4: { zh: '可以直接试用的工具', en: 'Tools you can try' },
+    s4: { zh: '实验室', en: 'Labs' },
     s5: { zh: '合作方式', en: 'How we work' },
     s5h: { zh: '先做付费小试点，再做完整工具。', en: 'A small paid pilot first, the full tool after.' },
     ctaH: { zh: '有一个具体的热问题？', en: 'Have a specific thermal problem?' },
@@ -2020,8 +2020,8 @@ NT.tiers = [
     count: { zh: '共 {n} 项', en: '{n} entries' },
     libTitle: { zh: '案例库', en: 'Case library' },
     libLead: { zh: '公开资料、公开数据或自建模型上的复现与示范；不是客户交付业绩。', en: 'Reproductions and demos on published work, public data or self-built models; not customer deliveries.' },
-    toolsTitle: { zh: '交互工具', en: 'Interactive tools' },
-    toolsLead: { zh: '在浏览器里实时计算，可离线打开。', en: 'Live calculation in your browser, offline.' },
+    toolsTitle: { zh: '实验室', en: 'Labs' },
+    toolsLead: { zh: '从封装结构到温度预测，动手探索热设计。', en: 'Explore thermal design, from package structure to temperature prediction.' },
     resTitle: { zh: '技术资源', en: 'Technical resources' },
     resLead: { zh: '讲 AI 方法本身的短片，不是案例。', en: 'Short films on the methods themselves; not cases.' },
     notFound: { zh: '没有这个页面', en: 'Page not found' },
@@ -2043,7 +2043,7 @@ NT.tiers = [
   var researchBadge = function (c) { return c.research ? '<span class="badge warn">' + u('research') + '</span>' : ''; };
   var label = function (n, s) { return '<p class="label">' + (n ? '<span class="n">' + n + '</span>' : '') + s + '</p>'; };
   var list = function (arr) { return '<ul class="ticks">' + arr.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>'; };
-  var toolHref = function (id) { return 'tools/' + id + '/index.html?lang=' + lang; };
+  var toolHref = function (id) { return (id === 'advanced-packaging' ? 'labs/advanced-packaging/' : 'tools/' + id + '/index.html') + '?lang=' + lang; };
 
   var ZH_CLIPS = ['cpo', 'mi300x'];   // excerpts that also exist from the Chinese film
   function clip(name, poster, alt) {
@@ -2103,6 +2103,10 @@ NT.tiers = [
   }
 
   var TOOLS = [
+    { id: 'advanced-packaging', img: 'tool-advanced-packaging',
+      name: {zh:'先进封装实验室',en:'Advanced packaging lab'},
+      d: {zh:'旋转、拆解与切换互连，探索 SoC、HBM 和封装层叠。',en:'Rotate, explode and switch interconnects to explore SoC, HBM and package layers.'},
+      scope: {zh:'交互式 3D 结构探索',en:'Interactive 3D structure explorer'} },
     { id: 'h100', img: 'tool-h100',
       name: { zh: 'H100 液冷实验室', en: 'H100 liquid-cooling lab' },
       d: { zh: '拖动功耗、流量和进液温度，实时看整颗芯片的稳态温度场，并对比物理求解。', en: 'Drag power, flow and inlet temperature; see the die’s steady-state field live and compare it with the physics solve.' },
@@ -2380,7 +2384,7 @@ NT.tiers = [
     [/^products\/([\w-]+)$/, function (m) { var p = prodById(m[1]); return p ? product(p) : notFound(); }, function (m) { var p = prodById(m[1]); return p ? p.code + ' · ' + t(p.name) : u('notFound'); }],
     [/^cases$/, function (m, q) { return cases(q); }, function () { return u('libTitle'); }],
     [/^cases\/(\d{3})$/, function (m) { var c = caseById(m[1]); return c ? caseDetail(c) : notFound(); }, function (m) { var c = caseById(m[1]); return c ? t(c.title) : u('notFound'); }],
-    [/^tools$/, tools, function () { return u('toolsTitle'); }],
+    [/^(labs|tools)$/, tools, function () { return u('toolsTitle'); }],
     [/^engage$/, engage, function () { return t(U.nav.engage); }],
     [/^about$/, about, function () { return t(U.nav.about); }],
     [/^resources$/, resources, function () { return u('resTitle'); }],
@@ -2392,9 +2396,9 @@ NT.tiers = [
     return { path: (i >= 0 ? h.slice(0, i) : h).replace(/\/$/, ''), query: i >= 0 ? h.slice(i + 1) : '' };
   }
   function navHtml(path) {
-    var items = ['products', 'industries', 'cases', 'apiStudio', 'engage', 'about'];
+    var items = ['products', 'industries', 'labs', 'cases', 'apiStudio', 'engage', 'about'];
     var top = path.split('/')[0];
-    if (top === 'tools') top = 'cases';
+    if (top === 'tools') top = 'labs';
     if (top === 'resources') top = 'about';
     return '<a class="skip" href="#main">' + u('skip') + '</a><header class="nav"><div class="wrap nav-in">' +
       '<a class="brand" href="#/" aria-label="NeuralThermal">' + NT.logo + '</a>' +
@@ -2407,7 +2411,7 @@ NT.tiers = [
   function footHtml() {
     return '<footer class="foot"><div class="wrap foot-in"><div class="brand dark">' + NT.logo + '</div>' +
       '<nav>' + NT.industries.map(function (i) { return '<a href="' + link('industries/' + i.id) + '">' + t(i.name) + '</a>'; }).join('') + '</nav>' +
-      '<nav>' + NT.products.map(function (p) { return '<a href="' + link('products/' + p.id) + '">' + p.code + '</a>'; }).join('') + '<a href="' + link('tools') + '">' + u('toolsTitle') + '</a><a href="' + link('resources') + '">' + u('resTitle') + '</a></nav>' +
+      '<nav>' + NT.products.map(function (p) { return '<a href="' + link('products/' + p.id) + '">' + p.code + '</a>'; }).join('') + '<a href="' + link('labs') + '">' + u('toolsTitle') + '</a><a href="' + link('resources') + '">' + u('resTitle') + '</a></nav>' +
       '<div><p><a href="mailto:' + EMAIL + '">' + EMAIL + '</a></p><p>' + u('footNote') + '</p><p>' + u('footBuild') + ': ' + fmtDate(BUILD) + '</p>' +
       '</div></div></footer>';
   }
