@@ -1973,7 +1973,7 @@ NT.tiers = [
 
   // ------------------------------------------------------------------ UI strings
   var U = {
-    nav: { products: { zh: '产品', en: 'Products' }, industries: { zh: '行业', en: 'Industries' }, cases: { zh: '案例与演示', en: 'Cases & demos' }, engage: { zh: '合作方式', en: 'How we work' }, about: { zh: '关于', en: 'About' } },
+    nav: { apiStudio: {zh:'API 开发者中心',en:'API Studio'}, products: { zh: '产品', en: 'Products' }, industries: { zh: '行业', en: 'Industries' }, cases: { zh: '案例与演示', en: 'Cases & demos' }, engage: { zh: '合作方式', en: 'How we work' }, about: { zh: '关于', en: 'About' } },
     contact: { zh: '联系', en: 'Contact' },
     menu: { zh: '菜单', en: 'Menu' },
     switchTo: { zh: 'EN', en: '中文' },
@@ -2392,7 +2392,7 @@ NT.tiers = [
     return { path: (i >= 0 ? h.slice(0, i) : h).replace(/\/$/, ''), query: i >= 0 ? h.slice(i + 1) : '' };
   }
   function navHtml(path) {
-    var items = ['products', 'industries', 'cases', 'engage', 'about'];
+    var items = ['products', 'industries', 'cases', 'apiStudio', 'engage', 'about'];
     var top = path.split('/')[0];
     if (top === 'tools') top = 'cases';
     if (top === 'resources') top = 'about';
@@ -2400,7 +2400,7 @@ NT.tiers = [
       '<a class="brand" href="#/" aria-label="NeuralThermal">' + NT.logo + '</a>' +
       '<button class="burger" type="button" aria-expanded="false" aria-controls="nav-links"><span aria-hidden="true"></span>' + u('menu') + '</button>' +
       '<nav class="nav-links" id="nav-links">' + items.map(function (it) {
-        return '<a href="' + link(it) + '"' + (top === it ? ' aria-current="page"' : '') + '>' + t(U.nav[it]) + '</a>';
+        return '<a href="' + (it === 'apiStudio' ? '/api-studio/?lang=' + lang : link(it)) + '"' + (top === it ? ' aria-current="page"' : '') + '>' + t(U.nav[it]) + '</a>';
       }).join('') + '<span class="nav-right"><button class="lang" type="button" id="lang" lang="' + (lang === 'zh' ? 'en' : 'zh-CN') + '" aria-label="' + esc(u('switchLabel')) + '">' + u('switchTo') + '</button>' +
       '<a class="btn primary small" href="' + link('contact') + '">' + u('contact') + '</a></span></nav></div></header>';
   }

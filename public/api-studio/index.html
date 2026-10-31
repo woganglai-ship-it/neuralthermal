@@ -1,0 +1,171 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>NT API Studio · NeuralThermal</title>
+<link rel="stylesheet" href="app.css">
+</head>
+<body>
+<header class="nav">
+  <div class="wrap nav-in">
+    <a class="brand" id="brand" href="/" aria-label="返回官网"></a>
+    <nav class="nav-links" id="tabs">
+      <button data-tab="home">概览</button>
+      <button data-tab="model">建模与验证</button>
+      <button data-tab="design">NT Design</button>
+      <button data-tab="sensor">NT Sensor</button>
+      <button data-tab="flow">NT Workflow</button>
+      <button data-tab="access">接入与收费</button>
+    </nav>
+    <span class="conn" id="conn" title="">…</span>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="page-head">
+    <p class="label">NT API Studio · API 开发者中心</p>
+    <h1>把热模型接进客户的研发流程</h1>
+    <p class="lead">客户的软件把参数发给 NT，几毫秒拿回温度和分析结果。本页以示意冷板为例，所有数字都是仿真或代理模型的结果。</p>
+  </section>
+
+  <!-- 概览 -->
+  <section class="pane" id="p-home">
+    <div class="card">
+      <h3>API 怎么工作</h3>
+      <div class="flowchart">
+        <div class="fc-box"><b>客户的软件</b><span>选型工具、优化程序、智能体</span></div>
+        <div class="fc-arrow"><span>参数（JSON）<br>+ API 密钥</span></div>
+        <div class="fc-box nt"><b>NT 服务器</b><span>客户专属热模型<br>权重和代码不出服务器</span></div>
+        <div class="fc-arrow"><span>结果（JSON）</span></div>
+        <div class="fc-box"><b>回到客户流程</b><span>温度、温度场、压降、报警、方案排序</span></div>
+      </div>
+      <p class="note">客户不用打开我们的网页，也不用装我们的软件。在约定的结构和参数范围内，每次调用都不用重新建模、划网格、跑完整求解；超出范围时 API 会拒绝，并提示需要扩展模型。</p>
+    </div>
+
+    <h3 class="sub">三类服务</h3>
+    <div class="svc3">
+      <div class="card svc"><p class="tag">NT Design · 热预测</p><h3>快速比较大量设计方案</h3>
+        <dl><dt>客户提交</dt><dd>功耗、流量、进水温度、可调的结构参数</dd><dt>NT 返回</dt><dd>最热点温度、温度场、压降</dd></dl>
+        <button class="btn" data-go="design">试一试 →</button></div>
+      <div class="card svc"><p class="tag">NT Sensor · 虚拟温度传感</p><h3>算出测不到的温度</h3>
+        <dl><dt>客户提交</dt><dd>运行数据：功耗、泵流量、进水温度、负载类型</dd><dt>NT 返回</dt><dd>芯片最热点温度曲线和过热报警</dd></dl>
+        <button class="btn" data-go="sensor">试一试 →</button></div>
+      <div class="card svc"><p class="tag">NT Workflow · 批量分析</p><h3>把重复筛选自动化</h3>
+        <dl><dt>客户提交</dt><dd>参数范围、约束、优化目标</dd><dt>NT 返回</dt><dd>方案排序、候选设计、可下载的报告</dd></dl>
+        <button class="btn" data-go="flow">试一试 →</button></div>
+    </div>
+
+    <h3 class="sub">示例：一家液冷冷板厂商（虚构）</h3>
+    <div class="steps">
+      <div class="card"><span class="stepn">1</span><h3>首次建模与验证</h3><p>用客户的仿真和测试数据训练专属模型，按约定的精度验收。本演示用 3,000 次求解器计算训练，测试集上最热点平均误差 <b id="hErr">–</b>。</p><button class="btn" data-go="model">看验证结果 →</button></div>
+      <div class="card"><span class="stepn">2</span><h3>年度使用</h3><p>客户的选型软件输入功耗、流量、进水温度，直接调用 API。按年度套餐计调用次数；本页调用计数仅演示，不计费。</p><button class="btn" data-go="access">看接入方式 →</button></div>
+      <div class="card"><span class="stepn">3</span><h3>扩展</h3><p>新型号、更大的参数范围、全新的冷板结构，需要补充仿真、更新模型，单独报价。</p><button class="btn" data-go="design" data-preset="out">看超范围时怎样 →</button></div>
+    </div>
+    <p class="motto">官网负责让客户看懂，试点负责证明价值，API 负责让客户长期使用。</p>
+  </section>
+
+  <!-- 建模与验证 -->
+  <section class="pane" id="p-model">
+    <div class="kpis" id="vKpis"></div>
+    <div class="grid2 mt">
+      <div class="card"><h3>测试集：代理模型 vs 求解器（最热芯片，300 个没参与训练的设计）</h3><canvas id="parity" class="chart sq"></canvas></div>
+      <div class="side">
+        <div class="card"><h3>适用范围（超出就拒绝）</h3><table class="tbl" id="rangeTbl"></table></div>
+        <div class="card"><h3>验收（示例标准）</h3><ul class="checks" id="accept"></ul></div>
+      </div>
+    </div>
+    <p class="note" id="vNote"></p>
+  </section>
+
+  <!-- NT Design -->
+  <section class="pane" id="p-design">
+    <div class="grid2">
+      <div class="card">
+        <h3>客户提交</h3>
+        <div class="presets"><span>预设：</span>
+          <button class="btn sm" data-preset="typical">常见铲齿</button>
+          <button class="btn sm" data-preset="best">压降预算内最好</button>
+          <button class="btn sm" data-preset="out">超出范围</button></div>
+        <div class="form" id="dForm"></div>
+        <div class="row"><button class="btn primary" id="dRun">调用 API</button><button class="btn" id="dVerify" disabled title="完整三维求解器复核保留在本地完整版">本地完整版提供求解器复核</button></div>
+        <details class="io" open><summary>请求</summary><pre class="code" id="dReq"></pre></details>
+      </div>
+      <div class="side">
+        <div class="kpis" id="dKpis"></div>
+        <div class="card"><h3>结温分布（代理模型预测，俯视）</h3>
+          <div class="mapwrap"><canvas id="dMap" class="map"></canvas></div>
+          <div class="cbar"><canvas id="dCb" height="12"></canvas><div class="cbl"><span id="dLo"></span><span>冷却液流向 → </span><span id="dHi"></span></div></div></div>
+        <div class="card hide" id="dVer"></div>
+        <details class="io"><summary>响应（JSON）</summary><pre class="code" id="dRes"></pre></details>
+      </div>
+    </div>
+  </section>
+
+  <!-- NT Sensor -->
+  <section class="pane" id="p-sensor">
+    <p class="intro-line">某台服务器上的冷板（几何固定），10 分钟运行记录，每 2 秒一点。中途泵流量掉了一次。客户上传运行数据，NT 返回芯片最热点温度。</p>
+    <div class="grid2">
+      <div class="card">
+        <h3>客户提交：运行数据</h3>
+        <canvas id="sInP" class="chart mini"></canvas><canvas id="sInF" class="chart mini"></canvas><canvas id="sInT" class="chart mini"></canvas>
+        <div class="row"><button class="btn primary" id="sRun">调用 API</button></div>
+        <details class="io"><summary>请求</summary><pre class="code" id="sReq"></pre></details>
+      </div>
+      <div class="side">
+        <div class="kpis" id="sKpis"></div>
+        <div class="card"><h3>NT 返回：芯片最热点温度</h3><canvas id="sOut" class="chart tall"></canvas><ul class="alarms" id="sAlarms"></ul></div>
+        <details class="io"><summary>响应（JSON）</summary><pre class="code" id="sRes"></pre></details>
+      </div>
+    </div>
+    <p class="note">按准稳态计算（每个时刻当作稳态），没有考虑热容带来的延迟；运行记录是演示设定的数据。参考点是同一时刻用求解器算的结果，不是实测。</p>
+  </section>
+
+  <!-- NT Workflow -->
+  <section class="pane" id="p-flow">
+    <div class="grid2">
+      <div class="card">
+        <h3>客户提交：扫描范围、约束、目标</h3>
+        <div class="form" id="wForm"></div>
+        <p class="spec" id="wCount"></p>
+        <div class="row"><button class="btn primary" id="wRun">提交批量分析</button></div>
+        <details class="io"><summary>请求</summary><pre class="code" id="wReq"></pre></details>
+      </div>
+      <div class="side">
+        <div class="kpis" id="wKpis"></div>
+        <div class="card"><h3>每个点是一个设计（抽样显示）</h3><canvas id="wSc" class="chart tall"></canvas></div>
+      </div>
+    </div>
+    <div class="card scroll mt"><h3>NT 返回：方案排序（前 10）</h3><table class="tbl" id="wTop"></table>
+      <div class="row"><button class="btn" id="wVerify" disabled title="完整三维求解器复核保留在本地完整版">本地完整版提供求解器复核</button><button class="btn" id="wReport">下载报告（Markdown）</button></div>
+      <div id="wVer"></div></div>
+    <details class="io mt"><summary>响应（JSON）</summary><pre class="code" id="wRes"></pre></details>
+  </section>
+
+  <!-- 接入与收费 -->
+  <section class="pane" id="p-access">
+    <div class="card scroll"><h3>接口</h3><table class="tbl" id="epTbl"></table></div>
+    <div class="grid2 mt">
+      <div class="card"><h3>命令行调用</h3><pre class="code" id="exCurl"></pre></div>
+      <div class="card"><h3>Python 调用</h3><pre class="code" id="exPy"></pre></div>
+    </div>
+    <h3 class="sub">收费结构</h3>
+    <div class="svc3">
+      <div class="card price"><p class="tag">一次性</p><h3>首次建模与验证费</h3><p>数据整理、模型开发、精度验收。</p></div>
+      <div class="card price"><p class="tag">每年</p><h3>年度使用费</h3><p>模型访问、一定调用额度、维护与版本管理。</p></div>
+      <div class="card price"><p class="tag">按需</p><h3>扩展费用</h3><p>新增产品型号、扩大适用范围、私有部署，分别报价。</p></div>
+    </div>
+    <p class="note">金额待定。工程客户主要为精度、适用范围、集成支持和持续可用性付费，所以以年度套餐为主，而不是按每次调用几分钱收费。</p>
+    <div class="card mt"><h3>边界</h3><ul class="plain">
+      <li>模型在服务器上运行，客户只拿到输入和输出，不交付训练代码和模型权重；但不能保证绝对无法逆向。</li>
+      <li>每次调用都有 request_id 和模型版本号，方便追溯；超出已验证范围时直接拒绝，不硬给数字。</li>
+      <li>本演示的模型是示意冷板，不是任何客户的产品；芯片实验室是免费演示入口，也不能直接包装成收费的预测服务。</li>
+    </ul></div>
+  </section>
+</main>
+<footer class="foot"><div class="wrap foot-in"><span class="brand dark" id="brand2"></span><p id="foot">演示：066 示意冷板（Rubin 级 GPU 示意封装，尺寸近似，不是厂商图纸）。参考值来自三维稳态导热求解器，不是实测。公开试用密钥仅供演示，非客户生产凭证。</p></div></footer>
+
+<script src="metadata.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
