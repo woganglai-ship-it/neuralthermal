@@ -1,0 +1,13 @@
+
+/* Match the corporate section header and navigation; feature tabs do not replace it. */
+.wrap{max-width:1200px}
+.site-header{position:sticky;top:0;z-index:30;background:var(--nav);border-bottom:3px solid var(--green)}
+.site-nav-in{min-height:68px;display:flex;align-items:center;gap:28px}.site-header .brand{font-size:21px}.site-header .brand svg.mark{width:28px;height:28px}
+.site-navigation{display:flex;align-items:center;gap:4px 28px;flex:1;font-size:17px}.site-navigation>a{color:var(--on-dark-muted);padding:10px 0;border-bottom:2px solid transparent;white-space:nowrap}.site-navigation>a:hover{color:var(--lime);text-decoration:none}.site-navigation>a[aria-current]{color:#fff;border-bottom-color:var(--green)}.site-nav-right{margin-left:auto;display:flex;align-items:center;gap:12px}.site-lang{min-width:56px;min-height:42px;border:1px solid #ffffff66;background:transparent;color:white;border-radius:6px;padding:4px 14px;cursor:pointer;font-weight:600;font-size:17px}.site-contact{display:inline-flex;align-items:center;justify-content:center;background:var(--green);color:#10170a;white-space:nowrap;border-radius:99px;padding:8px 24px;font-size:17px;font-weight:600}.site-menu{display:none;margin-left:auto;background:transparent;border:1px solid #ffffff66;border-radius:6px;color:white;min-height:44px;padding:4px 14px;align-items:center;gap:10px;cursor:pointer}.site-menu>span:first-child{width:18px;height:2px;background:white;box-shadow:0 -6px white,0 6px white}
+body .page-head.developer-head,body:not([data-page="home"]) .page-head.developer-head{display:block;padding:80px 0 64px;border-bottom:1px solid var(--line);background:var(--canvas)}
+body .developer-head #page-title{font-size:clamp(34px,4vw,52px);line-height:1.2;color:var(--nav);max-width:22em;letter-spacing:0;font-weight:600;margin:0}
+body .developer-head #page-lead{font-size:24px;line-height:1.5;color:var(--muted);max-width:32em;margin-top:16px}
+.developer-main{padding-top:36px}
+@media(min-width:1161px){.site-header>.wrap{max-width:1460px;padding-inline:28px}.site-navigation{gap:4px 20px}.site-nav-in{gap:24px}}
+@media(max-width:1160px){.site-nav-in{flex-wrap:wrap}.site-menu{display:inline-flex}.site-navigation{display:none;flex-basis:100%;flex-direction:column;align-items:stretch;gap:0;padding-bottom:14px}.site-navigation.open{display:flex}.site-navigation>a{padding:14px 0;border-bottom:1px solid #ffffff24;font-size:19px}.site-nav-right{margin:12px 0 0;justify-content:space-between}}
+@media(max-width:760px){body .page-head.developer-head,body:not([data-page="home"]) .page-head.developer-head{padding:48px 0 40px}body .developer-head #page-lead{font-size:20px}.wrap{padding-inline:20px}.developer-main{padding-top:24px}}

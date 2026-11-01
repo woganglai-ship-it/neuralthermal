@@ -1978,7 +1978,7 @@ NT.tiers = [
 
   // ------------------------------------------------------------------ UI strings
   var U = {
-    nav: { labs: {zh:'实验室',en:'Labs'}, apiStudio: {zh:'API 开发者中心',en:'API Studio'}, products: { zh: '产品', en: 'Products' }, industries: { zh: '行业', en: 'Industries' }, cases: { zh: '案例与演示', en: 'Cases & demos' }, engage: { zh: '合作方式', en: 'How we work' }, about: { zh: '关于', en: 'About' } },
+    nav: { labs: {zh:'实验室',en:'Labs'}, apiStudio: {zh:'开发者中心',en:'Developer Center'}, products: { zh: '产品', en: 'Products' }, industries: { zh: '行业', en: 'Industries' }, cases: { zh: '案例与演示', en: 'Cases & demos' }, engage: { zh: '合作方式', en: 'How we work' }, about: { zh: '关于', en: 'About' } },
     contact: { zh: '联系', en: 'Contact' },
     menu: { zh: '菜单', en: 'Menu' },
     switchTo: { zh: 'EN', en: '中文' },

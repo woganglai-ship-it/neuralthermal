@@ -3,20 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>NT API Studio · NeuralThermal</title>
+<title>开发者中心 · NeuralThermal</title>
 <link rel="stylesheet" href="app.css">
 <link rel="stylesheet" href="studio.css">
+<link rel="stylesheet" href="site-shell.css">
 </head>
 <body>
-<header class="nav"><div class="wrap nav-in">
-<a class="brand" id="brand" href="/" aria-label="返回官网"></a>
-<nav class="site-links" aria-label="网站导航"><a href="/#/labs">实验室</a><a href="/api-studio/" aria-current="page">API 开发者中心</a><a href="/#/contact" class="contact-link">联系</a></nav>
-</div></header>
-<main class="wrap">
-<section class="page-head">
-<div class="hero-copy"><p class="label">NT API Studio</p><h1 id="page-title">让热模型，<br>成为你的研发能力。</h1><p class="lead" id="page-lead">连接设计工具与智能体，实时预测温度、感知热点、筛选方案。</p><div class="hero-actions"><button class="btn primary" data-go="design">体验热预测 →</button><button class="btn" data-go="access">查看接口</button></div></div>
-<figure class="hero-visual"><img src="/assets/img/api-field.png" alt="典型设计的 API 温度场预测"><figcaption>参数输入 → 云端模型 → 温度结果</figcaption></figure>
-</section>
+<header class="site-header"><div class="wrap site-nav-in"><a class="brand" id="brand" href="/" aria-label="NeuralThermal"></a><button class="site-menu" type="button" aria-expanded="false" aria-controls="site-navigation"><span aria-hidden="true"></span><span id="menu-label">菜单</span></button><nav class="site-navigation" id="site-navigation" aria-label="主导航"></nav></div></header>
+<header class="page-head developer-head"><div class="wrap"><h1 id="page-title">开发者中心</h1><p class="lead" id="page-lead">将热预测、虚拟传感与批量筛选，接入你的研发流程。</p></div></header>
+<main class="wrap developer-main">
 <div class="studio-tabs"><nav class="nav-links" id="tabs" aria-label="API 功能">
 <button data-tab="home">概览</button><button data-tab="design">热预测</button><button data-tab="sensor">虚拟传感</button><button data-tab="flow">批量筛选</button><button data-tab="model">精度验证</button><button data-tab="access">接入</button>
 </nav><span class="conn" id="conn">连接中</span></div>

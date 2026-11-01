@@ -14,6 +14,19 @@
   /* NeuralThermal mark and wordmark, copied unchanged from the official site (070 NT Website/source/src/logo.js) */
   var LOGO = '<svg class="mark" viewBox="0 0 32 32" fill="none" stroke-linecap="round" aria-hidden="true"><g stroke="#0b6bcb" stroke-width="1.4"><path d="M2 3 L24 29"/><path d="M22 3 L6 29"/><path d="M2 3 L28 29"/><path d="M28 3 L4 29"/><path d="M23 3 L13 29"/><path d="M9 3 L29 29"/></g><path d="M11 3 L23 29" stroke="#e2580a" stroke-width="1.9"/></svg><span>Neural<svg class="t" viewBox="0 0 62 72" aria-hidden="true"><rect width="20" height="15" fill="#2FD4E8"/><rect x="21" width="20" height="15" fill="currentColor"/><rect x="42" width="20" height="15" fill="#76B900"/><rect x="21" y="15" width="20" height="57" fill="currentColor"/></svg>hermal</span>';
   $('brand').innerHTML = LOGO; $('brand2').innerHTML = LOGO;
+  var lang = new URLSearchParams(location.search).get('lang') || localStorage.getItem('nt-lang') || (navigator.language.indexOf('zh') === 0 ? 'zh' : 'en');
+  var isEn = lang === 'en';
+  var siteLabels = [['products','产品','Products'],['industries','行业','Industries'],['labs','实验室','Labs'],['cases','案例与演示','Cases & demos'],['developers','开发者中心','Developer Center'],['engage','合作方式','How we work'],['about','关于','About']];
+  $('brand').href = '/?lang=' + lang;
+  $('site-navigation').innerHTML = siteLabels.map(function (x) { return '<a href="' + (x[0] === 'developers' ? '/api-studio/?lang=' + lang : '/?lang=' + lang + '#/' + x[0]) + '"' + (x[0] === 'developers' ? ' aria-current="page"' : '') + '>' + x[isEn ? 2 : 1] + '</a>'; }).join('') + '<span class="site-nav-right"><button class="site-lang" id="site-lang">' + (isEn ? '中文' : 'EN') + '</button><a class="site-contact" href="/?lang=' + lang + '#/contact">' + (isEn ? 'Contact' : '联系') + '</a></span>';
+  $('page-title').textContent = isEn ? 'Developer Center' : '开发者中心';
+  $('page-lead').textContent = isEn ? 'Integrate thermal prediction, virtual sensing and design screening into your workflow.' : '将热预测、虚拟传感与批量筛选，接入你的研发流程。';
+  $('menu-label').textContent = isEn ? 'Menu' : '菜单';
+  document.title = (isEn ? 'Developer Center' : '开发者中心') + ' · NeuralThermal';
+  document.documentElement.lang = isEn ? 'en' : 'zh-CN';
+  document.querySelector('.site-menu').onclick = function () { var open = this.getAttribute('aria-expanded') !== 'true'; this.setAttribute('aria-expanded', String(open)); $('site-navigation').classList.toggle('open', open); };
+  $('site-lang').onclick = function () { var next = isEn ? 'zh' : 'en'; localStorage.setItem('nt-lang', next); sessionStorage.setItem('nt-lang-tab', next); var url = new URL(location.href); url.searchParams.set('lang', next); location.href = url.href; };
+
 
   /* ---------- API 调用：服务器或浏览器内 ---------- */
   function api(path, body) {
@@ -332,16 +345,6 @@
     if (!$('p-' + name)) name = 'home';
     tab = name;
     document.body.dataset.page = name;
-    var headings = {
-      home: ['让热模型，<br>成为你的研发能力。', '连接设计工具与智能体，实时预测温度、感知热点、筛选方案。'],
-      design: ['调整参数，即刻看见温度。', 'NT Design · 预测热点、温度场与压降。'],
-      sensor: ['从运行数据，感知芯片热点。', 'NT Sensor · 估算温度，识别超限。'],
-      flow: ['比较更多设计，找到更优方案。', 'NT Workflow · 设置约束，筛选候选。'],
-      model: ['每一次预测，都有验证依据。', '对照求解器，查看误差与适用范围。'],
-      access: ['让热模型接入你的工作流。', '支持设计软件、优化程序与智能体。']
-    };
-    $('page-title').innerHTML = headings[name][0];
-    $('page-lead').textContent = headings[name][1];
     document.querySelectorAll('#tabs button').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.tab === name)); });
     document.querySelectorAll('#tabs button').forEach(function (b) { b.classList.toggle('on', b.dataset.tab === name); });
     document.querySelectorAll('.pane').forEach(function (p) { p.classList.toggle('on', p.id === 'p-' + name); });
