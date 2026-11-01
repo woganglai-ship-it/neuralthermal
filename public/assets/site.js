@@ -2112,7 +2112,7 @@ NT.tiers = [
   }
 
   var TOOLS = [
-    { id: 'advanced-packaging', img: 'tool-advanced-packaging',
+    { id: 'advanced-packaging', img: 'tool-advanced-packaging-top',
       name: {zh:'先进封装实验室',en:'Advanced packaging lab'},
       d: {zh:'旋转、拆解与切换互连，探索 SoC、HBM 和封装层叠。',en:'Rotate, explode and switch interconnects to explore SoC, HBM and package layers.'},
       scope: {zh:'交互式 3D 结构探索',en:'Interactive 3D structure explorer'} },
