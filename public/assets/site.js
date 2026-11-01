@@ -2121,7 +2121,7 @@ NT.tiers = [
       d: { zh: '拖动功耗、流量和进液温度，实时看整颗芯片的稳态温度场，并对比物理求解。', en: 'Drag power, flow and inlet temperature; see the die’s steady-state field live and compare it with the physics solve.' },
       scope: { zh: '公开简化模型；不含客户数据，不含训练代码与训练数据。', en: 'Public simplified model; no customer data, no training code or data.' } },
     { id: 'heatsink', img: 'tool-heatsink',
-      name: { zh: '散热器设计工具', en: 'Heat-sink design lab' },
+      name: { zh: 'Heatsink选型实验室', en: 'Heatsink Selection Lab' },
       d: { zh: '选器件，改散热器与风扇，看结温、热阻、压降和重量。', en: 'Pick a device, change heat sink and fan, read junction temperature, resistance, pressure drop and mass.' },
       scope: { zh: '风冷，基于公开工程关联式；跨行业工具。', en: 'Air cooling on published correlations; cross-industry.' } },
     { id: 'chip-thermal', img: 'tool-chip-thermal',
