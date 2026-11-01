@@ -364,7 +364,7 @@ NT.cases = [
   },
   {
     "id": "060",
-    "img": "case-hbm",
+    "img": "case-rubin",
     "ind": [
       "packaging"
     ],
@@ -374,41 +374,46 @@ NT.cases = [
     ],
     "ev": "model",
     "title": {
-      "zh": "HBM 内部的热，AI 能算准吗？",
-      "en": "Heat inside an HBM stack: can AI get it right?"
+      "zh": "堆叠芯片内部，AI 能算准吗？",
+      "en": "Can AI predict heat inside stacked chips?"
     },
     "tag": {
-      "zh": "单颗 8-Hi HBM · U-Net",
-      "en": "Single 8-Hi HBM · U-Net"
+      "zh": "两层芯片 + TSV · U-Net",
+      "en": "Two-die stack + TSV · U-Net"
     },
     "problem": {
-      "zh": "HBM 内部温升要分层看，每换一组功耗就要重算。",
-      "en": "HBM temperature rise must be read layer by layer, and each new power map needs a new solve."
+      "zh": "以 Rubin 级封装示意展示堆叠结构，在两层芯片＋TSV 简化模型上预测内部稳态温升，快速比较不同功耗分布。",
+      "en": "A Rubin-class package illustration introduces the stack. A simplified two-die TSV model predicts internal steady-state temperature rise across power maps."
     },
     "m": [
       {
-        "v": "0.29 K",
+        "v": "0.11 K",
         "l": {
-          "zh": "场平均误差",
-          "en": "mean field error"
+          "zh": "温升场平均绝对误差",
+          "en": "mean absolute field error"
         },
         "c": {
-          "zh": "150 组独立测试；最高温升误差 0.24 K",
-          "en": "150 independent tests; peak-rise error 0.24 K"
+          "zh": "150 组独立测试；最高温升平均误差 0.09 K",
+          "en": "150 held-out tests; peak-rise MAE 0.09 K"
         }
       },
       {
-        "v": "80.7 %",
+        "v": "1.05 ms",
         "l": {
-          "zh": "判对最热芯片层",
-          "en": "hottest layer identified"
+          "zh": "每次 AI 预测",
+          "en": "per AI prediction"
         },
         "c": {
-          "zh": "场误差小不等于热点总判对",
-          "en": "low field error ≠ hot spot always right"
+          "zh": "同一 CPU 热身后中位数；复用 LU 回代 3.66 ms",
+          "en": "Warmed CPU median; reused LU backsolve 3.66 ms"
         }
       }
-    ]
+    ],
+    "clip": "rubin",
+    "value": {
+      "zh": "固定结构下快速扫描功耗组合，将更有价值的工况交给求解器复核。结果来自简化模型验证，不代表真实 HBM4 的实测精度。",
+      "en": "Screen power combinations on a fixed structure and reserve solver checks for selected cases. Accuracy is validated on the simplified model, not measured HBM4 hardware."
+    }
   },
   {
     "id": "061",
@@ -1637,8 +1642,8 @@ NT.industries = [
       {
         "id": "hbm",
         "t": {
-          "zh": "HBM 内部温升，每换一组功耗就要重算",
-          "en": "HBM temperature rise needs a new solve for every power map"
+          "zh": "堆叠芯片内部温升，每换一组功耗就要重算",
+          "en": "Stacked-die temperature rise needs a new solve for every power map"
         },
         "p": "design",
         "c": "060"
@@ -2033,6 +2038,7 @@ NT.tiers = [
   function u(k) { return t(U[k]); }
   var esc = function (s) { return String(s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
   var img = function (name, alt, cls, eager) {
+    if (name === 'case-rubin' && lang === 'zh') name += '-zh';
     return '<img class="' + (cls || '') + '" src="assets/img/' + name + '.jpg" alt="' + esc(alt) + '"' + (eager ? ' fetchpriority="high"' : '') + '>';
   };
   var link = function (path) { return '#/' + path; };
@@ -2045,12 +2051,15 @@ NT.tiers = [
   var list = function (arr) { return '<ul class="ticks">' + arr.map(function (x) { return '<li>' + x + '</li>'; }).join('') + '</ul>'; };
   var toolHref = function (id) { return (id === 'advanced-packaging' ? 'labs/advanced-packaging/' : 'tools/' + id + '/index.html') + '?lang=' + lang; };
 
-  var ZH_CLIPS = ['cpo', 'mi300x'];   // excerpts that also exist from the Chinese film
+  var ZH_CLIPS = ['cpo', 'mi300x', 'rubin'];   // excerpts that also exist from the Chinese film
   function clip(name, poster, alt) {
+    var full = name === "rubin";
+    var playLabel = full ? (lang === "zh" ? "播放完整视频" : "Play full video") : u("clip");
+    var playNote = full ? (lang === "zh" ? "完整视频 · 含音频 · 点击播放" : "Full video · with audio · click to play") : u("clipNote");
     if (lang === 'zh' && ZH_CLIPS.indexOf(name) >= 0) { name += '-zh'; poster += '-zh'; }
     return '<figure class="clip" data-clip="' + name + '">' + img(poster, alt) +
-      '<button class="play" type="button" aria-label="' + esc(u('clip') + ' · ' + alt) + '"><span aria-hidden="true">▶</span>' + u('clip') + '</button>' +
-      '<figcaption>' + u('clipNote') + '</figcaption></figure>';
+      '<button class="play" type="button" aria-label="' + esc(playLabel + ' · ' + alt) + '"><span aria-hidden="true">▶</span>' + playLabel + '</button>' +
+      '<figcaption>' + playNote + '</figcaption></figure>';
   }
 
   // Number + label + condition, always shown together.
@@ -2450,7 +2459,7 @@ NT.tiers = [
         var fig = b.closest('.clip');
         var v = document.createElement('video');
         v.src = 'assets/video/clip-' + fig.dataset.clip + '.mp4';
-        v.controls = true; v.muted = true; v.playsInline = true; v.autoplay = true;
+        v.controls = true; v.muted = fig.dataset.clip.indexOf('rubin') !== 0; v.playsInline = true; v.autoplay = true;
         v.setAttribute('aria-label', b.getAttribute('aria-label'));
         v.poster = fig.querySelector('img').src;
         fig.replaceChild(v, fig.querySelector('img'));
