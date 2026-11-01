@@ -2224,7 +2224,7 @@ NT.tiers = [
       g(u('evidence'), 'ev', Object.keys(NT.evidence).map(function (k) { return [k, t(NT.evidence[k])]; })) +
       '<label class="search"><span class="vh">' + u('search') + '</span><input id="q" type="search" placeholder="' + esc(u('search')) + '" value="' + esc(filt.q) + '"></label></div>' +
       '<p class="count" id="count" aria-live="polite"></p><ul class="case-rows" id="lib"></ul></div></section>' +
-      '<section class="band alt"><div class="wrap">' + label('', u('toolsTitle')) + toolPanels() + '</div></section>' + cta();
+      cta();
   }
   function fillLibrary() {
     var lib = document.getElementById('lib');
