@@ -1,5 +1,7 @@
 # NT Hub
 
+**每日更新与筛选规则见 [UPDATE_RULES.md](UPDATE_RULES.md)**（栏目、来源核实、解读写法、Top 5、发布与回退、换电脑后如何恢复）。
+
 `neuralthermal.com/hub/` 是独立的 Cloudflare Worker `nt-hub`，只接管 `/hub*` 路由，部署它不会动主站 Worker `neuralthermal`。页面直接用主站的 `/assets/site.css` 和 `/assets/img/`。
 
 - 条目：`public/hub/items.js`，新条目加在最前面，`added` 写收录日期
