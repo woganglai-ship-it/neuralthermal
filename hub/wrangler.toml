@@ -1,0 +1,14 @@
+# NT Hub · separate Worker that serves only neuralthermal.com/hub*
+# The main site (Worker "neuralthermal") is untouched; /assets/* still comes from it.
+name = "nt-hub"
+compatibility_date = "2026-11-01"
+workers_dev = false
+routes = [
+  { pattern = "neuralthermal.com/hub*", zone_name = "neuralthermal.com" },
+  { pattern = "www.neuralthermal.com/hub*", zone_name = "neuralthermal.com" }
+]
+
+[assets]
+directory = "./public"
+html_handling = "auto-trailing-slash"
+not_found_handling = "none"

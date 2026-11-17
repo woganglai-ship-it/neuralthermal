@@ -51,7 +51,7 @@
 
   // ------------------------------------------------------------------ UI strings
   var U = {
-    nav: { labs: {zh:'实验室',en:'Labs'}, apiStudio: {zh:'开发者中心',en:'Developer Center'}, products: { zh: '产品', en: 'Products' }, industries: { zh: '行业', en: 'Industries' }, cases: { zh: '案例与演示', en: 'Cases & demos' }, engage: { zh: '合作方式', en: 'How we work' }, about: { zh: '关于', en: 'About' } },
+    nav: { labs: {zh:'实验室',en:'Labs'}, hub: {zh:'NT Hub',en:'NT Hub'}, apiStudio: {zh:'开发者中心',en:'Developer Center'}, products: { zh: '产品', en: 'Products' }, industries: { zh: '行业', en: 'Industries' }, cases: { zh: '案例与演示', en: 'Cases & demos' }, engage: { zh: '合作方式', en: 'How we work' }, about: { zh: '关于', en: 'About' } },
     contact: { zh: '联系', en: 'Contact' },
     menu: { zh: '菜单', en: 'Menu' },
     switchTo: { zh: 'EN', en: '中文' },
@@ -486,7 +486,7 @@
     return { path: (i >= 0 ? h.slice(0, i) : h).replace(/\/$/, ''), query: i >= 0 ? h.slice(i + 1) : '' };
   }
   function navHtml(path) {
-    var items = ['products', 'industries', 'labs', 'cases', 'apiStudio', 'engage', 'about'];
+    var items = ['products', 'industries', 'labs', 'cases', 'hub', 'apiStudio', 'engage', 'about'];
     var top = path.split('/')[0];
     if (top === 'tools') top = 'labs';
     if (top === 'resources') top = 'about';
@@ -494,14 +494,14 @@
       '<a class="brand" href="#/" aria-label="NeuralThermal">' + NT.logo + '</a>' +
       '<button class="burger" type="button" aria-expanded="false" aria-controls="nav-links"><span aria-hidden="true"></span>' + u('menu') + '</button>' +
       '<nav class="nav-links" id="nav-links">' + items.map(function (it) {
-        return '<a href="' + (it === 'apiStudio' ? '/api-studio/?lang=' + lang : link(it)) + '"' + (top === it ? ' aria-current="page"' : '') + '>' + t(U.nav[it]) + '</a>';
+        return '<a href="' + (it === 'apiStudio' ? '/api-studio/?lang=' + lang : it === 'hub' ? '/hub/' : link(it)) + '"' + (top === it ? ' aria-current="page"' : '') + '>' + t(U.nav[it]) + '</a>';
       }).join('') + '<span class="nav-right"><button class="lang" type="button" id="lang" lang="' + (lang === 'zh' ? 'en' : 'zh-CN') + '" aria-label="' + esc(u('switchLabel')) + '">' + u('switchTo') + '</button>' +
       '<a class="btn primary small" href="' + link('contact') + '">' + u('contact') + '</a></span></nav></div></header>';
   }
   function footHtml() {
     return '<footer class="foot"><div class="wrap foot-in"><div class="brand dark">' + NT.logo + '</div>' +
       '<nav>' + NT.industries.map(function (i) { return '<a href="' + link('industries/' + i.id) + '">' + t(i.name) + '</a>'; }).join('') + '</nav>' +
-      '<nav>' + NT.products.map(function (p) { return '<a href="' + link('products/' + p.id) + '">' + p.code + '</a>'; }).join('') + '<a href="' + link('labs') + '">' + u('toolsTitle') + '</a><a href="' + link('resources') + '">' + u('resTitle') + '</a></nav>' +
+      '<nav>' + NT.products.map(function (p) { return '<a href="' + link('products/' + p.id) + '">' + p.code + '</a>'; }).join('') + '<a href="' + link('labs') + '">' + u('toolsTitle') + '</a><a href="' + link('resources') + '">' + u('resTitle') + '</a><a href="/hub/">NT Hub</a></nav>' +
       '<div><p><a href="mailto:' + EMAIL + '">' + EMAIL + '</a></p><p>' + u('footNote') + '</p><p>' + u('footBuild') + ': ' + fmtDate(BUILD) + '</p>' +
       '</div></div></footer>';
   }

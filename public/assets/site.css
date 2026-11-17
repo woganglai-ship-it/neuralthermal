@@ -355,3 +355,7 @@ a.badge:hover { border-color: var(--blue); text-decoration: none; }
   .nav-links > a { border-bottom-color: rgba(255, 255, 255, .2); }
 }
 @media print { .nav::after, .cta::before { display: none; } }
+
+/* NT Hub joined the nav (2026-11-17): tighten spacing just above the burger breakpoint so eight links stay on one line. */
+@media (min-width: 1161px) and (max-width: 1320px) { .nav-links { gap: 4px 13px; } .nav-in { gap: 16px; } .nav-right { gap: 8px; } }
+.nav-right > * { flex: none; white-space: nowrap; }

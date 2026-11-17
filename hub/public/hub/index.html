@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NT Hub · NeuralThermal</title>
+<meta name="description" content="NT Hub：物理 AI 与先进计算热管理情报汇总，包括行业动态、升学留学、会议与竞赛。">
+<meta name="theme-color" content="#1F5FA8">
+<link rel="icon" href="/assets/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/assets/site.css">
+<link rel="stylesheet" href="hub.css">
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<header class="nav"><div class="wrap nav-in">
+  <a class="brand" href="/" aria-label="NeuralThermal"><svg class="mark" viewBox="0 0 32 32" fill="none" stroke-linecap="round" aria-hidden="true"><g stroke="#0b6bcb" stroke-width="1.4"><path d="M2 3 L24 29"/><path d="M22 3 L6 29"/><path d="M2 3 L28 29"/><path d="M28 3 L4 29"/><path d="M23 3 L13 29"/><path d="M9 3 L29 29"/></g><path d="M11 3 L23 29" stroke="#e2580a" stroke-width="1.9"/></svg><span>Neural<svg class="t" viewBox="0 0 62 72" aria-hidden="true"><rect width="20" height="15" fill="#2FD4E8"/><rect x="21" width="20" height="15" fill="currentColor"/><rect x="42" width="20" height="15" fill="#76B900"/><rect x="21" y="15" width="20" height="57" fill="currentColor"/></svg>hermal</span></a>
+  <button class="burger" type="button" aria-expanded="false" aria-controls="nav-links"><span aria-hidden="true"></span>菜单</button>
+  <nav class="nav-links" id="nav-links">
+    <a href="/#/products">产品</a><a href="/#/industries">行业</a><a href="/#/labs">实验室</a><a href="/#/cases">案例与演示</a>
+    <a href="/hub/" aria-current="page">NT Hub</a><a href="/api-studio/?lang=zh">开发者中心</a><a href="/#/engage">合作方式</a><a href="/#/about">关于</a>
+    <span class="nav-right"><a class="btn primary small" href="/#/contact">联系</a></span>
+  </nav>
+</div></header>
+
+<main id="main" tabindex="-1">
+  <section class="page-head hub-head"><div class="wrap">
+    <p class="hub-kicker">NT Hub</p>
+    <h1>物理 AI 与先进计算情报汇总</h1>
+    <p class="hub-lede">我们持续整理物理 AI、先进计算与热管理方向的行业动态、升学留学机会、会议与竞赛，每条注明来源和时间，点标题可直达原文。每两天更新一次。</p>
+  </div></section>
+
+  <section class="hub-body"><div class="wrap">
+    <div class="hub-tabs" role="toolbar" aria-label="栏目">
+      <button class="chip" type="button" data-cat="" aria-pressed="true">全部</button>
+      <button class="chip" type="button" data-cat="news" aria-pressed="false">物理 AI 与行业动态</button>
+      <button class="chip" type="button" data-cat="study" aria-pressed="false">升学留学</button>
+      <button class="chip" type="button" data-cat="contest" aria-pressed="false">会议与竞赛</button>
+    </div>
+    <div id="hub-list" aria-live="polite"></div>
+    <noscript><p>本页需要启用 JavaScript。</p></noscript>
+    <p class="hub-note">信息来自各来源的公开页面，日期和名额请以原文为准。发现有误或想推荐线索，欢迎写信至 <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>。</p>
+  </div></section>
+</main>
+
+<footer class="foot"><div class="wrap hub-foot">
+  <a class="brand dark" href="/" aria-label="NeuralThermal 首页"><span>NeuralThermal</span></a>
+  <p>AI for Science, AI for Engineering.</p>
+</div></footer>
+
+<script src="items.js"></script>
+<script src="hub.js"></script>
+</body>
+</html>
