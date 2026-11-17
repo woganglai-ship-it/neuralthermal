@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="David Mashiah">
+  <!--
+    Geometric D, one stroke weight throughout, drawn as a single
+    even-odd path so the counter is a hole rather than a second shape.
+    The letter is 40 units on a 64 grid with a 6-unit stroke, which is
+    the lightest it can go and still resolve as a D at 16px — that size
+    is the constraint the whole mark is drawn to, not an afterthought.
+  -->
+  <defs>
+    <linearGradient id="dm-g" x1="0" y1="0" x2="64" y2="64" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#0B3D91"/>
+      <stop offset="1" stop-color="#0B6E6C"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="url(#dm-g)"/>
+  <path fill="#fff" fill-rule="evenodd"
+        d="M14 12 H30 A20 20 0 0 1 30 52 H14 Z
+           M20 18 H30 A14 14 0 0 1 30 46 H20 Z"/>
+</svg>

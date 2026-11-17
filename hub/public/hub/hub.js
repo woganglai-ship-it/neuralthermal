@@ -19,7 +19,7 @@
       when.push(`<span class="hub-due${past ? ' past' : ''}">${past ? '已截止' : '截止'} ${day(x.deadline)}</span>`);
     }
     if (x.when) when.push(`<span>${esc(x.when)}</span>`);
-    const pic = x.img ? `<a class="hub-pic" href="${esc(x.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="/assets/img/${esc(x.img)}" alt="" loading="lazy"></a>` : '';
+    const pic = `<a class="hub-pic" href="${esc(x.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="${x.logo ? 'logos/' + esc(x.logo) : '/assets/favicon.svg'}" alt="" loading="lazy"></a>`;
     return `<article class="hub-item"><div>
       <div class="hub-meta">${meta.join('')}</div>
       <h2><a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(x.title)}</a></h2>
@@ -29,7 +29,12 @@
   }
 
   function render(cat) {
-    const rows = items.filter(x => !cat || x.cat === cat);
+    if (cat === 'top') {
+      const picks = items.filter(x => x.top).sort((a, b) => a.top - b.top);
+      list.innerHTML = '<h3 class="hub-day">本期精选</h3>' + picks.map(card).join('');
+      return;
+    }
+    const rows = items.filter(x => x.cat === cat);
     let html = '', last = '';
     for (const x of rows) {
       if (x.added !== last) { last = x.added; html += `<h3 class="hub-day">${day(x.added)} 收录</h3>`; }
@@ -49,5 +54,5 @@
     burger.setAttribute('aria-expanded', String(open));
   });
 
-  render('');
+  render('top');
 })();
