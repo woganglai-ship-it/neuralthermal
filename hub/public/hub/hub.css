@@ -25,6 +25,11 @@
 /* Publisher logo card: logos keep their own proportions and are never enlarged past their native size. */
 .hub-pic { display: flex; align-items: center; justify-content: center; aspect-ratio: 16 / 10; border-radius: 12px; overflow: hidden; background: var(--surface); border: 1px solid var(--line); }
 .hub-pic img { width: auto; height: auto; max-width: 70%; max-height: 56%; object-fit: contain; }
+.hub-more { display: block; margin: 32px auto 0; }
+.hub-month { margin: 40px 0 0; font-size: 17px; font-weight: 600; color: var(--muted); }
+.hub-month:first-child { margin-top: 0; }
+.hub-past { margin-top: 40px; padding: 0; border: 0; background: none; font: inherit; font-size: 16px; color: var(--blue); cursor: pointer; }
+.hub-past:hover { text-decoration: underline; }
 .hub-note { margin-top: 40px; font-size: 15px; color: var(--muted); }
 .hub-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .hub-foot p { margin: 0; }
