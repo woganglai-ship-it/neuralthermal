@@ -9,18 +9,18 @@
   const T = {
     zh: { title: 'NT Hub · NeuralThermal', skip: '跳到正文', menu: '菜单', products: '产品', industries: '行业', labs: '实验室', cases: '案例与演示', api: '开发者中心', engage: '合作方式', about: '关于', contact: '联系',
       switchTo: 'EN', switchLabel: 'Switch to English', h1: '物理 AI 与先进计算前沿速递',
-      lede: '我们持续整理物理 AI、先进计算与热管理方向的行业动态、升学留学机会、会议与竞赛，每条注明来源和时间，点标题可直达原文。每两天更新一次。',
-      news: '物理 AI 与行业动态', study: '升学留学', contest: '会议与竞赛', more: '查看更多', past: n => `往期（${n} 条）`, empty: '暂无条目。',
+      lede: '我们持续整理物理 AI 与先进计算方向的前沿动态、硕博留学机会、国内外会议与竞赛，每条注明来源和时间，点标题可直达原文。每两天更新一次。',
+      ai: '物理 AI', compute: '先进计算', study: '硕博留学', contest: '会议与竞赛', more: '查看更多', past: n => `往期（${n} 条）`, empty: '暂无条目。',
       due: '截止', closed: '已截止', tabs: '栏目',
       note: '信息来自各来源的公开页面，日期和名额请以原文为准。发现有误或想推荐线索，欢迎写信至 <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>。' },
     en: { title: 'NT Hub · NeuralThermal', skip: 'Skip to content', menu: 'Menu', products: 'Products', industries: 'Industries', labs: 'Labs', cases: 'Cases & demos', api: 'Developer Center', engage: 'How we work', about: 'About', contact: 'Contact',
       switchTo: '中文', switchLabel: '切换到中文', h1: 'Physical AI & Advanced Computing Briefing',
-      lede: 'We track news, graduate study openings, conferences and competitions in physical AI, advanced computing and thermal management. Every item names its source and date, and each title links to the original. Updated every two days.',
-      news: 'Physical AI & industry', study: 'Graduate study', contest: 'Conferences & contests', more: 'Show more', past: n => `Archive (${n})`, empty: 'Nothing here yet.',
+      lede: 'We track physical AI and advanced computing news, funded master\'s and PhD openings abroad, and conferences and competitions in China and worldwide. Every item names its source and date, and each title links to the original. Updated every two days.',
+      ai: 'Physical AI', compute: 'Advanced computing', study: 'Graduate study abroad', contest: 'Conferences & contests', more: 'Show more', past: n => `Archive (${n})`, empty: 'Nothing here yet.',
       due: 'Deadline', closed: 'Closed', tabs: 'Sections',
       note: 'Items come from public pages; check the original for exact dates and places. Spotted an error or have a lead? Write to <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>.' }
   }[lang];
-  const CAT = { news: T.news, study: T.study, contest: T.contest };
+  const CAT = { ai: T.ai, compute: T.compute, study: T.study, contest: T.contest };
   const pick = (x, k) => (lang === 'en' && x[k + '_en']) || x[k];
   const PAGE = 10;
   const items = (window.NT_HUB_ITEMS || []).slice();
@@ -56,8 +56,8 @@
   // Newest collection day first; inside a day, newest publish date first, undated last.
   items.sort((a, b) => (b.added || '').localeCompare(a.added || '') || (b.date || '0').localeCompare(a.date || '0'));
 
-  // An item expires once its deadline passes; without a deadline, news keeps 30 days from collection, others 90.
-  const expired = x => x.deadline ? x.deadline < today : daysAgo(x.added || today) > (x.cat === 'news' ? 30 : 90);
+  // An item expires once its deadline passes; without a deadline, 物理 AI and 先进计算 keep 30 days from collection, others 90.
+  const expired = x => x.deadline ? x.deadline < today : daysAgo(x.added || today) > (x.cat === 'ai' || x.cat === 'compute' ? 30 : 90);
   const current = items.filter(x => !expired(x));
   const past = items.filter(expired);
 

@@ -11,7 +11,8 @@
 .hub-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 15px; color: var(--muted); }
 .hub-cat { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
 .hub-cat::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
-.hub-cat.news { color: var(--ai-deep); }
+.hub-cat.ai { color: var(--ai-deep); }
+.hub-cat.compute { color: var(--cool); }
 .hub-cat.study { color: var(--blue); }
 .hub-cat.contest { color: var(--green-ink); }
 .hub-item h2 { margin: 8px 0 8px; font-size: 22px; line-height: 1.4; }
