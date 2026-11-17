@@ -33,7 +33,8 @@
 .hub-cat.hf { color: #B5480A; }
 .hub-cat.study { color: var(--blue); }
 .hub-cat.contest { color: var(--green-ink); }
-.hub-item h2 { margin: 8px 0 8px; font-size: 22px; line-height: 1.4; }
+/* Titles should fit one line; site.css balances headings, which splits a slightly long title into two half lines. */
+.hub-item h2 { margin: 8px 0 8px; font-size: 22px; line-height: 1.4; text-wrap: pretty; }
 .hub-item h2 a { color: var(--fg); }
 .hub-item h2 a:hover { color: var(--blue); }
 .hub-rank { display: inline-flex; align-items: center; justify-content: center; width: 1.5em; height: 1.5em; margin-right: 10px; border-radius: 50%; font-size: .85em; color: #fff; background: var(--ribbon-deep, var(--blue)); vertical-align: .08em; }
