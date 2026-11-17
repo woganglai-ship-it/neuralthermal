@@ -1,6 +1,7 @@
 /* NT Hub · uses /assets/site.css for tokens, nav, chips and footer; only the list layout lives here. */
 .hub-head { padding: 72px 0 48px; }
-.hub-kicker { display: inline-block; margin-bottom: 14px; padding: 4px 12px; border-radius: 99px; font-size: 15px; font-weight: 600; color: #fff; background: var(--ribbon-deep, var(--blue)); }
+.hub-kicker { display: inline-flex; align-items: center; gap: 8px; margin-bottom: 14px; padding: 4px 12px; border-radius: 99px; font-size: 15px; font-weight: 600; color: #fff; background: var(--ribbon-deep, var(--blue)); }
+.hub-kicker img { display: block; margin-left: -6px; border-radius: 6px; box-shadow: 0 0 0 1.5px rgba(255,255,255,.7); }
 .hub-lede { margin-top: 18px; max-width: 38em; color: var(--muted); font-size: 19px; }
 .hub-body { padding: 40px 0 96px; }
 .hub-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px; }
