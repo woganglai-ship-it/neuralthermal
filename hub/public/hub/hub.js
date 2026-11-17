@@ -1,5 +1,6 @@
-/* NT Hub · renders window.NT_HUB_ITEMS newest first: a numbered Top 5, each section's current items
-   10 at a time, and an 往期 archive grouped by month for expired ones. */
+/* NT Hub · renders window.NT_HUB_ITEMS. On /hub/: a Top 5 carousel, a numbered Top 5, each section's
+   current items 10 at a time, and an 往期 archive grouped by month. On /hub/a/?id=: one item's NT brief,
+   with the original link at the bottom. */
 (function () {
   // Language follows the main site: ?lang= > this tab's switch > saved choice > browser language.
   const ok = l => (l === 'zh' || l === 'en') ? l : null;
@@ -9,13 +10,15 @@
   const T = {
     zh: { title: 'NT Hub · NeuralThermal', skip: '跳到正文', menu: '菜单', products: '产品', industries: '行业', labs: '实验室', cases: '案例与演示', api: '开发者中心', engage: '合作方式', about: '关于', contact: '联系',
       switchTo: 'EN', switchLabel: 'Switch to English', h1: '物理 AI 与先进计算前沿速递',
-      lede: '我们持续整理物理 AI 与先进计算方向的前沿动态、硕博留学机会、国内外会议与竞赛，每条注明来源和时间，点标题可直达原文。每两天更新一次。',
+      back: '← 返回 NT Hub', brief: 'NT 解读', credit: '图片来源', missing: '没有找到这条速递，可能已移入往期或链接有误。',
+      orig: { ai: '阅读原文', compute: '阅读原文', study: '查看原始招生信息并申请', contest: '前往官网查看详情' }, origFrom: '原文来自',
       ai: '物理 AI', compute: '先进计算', study: '硕博留学', contest: '会议与竞赛', more: '查看更多', past: n => `往期（${n} 条）`, empty: '暂无条目。',
       due: '截止', closed: '已截止', tabs: '栏目',
       note: '信息来自各来源的公开页面，日期和名额请以原文为准。发现有误或想推荐线索，欢迎写信至 <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>。' },
     en: { title: 'NT Hub · NeuralThermal', skip: 'Skip to content', menu: 'Menu', products: 'Products', industries: 'Industries', labs: 'Labs', cases: 'Cases & demos', api: 'Developer Center', engage: 'How we work', about: 'About', contact: 'Contact',
       switchTo: '中文', switchLabel: '切换到中文', h1: 'Physical AI & Advanced Computing Briefing',
-      lede: 'We track physical AI and advanced computing news, funded master\'s and PhD openings abroad, and conferences and competitions in China and worldwide. Every item names its source and date, and each title links to the original. Updated every two days.',
+      back: '← Back to NT Hub', brief: 'NT brief', credit: 'Image', missing: 'This item was not found. It may have moved to the archive, or the link is wrong.',
+      orig: { ai: 'Read the original', compute: 'Read the original', study: 'See the original posting and apply', contest: 'Go to the official page' }, origFrom: 'Original from',
       ai: 'Physical AI', compute: 'Advanced computing', study: 'Graduate study abroad', contest: 'Conferences & contests', more: 'Show more', past: n => `Archive (${n})`, empty: 'Nothing here yet.',
       due: 'Deadline', closed: 'Closed', tabs: 'Sections',
       note: 'Items come from public pages; check the original for exact dates and places. Spotted an error or have a lead? Write to <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>.' }
@@ -24,6 +27,8 @@
   const pick = (x, k) => (lang === 'en' && x[k + '_en']) || x[k];
   const PAGE = 10;
   const items = (window.NT_HUB_ITEMS || []).slice();
+  const link = x => `/hub/a/?id=${encodeURIComponent(x.id)}&lang=${lang}`;
+  const thumb = x => x.img ? `/hub/img/${esc(x.img)}` : (x.logo ? `/hub/logos/${esc(x.logo)}` : '/assets/favicon.svg');
   const list = document.getElementById('hub-list');
   const more = document.getElementById('hub-more');
   const pastBtn = document.getElementById('hub-past');
@@ -39,7 +44,6 @@
   document.title = T.title;
   document.querySelectorAll('[data-i18n]').forEach(e => { e.textContent = T[e.dataset.i18n]; });
   document.querySelectorAll('[data-i18n-html]').forEach(e => { e.innerHTML = T[e.dataset.i18nHtml]; });
-  document.getElementById('hub-tabs').setAttribute('aria-label', T.tabs);
   document.querySelector('.burger').lastChild.textContent = T.menu;
   document.getElementById('hub-api').href = '/api-studio/?lang=' + lang;
   const sw = document.getElementById('lang');
@@ -70,10 +74,10 @@
       when.push(`<span class="hub-due${past ? ' past' : ''}">${past ? T.closed : T.due} ${day(x.deadline)}</span>`);
     }
     if (x.when) when.push(`<span>${esc(pick(x, 'when'))}</span>`);
-    const pic = `<a class="hub-pic" href="${esc(x.url)}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true"><img src="${x.logo ? 'logos/' + esc(x.logo) : '/assets/favicon.svg'}" alt="" loading="lazy"></a>`;
+    const pic = `<a class="hub-pic${x.img ? ' photo' : ''}" href="${link(x)}" tabindex="-1" aria-hidden="true"><img src="${thumb(x)}" alt="" loading="lazy"></a>`;
     return `<article class="hub-item"><div>
       <div class="hub-meta">${meta.join('')}</div>
-      <h2>${rank ? `<span class="hub-rank">${rank}</span>` : ''}<a href="${esc(x.url)}" target="_blank" rel="noopener">${esc(pick(x, 'title'))}</a></h2>
+      <h2>${rank ? `<span class="hub-rank">${rank}</span>` : ''}<a href="${link(x)}">${esc(pick(x, 'title'))}</a></h2>
       <p class="s">${esc(pick(x, 'summary'))}</p>
       ${when.length ? `<div class="hub-when">${when.join('')}</div>` : ''}
     </div>${pic}</article>`;
@@ -111,6 +115,16 @@
     more.hidden = true;
   }
 
+  const burger = document.querySelector('.burger'), links = document.getElementById('nav-links');
+  burger.addEventListener('click', () => {
+    const open = links.classList.toggle('open');
+    burger.setAttribute('aria-expanded', String(open));
+  });
+
+  const art = document.getElementById('hub-article');
+  if (art) return article(art);
+
+  document.getElementById('hub-tabs').setAttribute('aria-label', T.tabs);
   const chips = document.querySelectorAll('.hub-tabs .chip');
   const press = b => chips.forEach(o => o.setAttribute('aria-pressed', String(o === b)));
   chips.forEach(b => b.addEventListener('click', () => { press(b); render(b.dataset.cat); }));
@@ -118,11 +132,58 @@
   pastBtn.hidden = !past.length;
   pastBtn.textContent = T.past(past.length);
   pastBtn.addEventListener('click', () => { press(null); renderPast(); list.scrollIntoView({ behavior: 'smooth' }); });
-  const burger = document.querySelector('.burger'), links = document.getElementById('nav-links');
-  burger.addEventListener('click', () => {
-    const open = links.classList.toggle('open');
-    burger.setAttribute('aria-expanded', String(open));
-  });
-
+  hero(current.filter(x => x.top).sort((a, b) => a.top - b.top));
   render('top');
+
+  // Top 5 carousel: big picture on the left, the five headlines on the right; rotates every 5 s.
+  function hero(tops) {
+    const box = document.getElementById('hub-hero');
+    if (!box || !tops.length) return;
+    const slide = (x, i) => `<a class="hs-slide${x.img ? '' : ' noimg'}" href="${link(x)}" data-i="${i}">
+      ${x.img ? `<img src="/hub/img/${esc(x.img)}" alt="" ${i ? 'loading="lazy"' : ''}>` : `<span class="hs-logo"><img src="${thumb(x)}" alt=""></span>`}
+      <span class="hs-cap"><span class="hub-cat ${x.cat}">${CAT[x.cat] || ''}</span><strong><span class="hub-rank">${i + 1}</span>${esc(pick(x, 'title'))}</strong></span></a>`;
+    box.innerHTML = `<div class="hs-stage">${tops.map(slide).join('')}</div>
+      <ol class="hs-list">${tops.map((x, i) => `<li><a href="${link(x)}" data-i="${i}" aria-label="${i + 1}. ${esc(pick(x, 'title'))}"><span class="hub-rank">${i + 1}</span><span>${esc(pick(x, 'title'))}</span></a></li>`).join('')}</ol>`;
+    box.hidden = false;
+    const slides = box.querySelectorAll('.hs-slide'), heads = box.querySelectorAll('.hs-list li');
+    let at = 0, timer = null;
+    const show = i => { at = i; slides.forEach((s, k) => s.classList.toggle('on', k === i)); heads.forEach((h, k) => h.classList.toggle('on', k === i)); };
+    const still = matchMedia('(prefers-reduced-motion: reduce)').matches, narrow = matchMedia('(max-width: 760px)');
+    const play = () => { if (!still && !timer) timer = setInterval(() => show((at + 1) % tops.length), 5000); };
+    const stop = () => { clearInterval(timer); timer = null; };
+    box.querySelectorAll('.hs-list a').forEach(a => {
+      a.addEventListener('mouseenter', () => show(+a.dataset.i));
+      a.addEventListener('focus', () => show(+a.dataset.i));
+      // On phones the headlines shrink to dots: the first tap on a dot switches the picture.
+      a.addEventListener('click', e => { if (narrow.matches && +a.dataset.i !== at) { e.preventDefault(); show(+a.dataset.i); } });
+    });
+    box.addEventListener('mouseenter', stop); box.addEventListener('mouseleave', play);
+    box.addEventListener('focusin', stop); box.addEventListener('focusout', play);
+    show(0); play();
+  }
+
+  // Article page: the NT brief for one item, the original link last.
+  function article(el) {
+    const id = new URLSearchParams(location.search).get('id');
+    const x = items.find(i => i.id === id);
+    el.querySelector('.hub-back').href = '/hub/?lang=' + lang;
+    if (!x) { el.insertAdjacentHTML('beforeend', `<p class="hub-missing">${T.missing}</p>`); return; }
+    document.title = `${pick(x, 'title')} · NT Hub`;
+    const meta = [`<span class="hub-cat ${x.cat}">${CAT[x.cat] || ''}</span>`, `<span>${esc(pick(x, 'source'))}</span>`];
+    if (x.date) meta.push(`<time datetime="${esc(x.date)}">${day(x.date)}</time>`);
+    const when = [];
+    if (x.deadline) when.push(`<span class="hub-due${x.deadline < today ? ' past' : ''}">${x.deadline < today ? T.closed : T.due} ${day(x.deadline)}</span>`);
+    if (x.when) when.push(`<span>${esc(pick(x, 'when'))}</span>`);
+    const body = (pick(x, 'report') || pick(x, 'summary')).split(/\n\n+/).map(p => `<p>${esc(p)}</p>`).join('');
+    let host = '';
+    try { host = new URL(x.url).hostname.replace(/^www\./, ''); } catch (e) {}
+    el.insertAdjacentHTML('beforeend', `
+      <div class="hub-meta">${meta.join('')}</div>
+      <h1>${esc(pick(x, 'title'))}</h1>
+      ${when.length ? `<div class="hub-when">${when.join('')}</div>` : ''}
+      ${x.img ? `<figure class="hub-fig"><img src="/hub/img/${esc(x.img)}" alt=""><figcaption>${T.credit}: ${esc(pick(x, 'source'))}</figcaption></figure>` : ''}
+      <h2 class="hub-brief">${T.brief}</h2>
+      <div class="hub-report">${body}</div>
+      <div class="hub-orig"><a class="btn primary" href="${esc(x.url)}" target="_blank" rel="noopener">${(T.orig[x.cat] || T.orig.ai)} ↗</a><span>${T.origFrom} ${esc(pick(x, 'source'))}${host ? ' · ' + esc(host) : ''}</span></div>`);
+  }
 })();
