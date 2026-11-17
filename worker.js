@@ -1,3 +1,4 @@
+import {labAccess} from './lab-access.ts';
 import model from './private-runtime/model.json';
 import {createEngine} from './private-runtime/engine.js';
 let engine;
@@ -5,6 +6,7 @@ const routes=new Set(['/v1/design/predict','/v1/sensor/estimate','/v1/workflow/s
 const json=(value,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
 export default {
  async fetch(request,env){
+  const access=await labAccess(request,env);if(access)return access;
   const url=new URL(request.url), prefix='/api-studio';
   if(!url.pathname.startsWith(prefix+'/v1/'))return env.ASSETS.fetch(request);
   const path=url.pathname.slice(prefix.length);

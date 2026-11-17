@@ -11,3 +11,9 @@ body .developer-head #page-lead{font-size:24px;line-height:1.5;color:var(--muted
 @media(min-width:1161px){.site-header>.wrap{max-width:1460px;padding-inline:28px}.site-navigation{gap:4px 20px}.site-nav-in{gap:24px}}
 @media(max-width:1160px){.site-nav-in{flex-wrap:wrap}.site-menu{display:inline-flex}.site-navigation{display:none;flex-basis:100%;flex-direction:column;align-items:stretch;gap:0;padding-bottom:14px}.site-navigation.open{display:flex}.site-navigation>a{padding:14px 0;border-bottom:1px solid #ffffff24;font-size:19px}.site-nav-right{margin:12px 0 0;justify-content:space-between}}
 @media(max-width:760px){body .page-head.developer-head,body:not([data-page="home"]) .page-head.developer-head{padding:48px 0 40px}body .developer-head #page-lead{font-size:20px}.wrap{padding-inline:20px}.developer-main{padding-top:24px}}
+
+
+/* Append to /api-studio/site-shell.css (and app.css .nav) — same nav as the main site */
+.site-header,.nav{border-bottom:0;background:linear-gradient(100deg,#4C7A00 0%,#0D8080 30%,#1F5FA8 62%,#6A3FC4 100%);background:linear-gradient(in oklab 100deg,#4C7A00 0%,#0D8080 30%,#1F5FA8 62%,#6A3FC4 100%)}
+.site-header::after,.nav::after{content:"";position:absolute;left:0;right:0;bottom:-4px;height:4px;background:linear-gradient(90deg,#76B900 0%,#2FD4E8 36%,#1F5FA8 68%,#8A5BE0 100%);pointer-events:none}
+.fc-box.nt{border-color:transparent;background:linear-gradient(in oklab 100deg,#4C7A00,#0D8080 30%,#1F5FA8 62%,#6A3FC4)}

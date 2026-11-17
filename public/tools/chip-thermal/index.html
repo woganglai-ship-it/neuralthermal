@@ -5,6 +5,17 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>芯片热实验室 · NeuralThermal</title>
 <link rel="stylesheet" href="lab.css">
+<style id="nt-ribbon-style">
+/* Lab colour ribbon · 2026-11-17 */
+:root{--nt-ribbon:linear-gradient(90deg,#76B900 0%,#2FD4E8 36%,#1F5FA8 68%,#8A5BE0 100%);--nt-ribbon-deep:linear-gradient(100deg,#4C7A00 0%,#0D8080 30%,#1F5FA8 62%,#6A3FC4 100%)}
+@supports(background:linear-gradient(in oklab 90deg,red,blue)){:root{--nt-ribbon:linear-gradient(in oklab 90deg,#76B900 0%,#2FD4E8 36%,#1F5FA8 68%,#8A5BE0 100%);--nt-ribbon-deep:linear-gradient(in oklab 100deg,#4C7A00 0%,#0D8080 30%,#1F5FA8 62%,#6A3FC4 100%)}}
+.nt-strip,.nav,.site-header,header.nt-ribbon-bar{background:var(--nt-ribbon-deep);border-bottom:4px solid transparent;border-image:var(--nt-ribbon) 1}
+.nt-strip .nt-mail,.nt-mail,.nav-links a{color:#fff}
+header.nt-ribbon-bar{color:#fff}
+header.nt-ribbon-bar .seg button:not([aria-pressed="true"]){color:var(--fg)}
+header.nt-ribbon-bar .title b em{color:inherit}
+header.nt-ribbon-bar .title span,header.nt-ribbon-bar .example{color:rgba(255,255,255,.92)}
+</style>
 </head>
 <body>
 <header class="nav">

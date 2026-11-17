@@ -1,0 +1,144 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NeuroVis Lab · NeuralThermal</title>
+<meta name="description" content="在浏览器里手写一个数字，看卷积神经网络逐层把它认出来。">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32' fill='none' stroke-linecap='round'%3E%3Crect width='32' height='32' rx='6' fill='%23fff'/%3E%3Cg transform='translate(2 1) scale(.875)'%3E%3Cg stroke='%230b6bcb' stroke-width='1.6'%3E%3Cpath d='M2 3 L24 29'/%3E%3Cpath d='M22 3 L6 29'/%3E%3Cpath d='M2 3 L28 29'/%3E%3Cpath d='M28 3 L4 29'/%3E%3Cpath d='M23 3 L13 29'/%3E%3Cpath d='M9 3 L29 29'/%3E%3C/g%3E%3Cpath d='M11 3 L23 29' stroke='%23e2580a' stroke-width='2.1'/%3E%3C/g%3E%3C/svg%3E">
+<style>
+/* Shell only: the NeuroVis app runs unchanged inside #app (neurovis-app.html = the App Store bundle, byte for byte). */
+:root{--nav:#33206B;--green:#76B900;--lime:#DCFF9A;--on-dark-muted:#C9D3DA;--app-bg:#fdfdfb;
+  --font-sans:-apple-system,BlinkMacSystemFont,"SF Pro Text","PingFang SC","Hiragino Sans GB","Microsoft YaHei",system-ui,sans-serif}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--app-bg);font-family:var(--font-sans);-webkit-font-smoothing:antialiased}
+body{display:flex;flex-direction:column;height:100vh;height:100dvh}
+
+/* Site strip: brand purple + green rule, same as the H100 / heat-sink labs */
+.nt-strip{flex:none;background:var(--nav);color:#fff;font:16px/1.45 var(--font-sans);border-bottom:3px solid var(--green)}
+.nt-strip-in{max-width:1600px;margin:0 auto;padding:7px 20px;display:flex;align-items:center;gap:8px 18px}
+.nt-strip a{color:#fff;text-decoration:none}
+.nt-brand{display:inline-flex;align-items:center;gap:9px;font:700 18px/1 var(--font-sans);flex:none}
+.nt-brand svg{width:26px;height:26px;border-radius:5px}
+.nt-title{flex:none;font-weight:600;padding-left:16px;border-left:1px solid rgba(255,255,255,.28)}
+.nt-title em{font-style:normal;color:var(--lime);font-weight:500;margin-right:6px}
+.nt-scope{flex:1 1 auto;min-width:0;color:var(--on-dark-muted);font-size:14px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.nt-scope b{color:#fff;font-weight:600}
+.nt-back{flex:none;font-weight:600;min-height:34px;display:inline-flex;align-items:center}
+.nt-back:hover{color:var(--lime)}
+.nt-mail{margin-left:auto;flex:none;font-weight:600;color:var(--lime)!important}
+.nt-lang{flex:none;display:inline-flex;border:1px solid rgba(255,255,255,.35);border-radius:4px;overflow:hidden}
+.nt-lang a{padding:5px 11px;min-height:30px;display:inline-flex;align-items:center;font-size:14px}
+.nt-lang a[aria-current]{background:#fff;color:var(--nav);font-weight:600}
+
+/* Stage: the app is laid out for a landscape phone (~874×402 pt). We give the iframe a phone-like
+   logical size and scale it up to fill whatever is left of the screen — no scrolling, no letterbox. */
+#stage{flex:1 1 auto;position:relative;overflow:hidden;background:var(--app-bg)}
+#app{position:absolute;left:0;top:0;border:0;display:block;transform-origin:0 0;background:var(--app-bg)}
+
+/* Portrait phones: the app is landscape-only on iOS too; ask for a turn instead of squeezing it. */
+#turn{display:none;position:absolute;inset:0;z-index:2;background:var(--app-bg);color:#3a3a40;
+  flex-direction:column;align-items:center;justify-content:center;gap:14px;text-align:center;padding:24px;font-size:17px;line-height:1.5}
+#turn svg{width:64px;height:64px;color:var(--nav)}
+#turn button{font:600 15px var(--font-sans);border:1px solid #c9ccd0;background:#fff;border-radius:6px;padding:8px 16px;color:#3a3a40}
+body.portrait:not(.force) #turn{display:flex}
+
+@media (max-width:1100px){.nt-scope{display:none}}
+@media (max-width:760px){
+  .nt-strip-in{padding:6px 12px;gap:6px 12px}
+  .nt-brand span,.nt-mail{display:none}
+  .nt-title{flex:1 1 auto;min-width:0;padding-left:10px;font-size:15px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .nt-title em{display:none}
+}
+@media (max-height:500px){.nt-strip-in{padding-top:3px;padding-bottom:3px}.nt-back{min-height:30px}}
+</style>
+<script>
+/* Language rule matches the site: ?lang= > saved manual choice > browser language/region > English.
+   NeuroVis keeps its own key (nv-lang); hand it the site language before the app boots, as the heat-sink lab does. */
+(function () {
+  function pick() {
+    var q = new URLSearchParams(location.search).get('lang');
+    if (q === 'zh' || q === 'en') return q;
+    try { var s = localStorage.getItem('nt-lang'); if (s === 'zh' || s === 'en') return s; } catch (e) {}
+    var list = navigator.languages && navigator.languages.length ? navigator.languages : [navigator.language || 'en'];
+    var p = String(list[0]).toLowerCase();
+    return p.indexOf('zh') === 0 || /-(cn|hk|mo|tw)\b/.test(p) ? 'zh' : 'en';
+  }
+  var lang = window.NT_LANG = pick();
+  try { localStorage.setItem('nv-lang', lang); } catch (e) {}
+  document.documentElement.lang = lang === 'zh' ? 'zh-CN' : 'en';
+})();
+</script>
+<style id="nt-ribbon-style">
+/* Lab colour ribbon · 2026-11-17 */
+:root{--nt-ribbon:linear-gradient(90deg,#76B900 0%,#2FD4E8 36%,#1F5FA8 68%,#8A5BE0 100%);--nt-ribbon-deep:linear-gradient(100deg,#4C7A00 0%,#0D8080 30%,#1F5FA8 62%,#6A3FC4 100%)}
+@supports(background:linear-gradient(in oklab 90deg,red,blue)){:root{--nt-ribbon:linear-gradient(in oklab 90deg,#76B900 0%,#2FD4E8 36%,#1F5FA8 68%,#8A5BE0 100%);--nt-ribbon-deep:linear-gradient(in oklab 100deg,#4C7A00 0%,#0D8080 30%,#1F5FA8 62%,#6A3FC4 100%)}}
+.nt-strip,.nav,.site-header,header.nt-ribbon-bar{background:var(--nt-ribbon-deep);border-bottom:4px solid transparent;border-image:var(--nt-ribbon) 1}
+.nt-strip .nt-mail,.nt-mail,.nav-links a{color:#fff}
+header.nt-ribbon-bar{color:#fff}
+header.nt-ribbon-bar .seg button:not([aria-pressed="true"]){color:var(--fg)}
+header.nt-ribbon-bar .title b em{color:inherit}
+header.nt-ribbon-bar .title span,header.nt-ribbon-bar .example{color:rgba(255,255,255,.92)}
+</style>
+</head>
+<body>
+<div class="nt-strip"><div class="nt-strip-in">
+  <a class="nt-brand" id="nt-home" href="../../070%20NT%20Website/delivery/index.html#/labs"><svg viewBox="0 0 32 32" fill="none" stroke-linecap="round" aria-hidden="true"><rect width="32" height="32" rx="6" fill="#fff"/><g transform="translate(2 1) scale(.875)"><g stroke="#0b6bcb" stroke-width="1.6"><path d="M2 3 L24 29"/><path d="M22 3 L6 29"/><path d="M2 3 L28 29"/><path d="M28 3 L4 29"/><path d="M23 3 L13 29"/><path d="M9 3 L29 29"/></g><path d="M11 3 L23 29" stroke="#e2580a" stroke-width="2.1"/></g></svg><span>NeuralThermal</span></a>
+  <div class="nt-title"><em>Lab</em><span data-zh="NeuroVis · 神经网络可视化" data-en="NeuroVis · CNN, layer by layer"></span></div>
+  <a class="nt-mail" id="nt-mail" href="mailto:tech@neuralthermal.com?subject=NeuralThermal%20%C2%B7%20NeuroVis%20Lab" data-zh="咨询定制" data-en="Ask about your product"></a>
+  <span class="nt-lang" role="group" aria-label="Language"><a href="#" data-l="zh" lang="zh-CN">中文</a><a href="#" data-l="en" lang="en">EN</a></span>
+</div></div>
+
+<div id="stage">
+  <iframe id="app" title="NeuroVis" src="neurovis-app.html?app=1" allow="camera"></iframe>
+  <div id="turn">
+    <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="20" y="8" width="24" height="40" rx="4"/><path d="M50 30a20 20 0 0 1-20 26"/><path d="M26 52l4 4-4 4"/></svg>
+    <div data-zh="横过手机来体验 —— 网络从左到右展开，竖屏放不下。" data-en="Turn your phone sideways: the network unfolds left to right."></div>
+    <button type="button" id="turn-anyway" data-zh="锁定了竖屏？把画面转过来" data-en="Rotation locked? Turn the view instead"></button>
+  </div>
+</div>
+
+<script>
+(function () {
+  var lang = window.NT_LANG;
+  document.querySelectorAll('[data-zh]').forEach(function (el) { el.innerHTML = el.getAttribute('data-' + lang); });
+  document.querySelectorAll('.nt-lang a').forEach(function (a) {
+    if (a.dataset.l === lang) a.setAttribute('aria-current', 'true');
+    a.addEventListener('click', function (e) {
+      e.preventDefault();
+      try { localStorage.setItem('nt-lang', a.dataset.l); localStorage.setItem('nv-lang', a.dataset.l); } catch (err) {}
+      var u = new URL(location.href); u.searchParams.set('lang', a.dataset.l); location.replace(u.href);
+    });
+  });
+  // On the live site the lab sits at /tools/neurovis/, so the brand link goes back to the lab list.
+  if (/^https?:$/.test(location.protocol)) document.getElementById('nt-home').href = '/?lang=' + lang + '#/labs';
+
+  // Fit the app: logical height ≥ 402 pt and width ≥ 874 pt (the iPhone 17 landscape it was designed on),
+  // then scale up to fill the stage exactly.
+  var MIN_W = 874, MIN_H = 402;
+  var stage = document.getElementById('stage'), app = document.getElementById('app');
+  function fit() {
+    var W = stage.clientWidth, H = stage.clientHeight;
+    var portrait = H > W * 1.05 && W < 760;
+    document.body.classList.toggle('portrait', portrait);
+    if (portrait && document.body.classList.contains('force')) {
+      // Rotation lock on: lay the landscape view on its side across the portrait screen.
+      var r = Math.max(Math.min(H / MIN_W, W / MIN_H), 0.1);
+      app.style.width = (H / r) + 'px';
+      app.style.height = (W / r) + 'px';
+      app.style.transform = 'translate(' + W + 'px,0) rotate(90deg) scale(' + r + ')';
+      return;
+    }
+    var s = Math.max(Math.min(W / MIN_W, H / MIN_H), 0.1);
+    app.style.width = (W / s) + 'px';
+    app.style.height = (H / s) + 'px';
+    app.style.transform = 'scale(' + s + ')';
+  }
+  document.getElementById('turn-anyway').addEventListener('click', function () { document.body.classList.add('force'); fit(); });
+  window.addEventListener('resize', fit);
+  window.addEventListener('orientationchange', fit);
+  fit();
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,8 @@
+{
+  "repository": "woganglai-ship-it/neuralthermal-private-runtime",
+  "commit": "b44957c4847966f4a27ed82faa5999847e673090",
+  "files": {
+    "engine.js": "26e419fd7050d9c0afc8624401d824ed28f70dc8250828504c9af57076e8262b",
+    "model.json": "6bd6c65bf9f7aa6494dba1b907cf94724708a56655a41340fd82f036feee7cbb"
+  }
+}

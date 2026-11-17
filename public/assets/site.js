@@ -1984,11 +1984,11 @@ NT.tiers = [
     switchTo: { zh: 'EN', en: '中文' },
     switchLabel: { zh: 'Switch to English', en: '切换到中文' },
     home: { zh: '首页', en: 'Home' },
-    heroTitle: { zh: '致力于成为先进计算与物理 AI 领域的热设计专家。', en: 'Aspiring to be thermal design experts for advanced computing and physical AI.' },
+    heroTitle: { zh: '致力于成为\n先进计算、物理 AI 的\n前沿热管理技术伙伴', en: 'Aspiring to be a\npioneering thermal management partner\nfor advanced computing and physical AI' },
     heroSub: { zh: 'AI 热设计 · 虚拟温度传感 · 工程自动化', en: 'AI thermal design · virtual temperature sensing · engineering automation' },
     heroCta: { zh: '选择行业', en: 'Choose your industry' },
     heroTool: { zh: '试用 H100 实验室', en: 'Try the H100 lab' },
-    heroAlt: { zh: 'H100 级 GPU 模组与封闭式液冷冷板', en: 'H100-class GPU module with a closed liquid cold plate' },
+    heroAlt: { zh: '神经网络与芯片温度场', en: 'Neural network and chip temperature field' },
     s1: { zh: '四个行业', en: 'Four industries' },
     s2: { zh: '三条产品线', en: 'Three product lines' },
     s3: { zh: '证据', en: 'Evidence' },
@@ -2097,10 +2097,10 @@ NT.tiers = [
       return story({ label: label('', t(c.tag)), title: t(c.title), metric: c.m[0], flip: i % 2 === 1, after: evLine(c), pic: img(c.img, t(c.title), 'shot') });
     }).join('');
     return '<section class="hero"><div class="wrap hero-in">' +
-      '<div class="hero-text"><h1>' + u('heroTitle') + '</h1><p class="sub">' + u('heroSub') + '</p>' +
+      '<div class="hero-text"><h1 class="hero-positioning">' + u('heroTitle').split('\n').map(function (line, i) { return '<span class="hero-line hero-line-' + i + '">' + (i === 2 ? '<strong>' + esc(line) + '</strong>' : esc(line)) + '</span>'; }).join('') + '</h1><p class="sub">' + u('heroSub') + '</p>' +
       '<div class="actions"><a class="btn primary" href="#industries">' + u('heroCta') + '</a>' +
       '<a class="btn ghost" href="' + toolHref('h100') + '">' + u('heroTool') + '</a></div></div>' +
-      '<figure class="hero-pic">' + img('hero-h100', u('heroAlt'), '', true) + '</figure></div></section>' +
+      '<figure class="hero-pic">' + img('hero-thermal-ai', u('heroAlt'), '', true) + '</figure></div></section>' +
       '<section class="band" id="industries"><div class="wrap">' + label('01', u('s1')) + '<div class="ind-grid">' + inds + '</div></div></section>' +
       '<section class="band alt"><div class="wrap">' + label('02', u('s2')) + '<div class="prod-list">' + prods + '</div></div></section>' +
       '<section class="band"><div class="wrap">' + label('03', u('s3')) + picks +
@@ -2112,6 +2112,10 @@ NT.tiers = [
   }
 
   var TOOLS = [
+    { id: 'space-radiator', img: 'tool-space-radiator',
+      name: {zh:'太空散热实验室',en:'Space Radiator Lab'},
+      d: {zh:'调整算力功耗与散热板温度，探索卫星所需的辐射面积、太阳翼和质量。',en:'Adjust compute power and radiator temperature to explore satellite radiator area, solar arrays and mass.'},
+      scope: {zh:'轨道环境 · 热辐射 · 交互式卫星',en:'Orbital environment · Thermal radiation · Interactive satellite'} },
     { id: 'advanced-packaging', img: 'tool-advanced-packaging-top',
       name: {zh:'先进封装实验室',en:'Advanced packaging lab'},
       d: {zh:'旋转、拆解与切换互连，探索 SoC、HBM 和封装层叠。',en:'Rotate, explode and switch interconnects to explore SoC, HBM and package layers.'},
@@ -2127,7 +2131,11 @@ NT.tiers = [
     { id: 'chip-thermal', img: 'tool-chip-thermal',
       name: { zh: '芯片温度实验室', en: 'Chip thermal lab' },
       d: { zh: '选择 CPU 或 GPU，调整负载、功耗与冷却条件，查看模块功率和温度分布。', en: 'Choose a CPU or GPU, adjust load, power and cooling, and explore module power and temperature maps.' },
-      scope: { zh: '43 款芯片 · 交互式热模拟', en: '43 chips · Interactive thermal simulation' } }
+      scope: { zh: '43 款芯片 · 交互式热模拟', en: '43 chips · Interactive thermal simulation' } },
+    { id: 'neurovis', img: 'tool-neurovis',
+      name: { zh: 'NeuroVis CNN 实验室', en: 'NeuroVis CNN Lab' },
+      d: { zh: '手写一个数字，逐层观察卷积神经网络如何提取特征并完成识别。', en: 'Draw a digit and explore how a convolutional neural network extracts features and recognizes it, layer by layer.' },
+      scope: { zh: '手写识别 · 特征图 · 卷积可视化', en: 'Digit recognition · Feature maps · Convolution visualization' } }
   ];
   function toolPanels(only) {
     return TOOLS.filter(function (x) { return !only || only.indexOf(x.id) >= 0; }).map(function (x, i) {

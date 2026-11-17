@@ -307,3 +307,51 @@ a.badge:hover { border-color: var(--blue); text-decoration: none; }
 
 /* Keep both coolant connections visible in the industry thumbnail. */
 .ind-tile.c-cool .ind-pic img { object-fit: contain; }
+
+.hero-text { min-width: 0; container-type: inline-size; }
+.hero h1.hero-positioning { line-height: 1.45; text-wrap: initial; }
+.hero-positioning .hero-line { display: block; white-space: nowrap; font-size: clamp(17px, 5.9cqi, 32px); }
+.hero-positioning .hero-line-2 { margin-top: 4px; font-size: clamp(22px, 7.7cqi, 42px); }
+.hero-positioning strong { font-weight: 700; }
+:lang(en) .hero-positioning .hero-line-1 { font-size: clamp(13px, 4.15cqi, 23px); }
+:lang(en) .hero-positioning .hero-line-2 { font-size: clamp(14px, 4.3cqi, 24px); }
+
+
+
+/* ---------------------------------------------------------------- colour ribbon (2026-11-16)
+   The flat deep-purple nav and CTA blocks become the customer-deck band (#76B900 → #2FD4E8 → #1F5FA8 → #8A5BE0),
+   blended smoothly instead of in hard steps. Blocks with white text use deeper tones of the same four hues
+   (green-ink, teal, blue, ai-deep: each ≥ 4.5:1 with white); the bright template colours run as a ribbon on the edge. */
+:root {
+  --ribbon: linear-gradient(90deg, #76B900 0%, #2FD4E8 36%, #1F5FA8 68%, #8A5BE0 100%);
+  --ribbon-deep: linear-gradient(100deg, #4C7A00 0%, #0D8080 30%, #1F5FA8 62%, #6A3FC4 100%);
+}
+@supports (background: linear-gradient(in oklab 90deg, red, blue)) {
+  :root {
+    --ribbon: linear-gradient(in oklab 90deg, #76B900 0%, #2FD4E8 36%, #1F5FA8 68%, #8A5BE0 100%);
+    --ribbon-deep: linear-gradient(in oklab 100deg, #4C7A00 0%, #0D8080 30%, #1F5FA8 62%, #6A3FC4 100%);
+  }
+}
+.nav { background: radial-gradient(30% 260% at 38% -60%, rgba(47, 212, 232, .3), transparent 70%), var(--ribbon-deep); border-bottom: 0; }
+.nav::after { content: ""; position: absolute; left: 0; right: 0; bottom: -4px; height: 4px; background: var(--ribbon); pointer-events: none; }
+.nav .brand, .nav-links > a { text-shadow: 0 1px 2px rgba(10, 20, 40, .3); }
+.nav-links > a { color: rgba(255, 255, 255, .92); }
+.nav-links > a[aria-current] { border-bottom-color: var(--lime); }
+.cta {
+  position: relative; border-top: 0;
+  background:
+    radial-gradient(50% 120% at 0% 135%, rgba(118, 185, 0, .4), transparent 70%),
+    radial-gradient(40% 120% at 40% -20%, rgba(47, 212, 232, .32), transparent 70%),
+    radial-gradient(45% 140% at 100% 110%, rgba(138, 91, 224, .6), transparent 70%),
+    var(--ribbon-deep);
+}
+.cta::before { content: ""; position: absolute; left: 0; right: 0; top: 0; height: 6px; background: var(--ribbon); }
+.cta p { color: rgba(255, 255, 255, .92); }
+.cta .btn.primary { background: var(--surface); color: var(--nav); }
+.cta .btn.primary:hover { background: var(--lime); }
+.clip .play { background: rgba(31, 95, 168, .92); }
+@media (max-width: 1160px) {
+  .nav { background: var(--ribbon-deep); }
+  .nav-links > a { border-bottom-color: rgba(255, 255, 255, .2); }
+}
+@media print { .nav::after, .cta::before { display: none; } }

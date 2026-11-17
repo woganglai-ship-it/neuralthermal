@@ -1,4 +1,6 @@
-
 private-runtime/
-
+node_modules/
 .wrangler/
+.dev.vars*
+.env*
+.DS_Store
