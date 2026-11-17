@@ -5,8 +5,7 @@
 .hub-body { padding: 40px 0 96px; }
 .hub-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px; }
 
-.hub-day { margin: 40px 0 8px; font-size: 16px; font-weight: 600; color: var(--muted); }
-.hub-day:first-child { margin-top: 0; }
+.hub-item:first-child { padding-top: 0; }
 .hub-item { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 32px; align-items: start; padding: 28px 0; border-bottom: 1px solid var(--line); }
 .hub-meta { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 14px; font-size: 15px; color: var(--muted); }
 .hub-cat { display: inline-flex; align-items: center; gap: 6px; font-weight: 600; }
@@ -17,6 +16,7 @@
 .hub-item h2 { margin: 8px 0 8px; font-size: 22px; line-height: 1.4; }
 .hub-item h2 a { color: var(--fg); }
 .hub-item h2 a:hover { color: var(--blue); }
+.hub-rank { display: inline-flex; align-items: center; justify-content: center; width: 1.5em; height: 1.5em; margin-right: 10px; border-radius: 50%; font-size: .85em; color: #fff; background: var(--ribbon-deep, var(--blue)); vertical-align: .08em; }
 .hub-item h2 a::after { content: " ↗"; font-size: .8em; color: var(--muted); }
 .hub-item p.s { font-size: 17px; line-height: 1.7; color: var(--fg); }
 .hub-when { display: flex; flex-wrap: wrap; gap: 8px 12px; margin-top: 12px; font-size: 15px; color: var(--muted); }
