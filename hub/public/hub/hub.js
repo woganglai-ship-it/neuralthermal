@@ -40,6 +40,7 @@
   document.querySelectorAll('[data-i18n]').forEach(e => { e.textContent = T[e.dataset.i18n]; });
   document.querySelectorAll('[data-i18n-html]').forEach(e => { e.innerHTML = T[e.dataset.i18nHtml]; });
   document.getElementById('hub-tabs').setAttribute('aria-label', T.tabs);
+  document.querySelector('.burger').lastChild.textContent = T.menu;
   document.getElementById('hub-api').href = '/api-studio/?lang=' + lang;
   const sw = document.getElementById('lang');
   sw.textContent = T.switchTo;
