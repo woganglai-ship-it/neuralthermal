@@ -29,6 +29,8 @@
 .hub-cat::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
 .hub-cat.ai { color: var(--ai-deep); }
 .hub-cat.compute { color: var(--cool); }
+.hub-cat.oss { color: var(--fg); }
+.hub-cat.hf { color: #B5480A; }
 .hub-cat.study { color: var(--blue); }
 .hub-cat.contest { color: var(--green-ink); }
 .hub-item h2 { margin: 8px 0 8px; font-size: 22px; line-height: 1.4; }
