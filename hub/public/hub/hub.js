@@ -11,6 +11,9 @@
     zh: { title: 'NT Hub · NeuralThermal', skip: '跳到正文', menu: '菜单', products: '产品', industries: '行业', labs: '实验室', cases: '案例与演示', api: '开发者中心', engage: '合作方式', about: '关于', contact: '联系',
       switchTo: 'EN', switchLabel: 'Switch to English', h1: '物理 AI 与先进计算前沿速递',
       back: '← 返回 NT Hub', brief: 'NT 解读', credit: '图片来源', missing: '没有找到这条速递，可能已移入往期或链接有误。',
+      share: '分享', shareAll: '分享…', copy: '复制链接', copied: '链接已复制', wechat: '微信 / 朋友圈', weibo: '微博', xhs: '小红书',
+      xhsDone: '已复制标题和链接，打开小红书粘贴即可', wxTitle: '用微信扫一扫', wxNote: '在微信里打开后，点右上角「···」即可发给朋友或分享到朋友圈。',
+      wxIn: '点右上角「···」，即可发给朋友或分享到朋友圈。', close: '关闭', copyFail: '复制失败，请手动复制地址栏里的链接',
       orig: { ai: '阅读原文', compute: '阅读原文', oss: '打开项目主页', hf: '在 Hugging Face 查看', study: '查看原始招生信息并申请', contest: '前往官网查看详情' }, origFrom: '原文来自',
       ai: '物理 AI', compute: '先进计算', oss: '开源工具', hf: '论文与模型', study: '硕博留学', contest: '会议与论坛', more: '查看更多', past: n => `往期（${n} 条）`, empty: '暂无条目。',
       due: '截止', closed: '已截止', tabs: '栏目',
@@ -18,6 +21,9 @@
     en: { title: 'NT Hub · NeuralThermal', skip: 'Skip to content', menu: 'Menu', products: 'Products', industries: 'Industries', labs: 'Labs', cases: 'Cases & demos', api: 'Developer Center', engage: 'How we work', about: 'About', contact: 'Contact',
       switchTo: '中文', switchLabel: '切换到中文', h1: 'Physical AI & Advanced Computing Briefing',
       back: '← Back to NT Hub', brief: 'NT brief', credit: 'Image', missing: 'This item was not found. It may have moved to the archive, or the link is wrong.',
+      share: 'Share', shareAll: 'Share…', copy: 'Copy link', copied: 'Link copied', wechat: 'WeChat', weibo: 'Weibo', xhs: 'Xiaohongshu',
+      xhsDone: 'Title and link copied. Paste them into Xiaohongshu.', wxTitle: 'Scan with WeChat', wxNote: 'Open it in WeChat, then tap “···” at the top right to send it to a chat or post it to Moments.',
+      wxIn: 'Tap “···” at the top right to send this to a chat or post it to Moments.', close: 'Close', copyFail: 'Could not copy. Please copy the link from the address bar.',
       orig: { ai: 'Read the original', compute: 'Read the original', oss: 'Open the project', hf: 'View on Hugging Face', study: 'See the original posting and apply', contest: 'Go to the official page' }, origFrom: 'Original from',
       ai: 'Physical AI', compute: 'Advanced computing', oss: 'Open-source tools', hf: 'Papers & models', study: 'Graduate study abroad', contest: 'Conferences & forums', more: 'Show more', past: n => `Archive (${n})`, empty: 'Nothing here yet.',
       due: 'Deadline', closed: 'Closed', tabs: 'Sections',
@@ -181,9 +187,69 @@
       <div class="hub-meta">${meta.join('')}</div>
       <h1>${esc(pick(x, 'title'))}</h1>
       ${when.length ? `<div class="hub-when">${when.join('')}</div>` : ''}
+      ${shareBar()}
       ${x.img ? `<figure class="hub-fig"><img src="/hub/img/${esc(x.img)}" alt=""><figcaption>${T.credit}: ${esc(pick(x, 'source'))}</figcaption></figure>` : ''}
       <h2 class="hub-brief">${T.brief}</h2>
       <div class="hub-report">${body}</div>
+      ${shareBar()}
       <div class="hub-orig"><a class="btn primary" href="${esc(x.url)}" target="_blank" rel="noopener">${(T.orig[x.cat] || T.orig.ai)} ↗</a><span>${T.origFrom} ${esc(pick(x, 'source'))}${host ? ' · ' + esc(host) : ''}</span></div>`);
+    share(el, x);
+  }
+
+  // Share bar: the phone's own share sheet where there is one (it reaches WeChat, Xiaohongshu and the rest),
+  // a WeChat QR code, Weibo / X / LinkedIn share pages, and copy link. No login, no tracking.
+  function shareBar() {
+    const b = (k, label) => `<button class="chip hub-sh" type="button" data-sh="${k}">${label}</button>`;
+    const native = navigator.share ? b('native', T.shareAll) : '';
+    const order = lang === 'zh' ? ['wechat', 'xhs', 'weibo', 'x', 'linkedin', 'copy'] : ['x', 'linkedin', 'wechat', 'weibo', 'copy'];
+    const label = { wechat: T.wechat, xhs: T.xhs, weibo: T.weibo, x: 'X', linkedin: 'LinkedIn', copy: T.copy };
+    return `<div class="hub-share"><span>${T.share}</span>${native}${order.map(k => b(k, label[k])).join('')}</div>`;
+  }
+
+  function share(el, x) {
+    const url = `${location.origin}/hub/a/?id=${encodeURIComponent(x.id)}&lang=${lang}`;
+    const title = pick(x, 'title');
+    const inWeChat = /MicroMessenger/i.test(navigator.userAgent);
+    const toast = msg => {
+      let t = document.getElementById('hub-toast');
+      if (!t) { t = document.createElement('div'); t.id = 'hub-toast'; t.className = 'hub-toast'; t.setAttribute('role', 'status'); document.body.appendChild(t); }
+      t.textContent = msg; t.classList.add('on');
+      clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove('on'), 2600);
+    };
+    const copy = (text, done) => {
+      const fallback = () => {
+        const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.cssText = 'position:fixed;opacity:0';
+        document.body.appendChild(ta); ta.select();
+        let ok = false; try { ok = document.execCommand('copy'); } catch (e) {}
+        ta.remove(); toast(ok ? done : T.copyFail);
+      };
+      if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(() => toast(done), fallback);
+      else fallback();
+    };
+    const open = u => window.open(u, '_blank', 'noopener,width=640,height=560');
+    const q = encodeURIComponent;
+    const wechat = () => {
+      if (inWeChat) { toast(T.wxIn); return; }
+      const show = () => {
+        const qr = window.qrcode(0, 'M'); qr.addData(url); qr.make();
+        let d = document.getElementById('hub-wx');
+        if (!d) { d = document.createElement('dialog'); d.id = 'hub-wx'; d.className = 'hub-wx'; document.body.appendChild(d); d.addEventListener('click', e => { if (e.target === d) d.close(); }); }
+        d.innerHTML = `<h2>${T.wxTitle}</h2><div class="hub-qr">${qr.createSvgTag({ cellSize: 5, margin: 2, scalable: true })}</div><p>${T.wxNote}</p><button class="chip" type="button">${T.close}</button>`;
+        d.querySelector('button').addEventListener('click', () => d.close());
+        d.showModal();
+      };
+      if (window.qrcode) return show();
+      const sc = document.createElement('script'); sc.src = '/hub/vendor/qrcode.js'; sc.onload = show; document.head.appendChild(sc);
+    };
+    const act = {
+      native: () => navigator.share({ title, text: title, url }).catch(() => {}),
+      wechat,
+      xhs: () => copy(`${title} ${url}`, T.xhsDone),
+      weibo: () => open(`https://service.weibo.com/share/share.php?url=${q(url)}&title=${q(title)}`),
+      x: () => open(`https://x.com/intent/post?text=${q(title)}&url=${q(url)}`),
+      linkedin: () => open(`https://www.linkedin.com/sharing/share-offsite/?url=${q(url)}`),
+      copy: () => copy(url, T.copied)
+    };
+    el.querySelectorAll('.hub-sh').forEach(btn => btn.addEventListener('click', () => act[btn.dataset.sh]()));
   }
 })();
