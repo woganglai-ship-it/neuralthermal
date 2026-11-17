@@ -187,7 +187,6 @@
       <div class="hub-meta">${meta.join('')}</div>
       <h1>${esc(pick(x, 'title'))}</h1>
       ${when.length ? `<div class="hub-when">${when.join('')}</div>` : ''}
-      ${shareBar()}
       ${x.img ? `<figure class="hub-fig"><img src="/hub/img/${esc(x.img)}" alt=""><figcaption>${T.credit}: ${esc(pick(x, 'source'))}</figcaption></figure>` : ''}
       <h2 class="hub-brief">${T.brief}</h2>
       <div class="hub-report">${body}</div>
@@ -197,12 +196,13 @@
   }
 
   // Share bar: the phone's own share sheet where there is one (it reaches WeChat, Xiaohongshu and the rest),
-  // a WeChat QR code, Weibo / X / LinkedIn share pages, and copy link. No login, no tracking.
+  // a WeChat QR code, Weibo / LinkedIn share pages, and copy link. No login, no tracking. Shown once, after the brief.
+  // X is left out on purpose: the user considers it sensitive for readers in China.
   function shareBar() {
     const b = (k, label) => `<button class="chip hub-sh" type="button" data-sh="${k}">${label}</button>`;
     const native = navigator.share ? b('native', T.shareAll) : '';
-    const order = lang === 'zh' ? ['wechat', 'xhs', 'weibo', 'x', 'linkedin', 'copy'] : ['x', 'linkedin', 'wechat', 'weibo', 'copy'];
-    const label = { wechat: T.wechat, xhs: T.xhs, weibo: T.weibo, x: 'X', linkedin: 'LinkedIn', copy: T.copy };
+    const order = lang === 'zh' ? ['wechat', 'xhs', 'weibo', 'linkedin', 'copy'] : ['linkedin', 'wechat', 'weibo', 'copy'];
+    const label = { wechat: T.wechat, xhs: T.xhs, weibo: T.weibo, linkedin: 'LinkedIn', copy: T.copy };
     return `<div class="hub-share"><span>${T.share}</span>${native}${order.map(k => b(k, label[k])).join('')}</div>`;
   }
 
@@ -246,7 +246,6 @@
       wechat,
       xhs: () => copy(`${title} ${url}`, T.xhsDone),
       weibo: () => open(`https://service.weibo.com/share/share.php?url=${q(url)}&title=${q(title)}`),
-      x: () => open(`https://x.com/intent/post?text=${q(title)}&url=${q(url)}`),
       linkedin: () => open(`https://www.linkedin.com/sharing/share-offsite/?url=${q(url)}`),
       copy: () => copy(url, T.copied)
     };
