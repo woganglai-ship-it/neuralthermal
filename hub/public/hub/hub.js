@@ -12,14 +12,14 @@
       switchTo: 'EN', switchLabel: 'Switch to English', h1: '物理 AI 与先进计算前沿速递',
       back: '← 返回 NT Hub', brief: 'NT 解读', credit: '图片来源', missing: '没有找到这条速递，可能已移入往期或链接有误。',
       orig: { ai: '阅读原文', compute: '阅读原文', oss: '打开项目主页', hf: '在 Hugging Face 查看', study: '查看原始招生信息并申请', contest: '前往官网查看详情' }, origFrom: '原文来自',
-      ai: '物理 AI', compute: '先进计算', oss: '开源工具', hf: '论文与模型', study: '硕博留学', contest: '会议与竞赛', more: '查看更多', past: n => `往期（${n} 条）`, empty: '暂无条目。',
+      ai: '物理 AI', compute: '先进计算', oss: '开源工具', hf: '论文与模型', study: '硕博留学', contest: '会议与论坛', more: '查看更多', past: n => `往期（${n} 条）`, empty: '暂无条目。',
       due: '截止', closed: '已截止', tabs: '栏目',
       note: '信息来自各来源的公开页面，日期和名额请以原文为准。发现有误或想推荐线索，欢迎写信至 <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>。' },
     en: { title: 'NT Hub · NeuralThermal', skip: 'Skip to content', menu: 'Menu', products: 'Products', industries: 'Industries', labs: 'Labs', cases: 'Cases & demos', api: 'Developer Center', engage: 'How we work', about: 'About', contact: 'Contact',
       switchTo: '中文', switchLabel: '切换到中文', h1: 'Physical AI & Advanced Computing Briefing',
       back: '← Back to NT Hub', brief: 'NT brief', credit: 'Image', missing: 'This item was not found. It may have moved to the archive, or the link is wrong.',
       orig: { ai: 'Read the original', compute: 'Read the original', oss: 'Open the project', hf: 'View on Hugging Face', study: 'See the original posting and apply', contest: 'Go to the official page' }, origFrom: 'Original from',
-      ai: 'Physical AI', compute: 'Advanced computing', oss: 'Open-source tools', hf: 'Papers & models', study: 'Graduate study abroad', contest: 'Conferences & contests', more: 'Show more', past: n => `Archive (${n})`, empty: 'Nothing here yet.',
+      ai: 'Physical AI', compute: 'Advanced computing', oss: 'Open-source tools', hf: 'Papers & models', study: 'Graduate study abroad', contest: 'Conferences & forums', more: 'Show more', past: n => `Archive (${n})`, empty: 'Nothing here yet.',
       due: 'Deadline', closed: 'Closed', tabs: 'Sections',
       note: 'Items come from public pages; check the original for exact dates and places. Spotted an error or have a lead? Write to <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>.' }
   }[lang];

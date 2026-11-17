@@ -3,7 +3,7 @@
                 / compute 先进计算：先进封装、芯片、芯片与数据中心热管理、液冷、HPC 硬件
                 / oss 开源工具：GitHub 开源项目、Hacker News（HN）热议、Product Hunt（PH）新品
                 / hf 论文与模型：Hugging Face 上热门的开源论文、模型与数据集
-                / study 硕博留学 / contest 会议与竞赛，含国内会议与竞赛）
+                / study 硕博留学 / contest 会议与论坛（原名会议与竞赛），含国内会议、论坛、竞赛）
          title 标题　summary 主要内容（一两句）　source 来源　url 原文链接
          date 发布日期（可空）　deadline 截止日期（可空，过期自动显示“已截止”）　when 时间地点补充（可空）
          logo 发布机构标志（logos/ 下；没有机构标志就用该网站图标）　added 收录日期
