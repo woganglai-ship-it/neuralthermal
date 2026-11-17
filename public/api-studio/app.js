@@ -16,9 +16,9 @@
   $('brand').innerHTML = LOGO; $('brand2').innerHTML = LOGO;
   var lang = new URLSearchParams(location.search).get('lang') || localStorage.getItem('nt-lang') || (navigator.language.indexOf('zh') === 0 ? 'zh' : 'en');
   var isEn = lang === 'en';
-  var siteLabels = [['products','产品','Products'],['industries','行业','Industries'],['labs','实验室','Labs'],['cases','案例与演示','Cases & demos'],['developers','开发者中心','Developer Center'],['engage','合作方式','How we work'],['about','关于','About']];
+  var siteLabels = [['products','产品','Products'],['industries','行业','Industries'],['labs','实验室','Labs'],['cases','案例与演示','Cases & demos'],['hub','NT Hub','NT Hub'],['developers','开发者中心','Developer Center'],['engage','合作方式','How we work'],['about','关于','About']];
   $('brand').href = '/?lang=' + lang;
-  $('site-navigation').innerHTML = siteLabels.map(function (x) { return '<a href="' + (x[0] === 'developers' ? '/api-studio/?lang=' + lang : '/?lang=' + lang + '#/' + x[0]) + '"' + (x[0] === 'developers' ? ' aria-current="page"' : '') + '>' + x[isEn ? 2 : 1] + '</a>'; }).join('') + '<span class="site-nav-right"><button class="site-lang" id="site-lang">' + (isEn ? '中文' : 'EN') + '</button><a class="site-contact" href="/?lang=' + lang + '#/contact">' + (isEn ? 'Contact' : '联系') + '</a></span>';
+  $('site-navigation').innerHTML = siteLabels.map(function (x) { return '<a href="' + (x[0] === 'developers' ? '/api-studio/?lang=' + lang : x[0] === 'hub' ? '/hub/?lang=' + lang : '/?lang=' + lang + '#/' + x[0]) + '"' + (x[0] === 'developers' ? ' aria-current="page"' : '') + '>' + x[isEn ? 2 : 1] + '</a>'; }).join('') + '<span class="site-nav-right"><button class="site-lang" id="site-lang">' + (isEn ? '中文' : 'EN') + '</button><a class="site-contact" href="/?lang=' + lang + '#/contact">' + (isEn ? 'Contact' : '联系') + '</a></span>';
   $('page-title').textContent = isEn ? 'Developer Center' : '开发者中心';
   $('page-lead').textContent = isEn ? 'Integrate thermal prediction, virtual sensing and design screening into your workflow.' : '将热预测、虚拟传感与批量筛选，接入你的研发流程。';
   $('menu-label').textContent = isEn ? 'Menu' : '菜单';

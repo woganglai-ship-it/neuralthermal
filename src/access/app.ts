@@ -25,7 +25,7 @@ el('consent-label').innerHTML=isEn?'I agree that NeuralThermal stores my submitt
 put('contact-label','我愿意就相关技术需求接受 NeuralThermal 联系（选填）。','NeuralThermal may contact me about relevant technical needs (optional).');
 put('submit','进入实验室 →','Enter the lab →');put('note','本浏览器 30 天内免重复填写。支持 QQ、163 等常用邮箱。','Access lasts 30 days in this browser. Personal email addresses are welcome.');put('back','全部实验室','All labs');
 el('lang').textContent=isEn?'中文':'EN';el('lang').onclick=()=>{params.set('lang',isEn?'zh':'en');location.search=params.toString();};
-(el('back') as HTMLAnchorElement).href='/?lang='+language+'#/labs';
+(el('back') as HTMLAnchorElement).href='/?lang='+language+'#/labs';(el('hub') as HTMLAnchorElement).href='/hub/?lang='+language;
 const form=el('access-form') as HTMLFormElement;
 form.onsubmit=async event=>{event.preventDefault();if(!form.reportValidity())return;const button=el('submit') as HTMLButtonElement;button.disabled=true;put('status','正在开通访问…','Opening access…');
  const fields=Object.fromEntries(new FormData(form));
