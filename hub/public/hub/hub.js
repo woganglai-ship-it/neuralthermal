@@ -120,7 +120,6 @@
     }
     rows = current.filter(x => x.cat === cat);
     if (!rows.length) { list.innerHTML = `<p>${T.empty}</p>`; more.hidden = true; return; }
-    if (cat === 'study' || cat === 'jobs') list.innerHTML = `<p class="hub-tabnote">${cat === 'study' ? T.studyNote : T.jobsNote}</p>`;
     page();
   }
 
