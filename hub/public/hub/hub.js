@@ -14,11 +14,13 @@
       share: '分享', shareAll: '分享…', copy: '复制链接', copied: '链接已复制', wechat: '微信 / 朋友圈', weibo: '微博', xhs: '小红书',
       xhsDone: '已复制标题和链接，打开小红书粘贴即可', wxTitle: '用微信扫一扫', wxNote: '在微信里打开后，点右上角「···」即可发给朋友或分享到朋友圈。',
       wxIn: '点右上角「···」，即可发给朋友或分享到朋友圈。', close: '关闭', copyFail: '复制失败，请手动复制地址栏里的链接',
-      orig: { ai: '阅读原文', compute: '阅读原文', oss: '打开项目主页', hf: '在 Hugging Face 查看', study: '查看原始招生信息并申请', contest: '前往官网查看详情' }, origFrom: '原文来自',
-      ai: '物理 AI', compute: '先进计算', oss: '开源工具', hf: '论文与模型', study: '硕博留学', contest: '会议与论坛', more: '查看更多', past: n => `往期（${n} 条）`, empty: '暂无条目。',
+      orig: { ai: '阅读原文', compute: '阅读原文', oss: '打开项目主页', hf: '在 Hugging Face 查看', study: '查看原始招生信息并申请', contest: '前往官网查看详情', jobs: '查看原始岗位并申请' }, origFrom: '原文来自',
+      ai: '物理 AI', compute: '先进计算', oss: '开源工具', hf: '论文与模型', study: '硕博留学', contest: '会议与论坛', jobs: '实习与工作', more: '查看更多', past: n => `往期（${n} 条）`, empty: '暂无条目。',
       due: '截止', closed: '已截止', tabs: '栏目',
       askH: '想申这个方向？', ask: '不确定自己的背景对不对口，可以加微信，说说你的专业和想申的岗位，我们从课题角度给些建议。', askScan: '微信扫码或长按识别', askAlt: '微信二维码',
       studyNote: '不确定背景是否对口？每篇解读末尾可以加微信聊聊。',
+      jobsNote: '想通过我们推荐？每个岗位的解读末尾有简历投递方式。',
+      cvH: '想通过我们推荐？', cv: '把简历（PDF）和想投的岗位发到 <a href="mailto:tech@neuralthermal.com?subject={s}">tech@neuralthermal.com</a>，邮件标题写「岗位名 + 姓名」。我们先看背景是否匹配，合适的话会联系你，再推荐给用人团队或合作的招聘顾问。也可以点下方按钮自己投递。', cvNote: '简历只用于岗位推荐，不会公开。', cvSubject: '简历投递：',
       note: '信息来自各来源的公开页面，日期和名额请以原文为准。发现有误或想推荐线索，欢迎写信至 <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>。' },
     en: { title: 'NT Hub · NeuralThermal', skip: 'Skip to content', menu: 'Menu', products: 'Products', industries: 'Industries', labs: 'Labs', cases: 'Cases & demos', api: 'Developer Center', engage: 'How we work', about: 'About', contact: 'Contact',
       switchTo: '中文', switchLabel: '切换到中文', h1: 'Physical AI & Advanced Computing Briefing',
@@ -26,14 +28,16 @@
       share: 'Share', shareAll: 'Share…', copy: 'Copy link', copied: 'Link copied', wechat: 'WeChat', weibo: 'Weibo', xhs: 'Xiaohongshu',
       xhsDone: 'Title and link copied. Paste them into Xiaohongshu.', wxTitle: 'Scan with WeChat', wxNote: 'Open it in WeChat, then tap “···” at the top right to send it to a chat or post it to Moments.',
       wxIn: 'Tap “···” at the top right to send this to a chat or post it to Moments.', close: 'Close', copyFail: 'Could not copy. Please copy the link from the address bar.',
-      orig: { ai: 'Read the original', compute: 'Read the original', oss: 'Open the project', hf: 'View on Hugging Face', study: 'See the original posting and apply', contest: 'Go to the official page' }, origFrom: 'Original from',
-      ai: 'Physical AI', compute: 'Advanced computing', oss: 'Open-source tools', hf: 'Papers & models', study: 'Graduate study abroad', contest: 'Conferences & forums', more: 'Show more', past: n => `Archive (${n})`, empty: 'Nothing here yet.',
+      orig: { ai: 'Read the original', compute: 'Read the original', oss: 'Open the project', hf: 'View on Hugging Face', study: 'See the original posting and apply', contest: 'Go to the official page', jobs: 'See the original job and apply' }, origFrom: 'Original from',
+      ai: 'Physical AI', compute: 'Advanced computing', oss: 'Open-source tools', hf: 'Papers & models', study: 'Graduate study abroad', contest: 'Conferences & forums', jobs: 'Internships & jobs', more: 'Show more', past: n => `Archive (${n})`, empty: 'Nothing here yet.',
       due: 'Deadline', closed: 'Closed', tabs: 'Sections',
       askH: 'Considering this direction?', ask: 'Not sure your background fits? Add us on WeChat, tell us your field and the position you have in mind, and we will share our view on the research fit.', askScan: 'Scan with WeChat, or press and hold to open', askAlt: 'WeChat QR code',
       studyNote: 'Not sure your background fits? Each brief ends with a WeChat contact.',
+      jobsNote: 'Want us to refer you? Each brief ends with how to send your CV.',
+      cvH: 'Want us to refer you?', cv: 'Email your CV (PDF) and the position to <a href="mailto:tech@neuralthermal.com?subject={s}">tech@neuralthermal.com</a>, with the position and your name in the subject line. We check the fit first; if it matches, we will get in touch and refer you to the hiring team or a recruiting partner. You can also apply yourself with the button below.', cvNote: 'Your CV is used only for referrals and is never published.', cvSubject: 'CV: ',
       note: 'Items come from public pages; check the original for exact dates and places. Spotted an error or have a lead? Write to <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>.' }
   }[lang];
-  const CAT = { ai: T.ai, compute: T.compute, oss: T.oss, hf: T.hf, study: T.study, contest: T.contest };
+  const CAT = { ai: T.ai, compute: T.compute, oss: T.oss, hf: T.hf, study: T.study, contest: T.contest, jobs: T.jobs };
   const pick = (x, k) => (lang === 'en' && x[k + '_en']) || x[k];
   const PAGE = 10;
   const items = (window.NT_HUB_ITEMS || []).slice();
@@ -71,7 +75,7 @@
   items.sort((a, b) => (b.added || '').localeCompare(a.added || '') || (b.date || '0').localeCompare(a.date || '0'));
 
   // An item expires once its deadline passes; without a deadline, 物理 AI and 先进计算 keep 30 days from collection, others 90.
-  const expired = x => x.deadline ? x.deadline < today : daysAgo(x.added || today) > (x.cat === 'ai' || x.cat === 'compute' ? 30 : 90);
+  const expired = x => x.deadline ? x.deadline < today : daysAgo(x.added || today) > (x.cat === 'ai' || x.cat === 'compute' ? 30 : x.cat === 'jobs' ? 45 : 90);
   const current = items.filter(x => !expired(x));
   const past = items.filter(expired);
 
@@ -111,7 +115,7 @@
     }
     rows = current.filter(x => x.cat === cat);
     if (!rows.length) { list.innerHTML = `<p>${T.empty}</p>`; more.hidden = true; return; }
-    if (cat === 'study') list.innerHTML = `<p class="hub-tabnote">${T.studyNote}</p>`;
+    if (cat === 'study' || cat === 'jobs') list.innerHTML = `<p class="hub-tabnote">${cat === 'study' ? T.studyNote : T.jobsNote}</p>`;
     page();
   }
 
@@ -210,7 +214,7 @@
       ${x.img ? `<figure class="hub-fig"><img src="/hub/img/${esc(x.img)}" alt=""><figcaption>${T.credit}: ${esc(pick(x, 'source'))}</figcaption></figure>` : ''}
       <h2 class="hub-brief">${T.brief}</h2>
       <div class="hub-report">${body}</div>
-      ${x.cat === 'study' ? contactCard() : ''}
+      ${x.cat === 'study' ? contactCard() : x.cat === 'jobs' ? cvCard(x) : ''}
       ${shareBar()}
       <div class="hub-orig"><a class="btn primary" href="${esc(x.url)}" target="_blank" rel="noopener">${(T.orig[x.cat] || T.orig.ai)} ↗</a><span>${T.origFrom} ${esc(pick(x, 'source'))}${host ? ' · ' + esc(host) : ''}</span></div>`);
     share(el, x);
@@ -221,6 +225,11 @@
   // X is left out on purpose: the user considers it sensitive for readers in China.
   function contactCard() {
     return `<aside class="hub-contact"><img src="/hub/contact/wechat.jpg" alt="${T.askAlt}" width="112" height="112" loading="lazy"><div><h2>${T.askH}</h2><p>${T.ask}</p><span>${T.askScan}</span></div></aside>`;
+  }
+
+  function cvCard(x) {
+    const cv = T.cv.replace('{s}', encodeURIComponent(T.cvSubject + pick(x, 'title')));
+    return `<aside class="hub-contact hub-cv"><div><h2>${T.cvH}</h2><p>${cv}</p><span>${T.cvNote}</span></div></aside>`;
   }
 
   function shareBar() {
