@@ -19,8 +19,10 @@
       due: '截止', closed: '已截止', tabs: '栏目',
       askH: '想申这个方向？', ask: '不确定自己的背景对不对口，可以加微信，说说你的专业和想申的岗位，我们从课题角度给些建议。', askScan: '微信扫码或长按识别', askAlt: '微信二维码',
       studyNote: '不确定背景是否对口？每篇解读末尾可以加微信聊聊。',
-      jobsNote: '想通过我们推荐？每个岗位的解读末尾有简历投递方式。',
-      cvH: '想通过我们推荐？', cv: '把简历（PDF）和想投的岗位发到 <a href="mailto:tech@neuralthermal.com?subject={s}">tech@neuralthermal.com</a>，邮件标题写「岗位名 + 姓名」。我们先看背景是否匹配，合适的话会联系你，再推荐给用人团队或合作的招聘顾问。也可以点下方按钮自己投递。', cvNote: '简历只用于岗位推荐，不会公开。', cvSubject: '简历投递：',
+      jobsNote: '标「NT 推荐」的岗位可以通过我们投递；「行业岗位」供参考，请在原文页面自行投递。',
+      kindRef: 'NT 推荐', kindInd: '行业岗位',
+      diagH: '想冲这类岗位？', diag: '我们提供求职竞争力诊断：从技术角度看你的项目和简历离这个岗位还差什么，给出简历精修和面试准备的建议。加微信，说说你的背景和目标岗位。', diagScan: '微信扫码或长按识别 · 本岗位请在原文页面自行投递',
+      cvH: '想通过我们推荐？', cv: '把简历（PDF）和想投的岗位发到 <a href="mailto:tech@neuralthermal.com?subject={s}">tech@neuralthermal.com</a>，点邮箱地址会自动填好岗位编号，标题后面再加上你的姓名。我们先看背景是否匹配，合适的话会联系你，再推荐给用人企业。推荐对求职者免费。', cvNote: '简历只用于岗位推荐，不会公开。', cvSubject: '简历投递：',
       note: '信息来自各来源的公开页面，日期和名额请以原文为准。发现有误或想推荐线索，欢迎写信至 <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>。' },
     en: { title: 'NT Hub · NeuralThermal', skip: 'Skip to content', menu: 'Menu', products: 'Products', industries: 'Industries', labs: 'Labs', cases: 'Cases & demos', api: 'Developer Center', engage: 'How we work', about: 'About', contact: 'Contact',
       switchTo: '中文', switchLabel: '切换到中文', h1: 'Physical AI & Advanced Computing Briefing',
@@ -33,8 +35,10 @@
       due: 'Deadline', closed: 'Closed', tabs: 'Sections',
       askH: 'Considering this direction?', ask: 'Not sure your background fits? Add us on WeChat, tell us your field and the position you have in mind, and we will share our view on the research fit.', askScan: 'Scan with WeChat, or press and hold to open', askAlt: 'WeChat QR code',
       studyNote: 'Not sure your background fits? Each brief ends with a WeChat contact.',
-      jobsNote: 'Want us to refer you? Each brief ends with how to send your CV.',
-      cvH: 'Want us to refer you?', cv: 'Email your CV (PDF) and the position to <a href="mailto:tech@neuralthermal.com?subject={s}">tech@neuralthermal.com</a>, with the position and your name in the subject line. We check the fit first; if it matches, we will get in touch and refer you to the hiring team or a recruiting partner. You can also apply yourself with the button below.', cvNote: 'Your CV is used only for referrals and is never published.', cvSubject: 'CV: ',
+      jobsNote: 'Roles marked “NT referral” can be applied for through us; “Industry role” listings are for reference, so apply on the original page.',
+      kindRef: 'NT referral', kindInd: 'Industry role',
+      diagH: 'Aiming for roles like this?', diag: 'Our job-readiness review looks at your projects and CV against the role from a technical angle, and suggests how to sharpen your CV and prepare for interviews. Add us on WeChat with your background and target role.', diagScan: 'Scan with WeChat, or press and hold · Apply for this role on the original page',
+      cvH: 'Want us to refer you?', cv: 'Email your CV (PDF) and the position to <a href="mailto:tech@neuralthermal.com?subject={s}">tech@neuralthermal.com</a>; the link fills in the job code, so just add your name to the subject. We check the fit first; if it matches, we will get in touch and refer you to the employer. Referrals are free for candidates.', cvNote: 'Your CV is used only for referrals and is never published.', cvSubject: 'CV: ',
       note: 'Items come from public pages; check the original for exact dates and places. Spotted an error or have a lead? Write to <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>.' }
   }[lang];
   const CAT = { ai: T.ai, compute: T.compute, oss: T.oss, hf: T.hf, study: T.study, contest: T.contest, jobs: T.jobs };
@@ -81,6 +85,7 @@
 
   function card(x, rank) {
     const meta = [`<span class="hub-cat ${x.cat}">${CAT[x.cat] || ''}</span>`, `<span>${esc(pick(x, 'source'))}</span>`];
+    if (x.cat === 'jobs') meta.splice(1, 0, kindTag(x));
     if (x.date) meta.push(`<time datetime="${esc(x.date)}">${day(x.date)}</time>`);
     const when = [];
     if (x.deadline) {
@@ -200,6 +205,7 @@
     if (!x) { el.insertAdjacentHTML('beforeend', `<p class="hub-missing">${T.missing}</p>`); return; }
     document.title = `${pick(x, 'title')} · NT Hub`;
     const meta = [`<span class="hub-cat ${x.cat}">${CAT[x.cat] || ''}</span>`, `<span>${esc(pick(x, 'source'))}</span>`];
+    if (x.cat === 'jobs') meta.splice(1, 0, kindTag(x));
     if (x.date) meta.push(`<time datetime="${esc(x.date)}">${day(x.date)}</time>`);
     const when = [];
     if (x.deadline) when.push(`<span class="hub-due${x.deadline < today ? ' past' : ''}">${x.deadline < today ? T.closed : T.due} ${day(x.deadline)}</span>`);
@@ -214,21 +220,26 @@
       ${x.img ? `<figure class="hub-fig"><img src="/hub/img/${esc(x.img)}" alt=""><figcaption>${T.credit}: ${esc(pick(x, 'source'))}</figcaption></figure>` : ''}
       <h2 class="hub-brief">${T.brief}</h2>
       <div class="hub-report">${body}</div>
-      ${x.cat === 'study' ? contactCard() : x.cat === 'jobs' ? cvCard(x) : ''}
+      ${x.cat === 'study' ? contactCard() : x.cat === 'jobs' ? (x.kind === 'ref' ? cvCard(x) : contactCard(T.diagH, T.diag, T.diagScan)) : ''}
       ${shareBar()}
-      <div class="hub-orig"><a class="btn primary" href="${esc(x.url)}" target="_blank" rel="noopener">${(T.orig[x.cat] || T.orig.ai)} ↗</a><span>${T.origFrom} ${esc(pick(x, 'source'))}${host ? ' · ' + esc(host) : ''}</span></div>`);
+      ${x.url ? `<div class="hub-orig"><a class="btn primary" href="${esc(x.url)}" target="_blank" rel="noopener">${(T.orig[x.cat] || T.orig.ai)} ↗</a><span>${T.origFrom} ${esc(pick(x, 'source'))}${host ? ' · ' + esc(host) : ''}</span></div>` : ''}`);
     share(el, x);
   }
 
   // Share bar: the phone's own share sheet where there is one (it reaches WeChat, Xiaohongshu and the rest),
   // a WeChat QR code, Weibo / LinkedIn share pages, and copy link. No login, no tracking. Shown once, after the brief.
   // X is left out on purpose: the user considers it sensitive for readers in China.
-  function contactCard() {
-    return `<aside class="hub-contact"><img src="/hub/contact/wechat.jpg" alt="${T.askAlt}" width="112" height="112" loading="lazy"><div><h2>${T.askH}</h2><p>${T.ask}</p><span>${T.askScan}</span></div></aside>`;
+  function contactCard(h = T.askH, p = T.ask, scan = T.askScan) {
+    return `<aside class="hub-contact"><img src="/hub/contact/wechat.jpg" alt="${T.askAlt}" width="112" height="112" loading="lazy"><div><h2>${h}</h2><p>${p}</p><span>${scan}</span></div></aside>`;
+  }
+
+  // Jobs come in two kinds: kind 'ref' = NT referral (CV to us, company may be anonymised), otherwise a public industry role.
+  function kindTag(x) {
+    return x.kind === 'ref' ? `<span class="hub-kind ref">${T.kindRef}</span>` : `<span class="hub-kind">${T.kindInd}</span>`;
   }
 
   function cvCard(x) {
-    const cv = T.cv.replace('{s}', encodeURIComponent(T.cvSubject + pick(x, 'title')));
+    const cv = T.cv.replace('{s}', encodeURIComponent(T.cvSubject + (x.code ? x.code + ' ' : '') + pick(x, 'title')));
     return `<aside class="hub-contact hub-cv"><div><h2>${T.cvH}</h2><p>${cv}</p><span>${T.cvNote}</span></div></aside>`;
   }
 

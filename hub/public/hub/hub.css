@@ -41,6 +41,8 @@
 .hub-cat.study { color: var(--blue); }
 .hub-cat.contest { color: var(--green-ink); }
 .hub-cat.jobs { color: #7A4FB5; }
+.hub-kind { padding: 1px 8px; border: 1px solid var(--line); border-radius: 999px; font-size: 13px; color: var(--muted); }
+.hub-kind.ref { border-color: #7A4FB5; color: #7A4FB5; font-weight: 600; }
 /* Titles should fit one line; site.css balances headings, which splits a slightly long title into two half lines. */
 .hub-item h2 { margin: 8px 0 8px; font-size: 22px; line-height: 1.4; text-wrap: pretty; }
 .hub-item h2 a { color: var(--fg); }
