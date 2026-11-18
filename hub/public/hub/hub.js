@@ -138,7 +138,22 @@
   document.getElementById('hub-tabs').setAttribute('aria-label', T.tabs);
   const chips = document.querySelectorAll('.hub-tabs .chip');
   const press = b => chips.forEach(o => o.setAttribute('aria-pressed', String(o === b)));
-  chips.forEach(b => b.addEventListener('click', () => { press(b); render(b.dataset.cat); }));
+  // Section tabs stay pinned under the site menu; switching a tab while pinned jumps back to the top of the list.
+  const tabs = document.getElementById('hub-tabs'), nav = document.querySelector('.nav');
+  const navH = () => nav ? nav.offsetHeight : 0;
+  const sizeTabs = () => {
+    document.documentElement.style.setProperty('--hub-nav-h', navH() + 'px');
+    document.documentElement.style.setProperty('--hub-tabs-h', tabs.offsetHeight + 'px');
+    tabs.classList.toggle('stuck', tabs.getBoundingClientRect().top <= navH() + 1 && scrollY > 0);
+  };
+  addEventListener('scroll', sizeTabs, { passive: true });
+  addEventListener('resize', sizeTabs);
+  sizeTabs();
+  chips.forEach(b => b.addEventListener('click', () => {
+    sizeTabs(); press(b); render(b.dataset.cat);
+    if (tabs.scrollWidth > tabs.clientWidth) tabs.scrollLeft = b.offsetLeft - 16;
+    if (tabs.classList.contains('stuck')) scrollTo(0, list.getBoundingClientRect().top + scrollY - navH() - tabs.offsetHeight - 12);
+  }));
   more.addEventListener('click', page);
   pastBtn.hidden = !past.length;
   pastBtn.textContent = T.past(past.length);

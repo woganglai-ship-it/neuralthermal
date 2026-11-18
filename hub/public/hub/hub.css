@@ -20,7 +20,14 @@
 .hs-list li.on a { color: #fff; background: rgba(255, 255, 255, .08); border-left-color: var(--green); }
 .hs-list .hub-rank { flex: none; margin: 0; }
 .hub-body { padding: 40px 0 96px; }
-.hub-tabs { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 36px; }
+.hub-tabs { position: sticky; top: var(--hub-nav-h, 64px); z-index: 20; display: flex; flex-wrap: wrap; gap: 10px; margin: -12px 0 24px; padding: 12px 0; background: var(--canvas); }
+.hub-tabs.stuck { box-shadow: 0 1px 0 var(--line), -50vw 0 0 var(--canvas), 50vw 0 0 var(--canvas), -50vw 1px 0 var(--line), 50vw 1px 0 var(--line); }
+#hub-list { scroll-margin-top: calc(var(--hub-nav-h, 64px) + var(--hub-tabs-h, 64px) + 12px); }
+@media (max-width: 760px) {
+  .hub-tabs { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; }
+  .hub-tabs::-webkit-scrollbar { display: none; }
+  .hub-tabs .chip { flex: none; }
+}
 
 .hub-item:first-child { padding-top: 0; }
 .hub-item { display: grid; grid-template-columns: minmax(0, 1fr) 240px; gap: 32px; align-items: start; padding: 28px 0; border-bottom: 1px solid var(--line); }
