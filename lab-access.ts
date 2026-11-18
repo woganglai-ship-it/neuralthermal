@@ -26,12 +26,11 @@ export async function labAccess(req:Request,env:any):Promise<Response|null>{
  }
  if(path==='/access/'||path==='/access/index.html'){
   const target=url.searchParams.get('lab')||'h100';
-  if(session&&Object.hasOwn(labs,target))return new Response(null,{status:302,headers:{Location:labs[target]+'?lang='+(url.searchParams.get('lang')==='en'?'en':'zh'),'Cache-Control':'no-store'}});
-  const r=await env.ASSETS.fetch(new Request(new URL('/access/',url),req));const out=new Response(r.body,r);out.headers.set('Cache-Control','no-store');return out;
+  // 2026-11-18：实验室全部公开，旧的登记链接直接转到对应实验室
+  return new Response(null,{status:302,headers:{Location:(Object.hasOwn(labs,target)?labs[target]:'/')+'?lang='+(url.searchParams.get('lang')==='en'?'en':'zh'),'Cache-Control':'no-store'}});
  }
  if(!lab)return env.ASSETS.fetch(req);
- if(!session)return new Response(null,{status:302,headers:{Location:'/access/?lab='+lab+'&lang='+(url.searchParams.get('lang')==='en'?'en':'zh'),'Cache-Control':'no-store'}});
  const asset=await env.ASSETS.fetch(req);const out=new Response(asset.body,asset);out.headers.set('Cache-Control','private, no-store');
- if(req.method==='GET'&&out.headers.get('Content-Type')?.includes('text/html')&&out.ok)await call({action:'visitorVisit',id:session.id,lab});
+ if(session&&req.method==='GET'&&out.headers.get('Content-Type')?.includes('text/html')&&out.ok)await call({action:'visitorVisit',id:session.id,lab});
  return out;
 }

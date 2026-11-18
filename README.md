@@ -47,7 +47,7 @@ pnpm deploy
 | 官网样式与彩带 | `src/site/style.css` |
 | 六个实验室共用彩带 | `src/labs/ribbon.css` |
 | 登记页文案及样式 | `src/access/` |
-| 登记、会话与访问控制 | `lab-access.ts` |
+| 实验室访问（2026-11-18 起全部公开，不再需要登记；旧的 `/access/?lab=…` 链接自动转到对应实验室） | `lab-access.ts` |
 | 开发者中心外壳 | `src/api-studio/site-shell.css` |
 | 各实验室的实际交互 | `public/tools/*/index.html`、`public/labs/advanced-packaging/index.html` 及相邻资源 |
 | API 服务端入口 | `worker.js` |
