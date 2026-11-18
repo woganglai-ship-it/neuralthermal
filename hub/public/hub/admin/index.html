@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>访客记录 · NeuralThermal</title>
+<link rel="icon" href="/assets/favicon.svg">
+<style>
+  :root { --bg: #F6F7F8; --card: #fff; --fg: #16181A; --muted: #5E676D; --line: #DFE3E6; --accent: #2E7D32; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 15px/1.55 -apple-system, BlinkMacSystemFont, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; }
+  .wrap { max-width: 1100px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { margin: 0 0 4px; font-size: 22px; }
+  .sub { margin: 0 0 20px; color: var(--muted); font-size: 13px; }
+  .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 16px; }
+  button, select, input { font: inherit; padding: 6px 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--fg); }
+  button { cursor: pointer; }
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .stat { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; }
+  .stat b { display: block; font-size: 22px; }
+  .stat span { color: var(--muted); font-size: 13px; }
+  .top { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 12px; margin-bottom: 20px; }
+  .top div { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; font-size: 14px; }
+  .top h2 { margin: 0 0 6px; font-size: 14px; color: var(--muted); font-weight: 600; }
+  .top p { margin: 2px 0; display: flex; justify-content: space-between; gap: 12px; }
+  .top p span:first-child { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  details { background: var(--card); border: 1px solid var(--line); border-radius: 10px; margin-bottom: 8px; }
+  summary { display: grid; grid-template-columns: 150px minmax(0, 1.4fr) 70px minmax(0, 1fr) 90px 60px; gap: 12px; padding: 10px 14px; cursor: pointer; list-style: none; align-items: center; }
+  summary::-webkit-details-marker { display: none; }
+  summary span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .head { display: grid; grid-template-columns: 150px minmax(0, 1.4fr) 70px minmax(0, 1fr) 90px 60px; gap: 12px; padding: 0 14px 6px; color: var(--muted); font-size: 13px; }
+  ol { margin: 0; padding: 4px 14px 12px 40px; border-top: 1px solid var(--line); }
+  li { padding: 4px 0; font-size: 14px; }
+  li small { color: var(--muted); }
+  .muted { color: var(--muted); }
+  #login { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 20px; max-width: 460px; }
+  @media (max-width: 760px) {
+    .head { display: none; }
+    summary { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>访客记录</h1>
+  <p class="sub">neuralthermal.com 全站（含 NT Hub 和实验室）。每一行是一次访问，点开看访问了哪些页面、每页停留多久。时间为北京时间；地区按访客网络位置估算，城市可能不准。不记录 IP，不用 cookie。</p>
+
+  <div id="login" hidden>
+    <p>请输入访问密钥（在本机「NT Hub/对内_不上线/访客统计.md」里）。</p>
+    <p><input id="key" type="password" size="30" autocomplete="off"> <button id="go">打开</button></p>
+    <p class="muted" id="err"></p>
+  </div>
+
+  <div id="app" hidden>
+    <div class="bar">
+      <select id="days">
+        <option value="1">最近 24 小时</option>
+        <option value="7" selected>最近 7 天</option>
+        <option value="30">最近 30 天</option>
+        <option value="90">最近 90 天</option>
+      </select>
+      <button id="reload">刷新</button>
+      <button id="csv">下载表格（CSV）</button>
+      <span class="muted" id="self"></span>
+    </div>
+    <div class="stats" id="stats"></div>
+    <div class="top" id="top"></div>
+    <div class="head"><span>时间</span><span>地区</span><span>设备</span><span>来源</span><span>停留</span><span>页数</span></div>
+    <div id="list"></div>
+  </div>
+</div>
+<script>
+(function () {
+  try { localStorage.setItem('nt_notrack', '1'); } catch (e) {}
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); };
+  var regionName = (function () { try { var d = new Intl.DisplayNames(['zh-CN'], { type: 'region' }); return function (c) { try { return c ? d.of(c) : ''; } catch (e) { return c; } }; } catch (e) { return function (c) { return c; }; } })();
+  var fmt = new Intl.DateTimeFormat('zh-CN', { timeZone: 'Asia/Shanghai', month: '2-digit', day: '2-digit', hour: '2-digit', minute: '2-digit', hour12: false });
+  var dur = function (s) { s = s || 0; if (s < 60) return s + ' 秒'; var m = Math.floor(s / 60); if (m < 60) return m + ' 分 ' + (s % 60) + ' 秒'; return Math.floor(m / 60) + ' 小时 ' + (m % 60) + ' 分'; };
+  var source = function (r) { if (!r) return '直接访问'; try { var h = new URL(r).hostname.replace(/^www\./, ''); var known = { 'xiaohongshu.com': '小红书', 'xhslink.com': '小红书', 'linkedin.com': '领英', 'lnkd.in': '领英', 'google.com': '谷歌', 'bing.com': '必应', 'baidu.com': '百度', 'weixin.qq.com': '微信', 'zhihu.com': '知乎', 'github.com': 'GitHub', 't.co': 'X' }; for (var k in known) if (h === k || h.endsWith('.' + k)) return known[k]; return h; } catch (e) { return r; } };
+  var device = { desktop: '电脑', mobile: '手机', tablet: '平板' };
+  var place = function (v) { return [regionName(v.country), v.region, v.city].filter(Boolean).filter(function (x, i, a) { return a.indexOf(x) === i; }).join(' · ') || '未知'; };
+  var key = ''; try { key = localStorage.getItem('nt_stats_key') || ''; } catch (e) {}
+  var rows = [];
+
+  $('self').textContent = '本设备的浏览不计入统计';
+  $('go').onclick = function () { key = $('key').value.trim(); load(); };
+  $('key').onkeydown = function (e) { if (e.key === 'Enter') $('go').onclick(); };
+  $('reload').onclick = load;
+  $('days').onchange = load;
+  $('csv').onclick = function () {
+    var head = ['时间（北京）', '访问编号', '国家', '省/州', '城市', '设备', '来源', '页面', '标题', '停留秒数'];
+    var lines = [head].concat(rows.map(function (v) { return [fmt.format(v.ts), v.sid, regionName(v.country), v.region, v.city, device[v.device] || v.device, v.ref, v.path, v.title, v.dur]; }));
+    var csv = '﻿' + lines.map(function (l) { return l.map(function (c) { return '"' + String(c == null ? '' : c).replace(/"/g, '""') + '"'; }).join(','); }).join('\n');
+    var a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = 'neuralthermal-visits.csv'; a.click();
+  };
+
+  function load() {
+    if (!key) { $('login').hidden = false; $('app').hidden = true; return; }
+    fetch('/hub/api/visits?days=' + $('days').value, { headers: { Authorization: 'Bearer ' + key } }).then(function (r) {
+      if (r.status === 401) throw new Error('密钥不对');
+      if (!r.ok) throw new Error('读取失败（' + r.status + '）');
+      return r.json();
+    }).then(function (d) {
+      try { localStorage.setItem('nt_stats_key', key); } catch (e) {}
+      $('login').hidden = true; $('app').hidden = false;
+      rows = d.views; render();
+    }).catch(function (e) { $('login').hidden = false; $('app').hidden = true; $('err').textContent = e.message; });
+  }
+
+  function render() {
+    var by = {}, order = [];
+    rows.slice().reverse().forEach(function (v) { if (!by[v.sid]) { by[v.sid] = []; order.push(v.sid); } by[v.sid].push(v); });
+    var visits = order.map(function (s) { return by[s]; }).reverse();
+    var total = rows.reduce(function (n, v) { return n + (v.dur || 0); }, 0);
+    var count = function (f) { var c = {}; visits.forEach(function (vs) { var k = f(vs); c[k] = (c[k] || 0) + 1; }); return Object.keys(c).map(function (k) { return [k, c[k]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 8); };
+    var pages = {}; rows.forEach(function (v) { var k = v.title || v.path; pages[k] = (pages[k] || 0) + 1; });
+    var topPages = Object.keys(pages).map(function (k) { return [k, pages[k]]; }).sort(function (a, b) { return b[1] - a[1]; }).slice(0, 8);
+    $('stats').innerHTML = [['访问次数', visits.length], ['浏览页数', rows.length], ['平均每次停留', dur(visits.length ? Math.round(total / visits.length) : 0)], ['国家和地区', count(function (vs) { return vs[0].country; }).length]]
+      .map(function (s) { return '<div class="stat"><b>' + esc(s[1]) + '</b><span>' + s[0] + '</span></div>'; }).join('');
+    var block = function (t, list) { return '<div><h2>' + t + '</h2>' + (list.length ? list.map(function (x) { return '<p><span title="' + esc(x[0]) + '">' + esc(x[0]) + '</span><span>' + x[1] + '</span></p>'; }).join('') : '<p class="muted">暂无</p>') + '</div>'; };
+    $('top').innerHTML = block('国家和地区', count(function (vs) { return regionName(vs[0].country) || '未知'; })) + block('城市', count(function (vs) { return place(vs[0]); })) + block('来源', count(function (vs) { return source(vs[0].ref); })) + block('最常看的页面', topPages);
+    $('list').innerHTML = visits.length ? visits.map(function (vs) {
+      var v = vs[0], t = vs.reduce(function (n, x) { return n + (x.dur || 0); }, 0);
+      return '<details><summary><span>' + fmt.format(v.ts) + '</span><span title="' + esc(place(v)) + '">' + esc(place(v)) + '</span><span>' + (device[v.device] || '') + '</span><span title="' + esc(v.ref) + '">' + esc(source(v.ref)) + '</span><span>' + dur(t) + '</span><span>' + vs.length + '</span></summary><ol>' +
+        vs.map(function (x) { return '<li>' + esc(x.title || x.path) + ' <small>' + fmt.format(x.ts).slice(-5) + ' · ' + dur(x.dur) + ' · ' + esc(x.path) + '</small></li>'; }).join('') + '</ol></details>';
+    }).join('') : '<p class="muted">这段时间还没有访问记录。</p>';
+  }
+
+  load();
+})();
+</script>
+</body>
+</html>

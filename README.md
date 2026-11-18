@@ -51,6 +51,7 @@ pnpm deploy
 | 开发者中心外壳 | `src/api-studio/site-shell.css` |
 | 各实验室的实际交互 | `public/tools/*/index.html`、`public/labs/advanced-packaging/index.html` 及相邻资源 |
 | API 服务端入口 | `worker.js` |
+| 访客统计（每个 HTML 页面自动插入 `/hub/t.js`，数据和查看页在 NT Hub Worker） | `worker.js`、`hub/worker.js` |
 | 部署配置 | `wrangler.toml` |
 
 `public/` 已包含全部公开图片、视频与交互资源。实验室是现有独立 HTML 成品，直接修改相应文件即可；构建只替换各实验室指定的彩带样式块，不重写其计算脚本。

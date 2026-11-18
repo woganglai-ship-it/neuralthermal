@@ -4,7 +4,7 @@ compatibility_date = "2026-09-06"
 
 [assets]
 binding = "ASSETS"
-run_worker_first = ["/api-studio/v1/*", "/access/*", "/tools/*", "/labs/*"]
+run_worker_first = true
 directory = "./public"
 not_found_handling = "404-page"
 

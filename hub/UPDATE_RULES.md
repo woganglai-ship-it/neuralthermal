@@ -137,6 +137,8 @@
 
 **回退**：Cloudflare 后台 → Workers → nt-hub → Deployments → Rollback，或在 `hub/` 下执行 `pnpm exec wrangler rollback <版本号>`。
 
+**访客统计**（2026-11-18 起）：全站每个页面都加载 `/hub/t.js`（主站 Worker 自动插入，NT Hub 页面里直接写了），记录访问的页面、来源、国家 / 地区 / 城市和停留时长，存进 D1 数据库 `nt-visits`（`hub/worker.js` 的 `/hub/api/hit`）。不记录 IP，不用 cookie，保留 180 天。用户在 `/hub/admin/` 查看，需要访问密钥（Worker 密钥 `STATS_KEY`，只记在本机「对内_不上线/访客统计.md」，不进仓库）。改 `index.html` 时不要删掉 `t.js` 那一行。
+
 **不要动**：主站源码（仓库根目录的 `src/`、`public/`）和主站 Worker `neuralthermal`。NT Hub 是独立 Worker `nt-hub`，只接管 `neuralthermal.com/hub*`。
 
 ## 10. 在新电脑上恢复自动更新

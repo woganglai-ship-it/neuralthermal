@@ -4,8 +4,15 @@ import {createEngine} from './private-runtime/engine.js';
 let engine;
 const routes=new Set(['/v1/design/predict','/v1/sensor/estimate','/v1/workflow/sweep']);
 const json=(value,status=200)=>Response.json(value,{status,headers:{'Cache-Control':'no-store','X-Content-Type-Options':'nosniff'}});
+// Every HTML page gets the first-party visit counter served by the NT Hub Worker (/hub/t.js; no cookies, no IP stored).
+const tracker=()=>new HTMLRewriter().on('body',{element(e){e.append('<script src="/hub/t.js?v=1" defer></script>',{html:true});}});
 export default {
  async fetch(request,env){
+  const res=await handle(request,env);
+  return request.method==='GET'&&res.status===200&&(res.headers.get('Content-Type')||'').includes('text/html')?tracker().transform(res):res;
+ }
+};
+async function handle(request,env){
   const access=await labAccess(request,env);if(access)return access;
   const url=new URL(request.url), prefix='/api-studio';
   if(!url.pathname.startsWith(prefix+'/v1/'))return env.ASSETS.fetch(request);
@@ -30,5 +37,4 @@ export default {
   engine ||= createEngine(model);
   try{const result=engine.call(path,body,'nt_demo_2026');result.body.request_id='req_'+crypto.randomUUID();return json(result.body,result.status);}
   catch{return json({message:'Invalid request structure'},400);}
- }
-};
+}

@@ -1,6 +1,8 @@
 # NT Hub · separate Worker that serves only neuralthermal.com/hub*
 # The main site (Worker "neuralthermal") is untouched; /assets/* still comes from it.
+# worker.js only handles /hub/api/* (visit statistics); everything else is static assets.
 name = "nt-hub"
+main = "worker.js"
 compatibility_date = "2026-11-01"
 workers_dev = false
 routes = [
@@ -10,5 +12,14 @@ routes = [
 
 [assets]
 directory = "./public"
+binding = "ASSETS"
 html_handling = "auto-trailing-slash"
 not_found_handling = "none"
+run_worker_first = ["/hub/api/*"]
+
+# Visit statistics for the private page /hub/admin/ (key in the STATS_KEY secret)
+[[d1_databases]]
+binding = "DB"
+database_name = "nt-visits"
+database_id = "d2439915-b78c-484e-92d3-c157d20ed9ea"
+migrations_dir = "migrations"
