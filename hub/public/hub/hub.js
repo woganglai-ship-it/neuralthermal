@@ -17,6 +17,8 @@
       orig: { ai: '阅读原文', compute: '阅读原文', oss: '打开项目主页', hf: '在 Hugging Face 查看', study: '查看原始招生信息并申请', contest: '前往官网查看详情' }, origFrom: '原文来自',
       ai: '物理 AI', compute: '先进计算', oss: '开源工具', hf: '论文与模型', study: '硕博留学', contest: '会议与论坛', more: '查看更多', past: n => `往期（${n} 条）`, empty: '暂无条目。',
       due: '截止', closed: '已截止', tabs: '栏目',
+      askH: '想申这个方向？', ask: '不确定自己的背景对不对口，可以加微信，说说你的专业和想申的岗位，我们从课题角度给些建议。', askScan: '微信扫码或长按识别', askAlt: '微信二维码',
+      studyNote: '不确定背景是否对口？每篇解读末尾可以加微信聊聊。',
       note: '信息来自各来源的公开页面，日期和名额请以原文为准。发现有误或想推荐线索，欢迎写信至 <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>。' },
     en: { title: 'NT Hub · NeuralThermal', skip: 'Skip to content', menu: 'Menu', products: 'Products', industries: 'Industries', labs: 'Labs', cases: 'Cases & demos', api: 'Developer Center', engage: 'How we work', about: 'About', contact: 'Contact',
       switchTo: '中文', switchLabel: '切换到中文', h1: 'Physical AI & Advanced Computing Briefing',
@@ -27,6 +29,8 @@
       orig: { ai: 'Read the original', compute: 'Read the original', oss: 'Open the project', hf: 'View on Hugging Face', study: 'See the original posting and apply', contest: 'Go to the official page' }, origFrom: 'Original from',
       ai: 'Physical AI', compute: 'Advanced computing', oss: 'Open-source tools', hf: 'Papers & models', study: 'Graduate study abroad', contest: 'Conferences & forums', more: 'Show more', past: n => `Archive (${n})`, empty: 'Nothing here yet.',
       due: 'Deadline', closed: 'Closed', tabs: 'Sections',
+      askH: 'Considering this direction?', ask: 'Not sure your background fits? Add us on WeChat, tell us your field and the position you have in mind, and we will share our view on the research fit.', askScan: 'Scan with WeChat, or press and hold to open', askAlt: 'WeChat QR code',
+      studyNote: 'Not sure your background fits? Each brief ends with a WeChat contact.',
       note: 'Items come from public pages; check the original for exact dates and places. Spotted an error or have a lead? Write to <a href="mailto:tech@neuralthermal.com">tech@neuralthermal.com</a>.' }
   }[lang];
   const CAT = { ai: T.ai, compute: T.compute, oss: T.oss, hf: T.hf, study: T.study, contest: T.contest };
@@ -107,6 +111,7 @@
     }
     rows = current.filter(x => x.cat === cat);
     if (!rows.length) { list.innerHTML = `<p>${T.empty}</p>`; more.hidden = true; return; }
+    if (cat === 'study') list.innerHTML = `<p class="hub-tabnote">${T.studyNote}</p>`;
     page();
   }
 
@@ -190,6 +195,7 @@
       ${x.img ? `<figure class="hub-fig"><img src="/hub/img/${esc(x.img)}" alt=""><figcaption>${T.credit}: ${esc(pick(x, 'source'))}</figcaption></figure>` : ''}
       <h2 class="hub-brief">${T.brief}</h2>
       <div class="hub-report">${body}</div>
+      ${x.cat === 'study' ? contactCard() : ''}
       ${shareBar()}
       <div class="hub-orig"><a class="btn primary" href="${esc(x.url)}" target="_blank" rel="noopener">${(T.orig[x.cat] || T.orig.ai)} ↗</a><span>${T.origFrom} ${esc(pick(x, 'source'))}${host ? ' · ' + esc(host) : ''}</span></div>`);
     share(el, x);
@@ -198,6 +204,10 @@
   // Share bar: the phone's own share sheet where there is one (it reaches WeChat, Xiaohongshu and the rest),
   // a WeChat QR code, Weibo / LinkedIn share pages, and copy link. No login, no tracking. Shown once, after the brief.
   // X is left out on purpose: the user considers it sensitive for readers in China.
+  function contactCard() {
+    return `<aside class="hub-contact"><img src="/hub/contact/wechat.jpg" alt="${T.askAlt}" width="112" height="112" loading="lazy"><div><h2>${T.askH}</h2><p>${T.ask}</p><span>${T.askScan}</span></div></aside>`;
+  }
+
   function shareBar() {
     const b = (k, label) => `<button class="chip hub-sh" type="button" data-sh="${k}">${label}</button>`;
     const native = navigator.share ? b('native', T.shareAll) : '';
