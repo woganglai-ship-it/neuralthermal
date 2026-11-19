@@ -84,7 +84,7 @@ window.NT_HUB_ITEMS = [
     report: "日本 Preferred Networks（PFN）与韩国定制芯片公司 SEMIFIVE 11 月 16 日宣布合作开发 MN-Core L2000 系列 AI 推理芯片，并在 SC26 PFN 展位（#4606）联合展出。\n\nL2000 是 MN-Core L1000 的后继，后者计划 2027 年发布。新系列将基于 MN-Core 架构的逻辑芯片与 DRAM 以 3D 结构垂直堆叠，目标内存带宽为 L1000 的两倍以上，计划 2027 年第一季度流片。PFN 负责处理器架构与逻辑设计；SEMIFIVE 负责设计实现与供应链，协调 DRAM 供应、量产、先进封装和测试，这也是它首个完整的 3D-IC 项目；逻辑芯片采用三星代工平台。项目获日本防卫装备厅资助（2024 至 2028 财年）。\n\nPFN CEO 冈野原大辅在稿中坦言，3D 堆叠在功耗、散热和良率上比常规芯片更难。逻辑叠 DRAM 的热路径正是封装热设计的难点，做 3D-IC 热仿真的团队可持续关注其进展。",
     report_en: "Japan's Preferred Networks (PFN) and Korean custom-silicon firm SEMIFIVE announced on November 16 that they are developing the MN-Core L2000 series of AI inference chips, shown jointly at PFN's SC26 booth (#4606).\n\nThe L2000 succeeds the MN-Core L1000, scheduled for release in 2027. It stacks MN-Core logic dies and DRAM vertically in 3D, targeting more than twice the L1000's memory bandwidth, with tape-out planned for Q1 2027. PFN handles architecture and logic design; SEMIFIVE handles implementation and supply chain across DRAM, volume manufacturing, advanced packaging and test, its first full-scale 3D-IC project. The logic die uses Samsung Foundry. Japan's Acquisition, Technology & Logistics Agency funds the work for FY2024 to FY2028.\n\nPFN CEO Daisuke Okanohara notes that 3D stacking is harder than conventional chips in power, heat dissipation and yield. Heat flow through logic-under-DRAM stacks is a core packaging thermal problem, so 3D-IC thermal modelers should follow this project.",
     img: "pfn-semifive-mn-core-l2000.jpg" },
-  { id: "nvidia-announces-rubin-hpc-new", cat: "compute", added: "2026-11-18", date: "2026-11-16", source: "NVIDIA Blog",
+  { top: 3, id: "nvidia-announces-rubin-hpc-new", cat: "compute", added: "2026-11-18", date: "2026-11-16", source: "NVIDIA Blog",
     title: "NVIDIA 发布 Rubin HPC：面向科学与工程仿真的新 GPU",
     summary: "NVIDIA 在 SC26 发布 Vera Rubin 平台中的 Rubin HPC，单颗 GPU 超过 50,000 个 CUDA 核心，面向仿真、工程与数据分析，预计 2028 年推出。",
     title_en: "NVIDIA announces Rubin HPC, a new GPU for science and engineering simulation",
@@ -104,7 +104,7 @@ window.NT_HUB_ITEMS = [
     report_en: "At SC26 (November 17–19, Chicago), Delta is showing its grid-to-chip cooling portfolio, with a focus on the emerging 800 VDC and ±400 VDC power architectures.\n\nThe headline product is an 800 VDC-powered 2.5 MW in-row liquid-to-liquid CDU with three 800 VDC, 25 kW hot-swappable pumps in a 3+0 configuration, delivering up to 3,850 LPM at 60 psi at the operating point. At board level, a vertical power delivery double-sided cold plate for OAC architectures cools up to 3,000 W of compute and 500 W of power components within a 40 mm profile, at heat flux above 170 W/cm². Delta also shows a 200 kW 4U in-rack CDU, the Project Deschutes in-row CDU rated at 2 MW with a 3°C approach temperature, a power shelf embedded cold plate, and a hot-swappable SSD cold plate.\n\nFor liquid-cooling designers, this shows cooling extending from compute chips to power, storage and networking parts, and high-voltage DC distribution creating thermal loads of its own.",
     img: "delta-unveils-2-5-mw.jpg",
     logo: "delta.png" },
-  { id: "aviemore-launches-seal-less-magnetic", cat: "compute", added: "2026-11-18", date: "2026-11-16", source: "Aviemore / PR Newswire",
+  { top: 5, id: "aviemore-launches-seal-less-magnetic", cat: "compute", added: "2026-11-18", date: "2026-11-16", source: "Aviemore / PR Newswire",
     title: "Aviemore 推出无密封磁力耦合泵平台，用于液冷 AI 数据中心",
     summary: "功率覆盖 0.10–5.0 kW、直流母线 12–800 V，机架 CDU 泵 0.10–2.0 kW，列间与厂务泵 1.0–5.0 kW；在弗吉尼亚州 Radford 工厂生产。",
     title_en: "Aviemore launches seal-less pumps for liquid-cooled AI data centers",
@@ -360,7 +360,6 @@ window.NT_HUB_ITEMS = [
 
   /* ---------------- 论文与模型（hf） ---------------- */
   {
-    top: 3,
     id: "forceharness-force-frozen-models",
     cat: "hf",
     added: "2026-11-18",
@@ -845,7 +844,6 @@ window.NT_HUB_ITEMS = [
     report_en: "Cadence is one of the main suppliers of chip-design software (EDA) and semiconductor IP. Its Shanghai team posted a digital back-end internship on 5 November.\n\nThe team does physical implementation of high-speed interface IP, including DDR, HBM, UCIe, PCIe and eUSB, at frequencies up to 6400 MHz, on TSMC 3, 5, 7 and 12 nm and Samsung 4 to 10 nm processes. The intern works on physical design: floorplanning, clock-tree synthesis, static timing analysis, place-and-route and physical verification, while writing scripts to improve the back-end flow and analysing power, performance and area (PPA) optimisation. Candidates need to be studying for a master's or above in microelectronics or EE, know digital back-end tools, and communicate well in spoken and written Chinese and English. The internship asks for at least three days a week for six to eight months. No salary is stated.\n\nHBM and UCIe are key interfaces for advanced packaging and chiplet interconnect, so this suits microelectronics master's students heading into chips and advanced packaging.",
     logo: "cadence.png" },
   {
-    top: 5,
     id: "1x-hands-thermal-systems-engineer",
     cat: "jobs",
     added: "2026-11-18",
